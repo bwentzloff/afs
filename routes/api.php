@@ -31,7 +31,29 @@ Route::prefix('v1')->group(function () {
             // Logout user from application
             Route::post('logout', 'AuthController@logout');
         });
+
+        
+
     });
+
+    Route::post('league/create', 'LeagueController@create');
+    Route::post('league/getUserLeagues', 'LeagueController@getUserLeagues');
+
+    // Join leagues
+    Route::post('league/fromInvite/{code}', ['uses'=>'LeagueController@getLeagueInfoFromCode']);
+    Route::post('league/join/{code}', ['uses'=>'LeagueController@joinLeagueFromCode']);
+
+    // Scraping routes
+    Route::get('scrape/xfl/players', 'ScrapeController@xflPlayers');
+
+    // Get league info
+    Route::get('league/info/{id}', ['uses'=>'LeagueController@getLeagueInfo']);
+
+    // Get player info
+    Route::get('players/xfl', 'PlayerController@xflPlayers');
+
+    // Cronjobs
+    Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
 
     /**
      * Basic Routes
