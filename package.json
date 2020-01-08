@@ -25,9 +25,13 @@
     },
     "dependencies": {
         "@websanova/vue-auth": "^2.21.14-beta",
+        "bootstrap-vue": "^2.1.0",
         "es6-promise": "^4.2.8",
+        "luxon": "^1.21.3",
         "vue-axios": "^2.1.5",
+        "vue-datetime": "^1.0.0-beta.11",
         "vue-router": "^3.1.3",
-        "vuex": "^3.1.0"
+        "vuex": "^3.1.0",
+        "weekstart": "^1.0.1"
     }
 }

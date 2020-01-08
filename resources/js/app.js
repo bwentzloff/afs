@@ -9,6 +9,9 @@ import VueRouter from 'vue-router'
 import Index from './Index'
 import auth from './auth'
 import router from './router'
+import BootstrapVue from 'bootstrap-vue'
+import { Datetime } from 'vue-datetime'
+import 'vue-datetime/dist/vue-datetime.css'
 
 // Set Vue globally
 window.Vue = Vue
@@ -16,6 +19,10 @@ window.Vue = Vue
 // Set Vue router
 Vue.router = router
 Vue.use(VueRouter)
+Vue.use(BootstrapVue)
+Vue.use(Datetime)
+
+Vue.component('datetime', Datetime);
 
 // Set Vue authentication
 Vue.use(VueAxios, axios)

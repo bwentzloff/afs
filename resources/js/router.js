@@ -6,6 +6,9 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Dashboard from './pages/user/Dashboard'
 import AdminDashboard from './pages/admin/Dashboard'
+import CreateLeague from './pages/CreateLeague'
+import AcceptInvite from './pages/AcceptInvite'
+import ViewLeague from './pages/ViewLeague'
 
 // Routes
 const routes = [
@@ -46,6 +49,31 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
+    meta: {
+      auth: true
+    }
+  },
+  // LEAGUE ROUTES
+  {
+    path: '/league/create',
+    name: 'createLeague',
+    component: CreateLeague,
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: '/league/invite/:code',
+    name: 'acceptInvite',
+    component: AcceptInvite,
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: '/league/view/:id',
+    name: 'viewLeague',
+    component: ViewLeague,
     meta: {
       auth: true
     }

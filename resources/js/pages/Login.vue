@@ -9,6 +9,9 @@
               <p v-if="error == 'login_error'">Validation Errors.</p>
               <p v-else>Error, unable to connect with these credentials.</p>
             </div>
+            <div class="alert alert-warning">
+              <p>If you had an account last year, you will need to create a new account. Account security was updated this summer. I will have a tool out soon to connect your new account to your old one and get all the data back.</p>
+            </div>
             <form autocomplete="off" @submit.prevent="login" method="post">
               <div class="form-group">
                 <label for="email">E-mail</label>
