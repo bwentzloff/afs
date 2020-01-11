@@ -4,7 +4,7 @@
             <div class="card-body">
                 <p>
                     Historical AAF season-long fantasy leagues' data has been saved. At some point this spring, I will create a tool for you to retrieve your old leagues and fondly reminisce about the good ol' AAF days. 
-                </p>
+                </p> 
             </div>
         </div>
         <div class="card card-default">
