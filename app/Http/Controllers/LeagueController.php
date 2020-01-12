@@ -300,4 +300,12 @@ class LeagueController extends Controller
             sleep(10);
         }
     }
+
+    function stats() {
+        $leagues = League::count();
+        $users = User::count();
+        $teams = LeagueUser::count();
+
+        print_r("Leagues: ".$leagues."<br />Users: ".$users."<br />Teams: ".$teams);die();
+    }
 }

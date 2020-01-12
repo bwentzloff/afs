@@ -61,6 +61,8 @@ Route::prefix('v1')->group(function () {
     Route::get('league/myteam/{id}', ['uses'=>'LeagueController@getMyTeam']);
     Route::post('league/getrosters', ['uses'=>'LeagueController@getrosters']);
 
+    Route::get('stats', ['uses'=>'LeagueController@stats']);
+
     // Get player info
     Route::get('players/xfl', 'PlayerController@xflPlayers');
 
