@@ -760,9 +760,10 @@ import moment from 'moment'
                     this.$data.items.push(item)
                 })
                 // get queue items
-                this.refreshQueueItems();
+                
                 this.assignTeams();
                 this.updateDraftBoard()
+                this.refreshQueueItems();
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);
