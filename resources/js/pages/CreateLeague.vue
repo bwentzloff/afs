@@ -5,8 +5,16 @@
             <div class="card-body">
                 <form autocomplete="off" @submit.prevent="create" method="post">
                     <div class="form-group">
-                        <label for="name">Name</label>
+                        <label for="name">League Name</label>
                         <input type="text" id="text" class="form-control" placeholder="" v-model="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="draftpickTime">League Type</label>
+                        <b-form-select v-model="league_type" :options="league_type_options"></b-form-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">My Team's Name</label>
+                        <input type="text" id="text" class="form-control" placeholder="" v-model="teamname" required>
                     </div>
                     <div class="form-group">
                         <label for="maxSize">Maximum Size</label>
@@ -22,6 +30,16 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="waiver_day">Day waivers are processed</label>
+                        <select v-model="waiver_day">
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="drafttime">Draft Date/Time</label>
                         <datetime v-model="date" type="datetime" zone="local" value-zone="UTC" :use12-hour=true title="Draft Time" name="draft_datetime"></datetime>
 
@@ -29,6 +47,10 @@
                     <div class="form-group">
                         <label for="draftpickTime">Time allowed for each draft pick</label>
                         <b-form-select v-model="draftpickTime" :options="draftpickTime_options"></b-form-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="draftpickTime">Weeks of playoffs</label>
+                        <b-form-select v-model="playoff_length" :options="playoff_length_options"></b-form-select>
                     </div>
                     <div class="form-group">
                         <h2>Rosters</h2>
@@ -52,6 +74,9 @@
                         <br /><br /><br />
                         <label for="def">Defenses</label>
                         <b-form-select size="sm" v-model="def" :options="def_options"></b-form-select>
+                        <br /><br /><br />
+                        <label for="bench">Bench</label>
+                        <b-form-select size="sm" v-model="bench" :options="bench_options"></b-form-select>
                     </div>
                     <div class="form-group">
                         <h2>Rules</h2>
@@ -189,8 +214,21 @@ import { Datetime } from 'vue-datetime';
     data() {
       return {
         name: null,
+        teamname: '',
         maxSize: 8,
         date: null,
+        waiver_day: "Wednesday",
+        playoff_length: 2,
+        playoff_length_options: [
+          { value: 1, text: '1 week' },
+          { value: 2, text: '2 weeks' },
+          { value: 3, text: '3 weeks' },
+        ],
+        league_type: 1,
+        league_type_options: [
+          { value: 1, text: 'Head to Head' },
+          { value: 2, text: 'Total Points' },
+        ],
         draftpickTime: 5,
         draftpickTime_options: [
           { value: 2, text: '2 minutes' },
@@ -265,6 +303,20 @@ import { Datetime } from 'vue-datetime';
           { value: 4, text: '4' },
           { value: 5, text: '5' }
         ],
+        bench: 4,
+        bench_options: [
+          { value: 0, text: '0' },
+          { value: 1, text: '1' },
+          { value: 2, text: '2' },
+          { value: 3, text: '3' },
+          { value: 4, text: '4' },
+          { value: 5, text: '5' },
+          { value: 6, text: '6' },
+          { value: 7, text: '7' },
+          { value: 8, text: '8' },
+          { value: 9, text: '9' },
+          { value: 10, text: '10' },
+        ],
         rule1: 6,
         rule2: 6,
         rule3: 6,
@@ -303,8 +355,12 @@ import { Datetime } from 'vue-datetime';
         this.errors = {};
         axios.post('league/create', {
             name: this.name,
+            teamname: this.teamname,
             maxSize: this.maxSize,
             draft_datetime: this.date,
+            waiver_day: this.waiver_day,
+            playoff_length: this.playoff_length,
+            league_type: this.league_type,
             qbs: this.qbs,
             rbs: this.rbs,
             wrs: this.wrs,
@@ -312,6 +368,7 @@ import { Datetime } from 'vue-datetime';
             flex: this.flex,
             ks: this.ks,
             def: this.def,
+            bench: this.bench,
             rule1: this.rule1,
             rule2: this.rule2,
             rule3: this.rule3,
@@ -337,6 +394,7 @@ import { Datetime } from 'vue-datetime';
             rule23: this.rule23,
             rule24: this.rule24,
             rule25: this.rule25,
+            draftpickTime: this.draftpickTime,
             userAuth: this.$auth.token()
         }).then(response => {
             this.$router.push('/dashboard');

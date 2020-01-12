@@ -2,8 +2,12 @@
     <div class="container">
         <div class="card card-default">
             <div class="card-body">
+                <form autocomplete="off" @submit.prevent="acceptInvite" method="post">
                 <h3>You've been invited to join the league {{ name }}</h3>
-                <a href="#" @click="acceptInvite">Accept</a>
+                <label for="teamname">Your Team Name:</label>
+                <input type="text" id="text" class="form-control" placeholder="" v-model="teamname" required>
+                <button type="submit" class="btn btn-primary">Accept Invite</button>
+                </form>
             </div>
         </div>
     </div>
@@ -12,7 +16,9 @@
   export default {
     data() {
       return {
-          name: ''
+          name: '',
+          teamname: '',
+          leagueId: '',
       }
     },
     mounted() {
@@ -23,6 +29,7 @@
         }).then(response => {
             console.log(response);
             this.name = response.data.name;
+            this.leagueId = response.data.id;
         }).catch(error => {
             console.log(error);
             if (error.response.status === 422) {
@@ -39,9 +46,10 @@
           var code = this.$route.params.code;
 
           axios.post('league/join/'+code, {
-            
+            teamname: this.teamname,
           }).then(response => {
             console.log(response);
+            this.$router.push('/league/view/'+this.leagueId);
           }).catch(error => {
             console.log(error);
             if (error.response.status === 422) {

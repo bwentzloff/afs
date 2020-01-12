@@ -21,6 +21,7 @@ Vue.router = router
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 Vue.use(Datetime)
+Vue.use(require('vue-moment'));
 
 Vue.component('datetime', Datetime);
 

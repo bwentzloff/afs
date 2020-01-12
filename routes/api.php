@@ -42,18 +42,30 @@ Route::prefix('v1')->group(function () {
     // Join leagues
     Route::post('league/fromInvite/{code}', ['uses'=>'LeagueController@getLeagueInfoFromCode']);
     Route::post('league/join/{code}', ['uses'=>'LeagueController@joinLeagueFromCode']);
+    
+    Route::post('player/queue', 'LeagueUserController@queuePlayer');
+    Route::post('player/draft', 'LeagueUserController@draftPlayer');
+    Route::post('player/moveUpQueue', 'LeagueUserController@moveUpQueue');
+    Route::post('player/moveDownQueue', 'LeagueUserController@moveDownQueue');
+    Route::post('player/getqueue', 'LeagueUserController@getQueue');
 
     // Scraping routes
     Route::get('scrape/xfl/players', 'ScrapeController@xflPlayers');
+    Route::get('league/updateDraftStatus', 'LeagueController@updateDraftStatuses');
+    Route::get('league/getLastUpdate/{id}', ['uses'=>'LeagueController@getLastUpdate']);
 
     // Get league info
     Route::get('league/info/{id}', ['uses'=>'LeagueController@getLeagueInfo']);
+    Route::get('league/teams/{id}', ['uses'=>'LeagueController@getTeamInfo']);
+    Route::get('league/draftOrder/{id}', ['uses'=>'LeagueController@getDraftOrder']);
+    Route::get('league/myteam/{id}', ['uses'=>'LeagueController@getMyTeam']);
+    Route::post('league/getrosters', ['uses'=>'LeagueController@getrosters']);
 
     // Get player info
     Route::get('players/xfl', 'PlayerController@xflPlayers');
 
     // Cronjobs
-    Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
+    //Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
 
     /**
      * Basic Routes
