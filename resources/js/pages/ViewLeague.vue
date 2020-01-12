@@ -536,7 +536,7 @@ import moment from 'moment'
             for (var i = 0; i < this.items.length; i++) {
                 if (this.items[i].id == player_id) {
                     
-                    return this.items[i].name
+                    return this.items[i].name + " (" + this.items[i].position + ")"
                 }
             }
         },
