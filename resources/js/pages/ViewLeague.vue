@@ -234,7 +234,7 @@
                                             Add to Draft Queue
                                         </b-button>
                                     </div>
-                                    <div v-if="!postDraft && data.item.draftQueue == true">
+                                    <div v-if="!postDraft && data.item.draftQueue == true && data.item.fantasyTeam == ''">
                                         <em>In draft queue</em>
                                     </div>
                                     <div v-if="!postDraft && !preDraft && data.item.fantasyTeam == '' && leagueInfo.draft_current_drafter == myteam.id && !processing">
