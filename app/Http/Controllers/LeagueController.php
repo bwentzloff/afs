@@ -214,88 +214,90 @@ class LeagueController extends Controller
 
     function updateDraftStatuses() {
         
-        // Start drafts
-        
-        $leagues = League::where('draft_status',0)
-            ->where('draft_datetime','<=',Carbon::now())
-            ->get();
-        
-        foreach($leagues as $league) {
+            // Start drafts
+        for ($i = 0; $i < 5; i++) {    
+            $leagues = League::where('draft_status',0)
+                ->where('draft_datetime','<=',Carbon::now())
+                ->get();
             
+            foreach($leagues as $league) {
+                
 
-            // update draft_current_drafter
-            $draftPicks = DraftPick::where('league_id',$league->id)
-                ->whereNull('player_id')
-                ->orderBy('pick_order','asc')
-                ->first();
+                // update draft_current_drafter
+                $draftPicks = DraftPick::where('league_id',$league->id)
+                    ->whereNull('player_id')
+                    ->orderBy('pick_order','asc')
+                    ->first();
 
-            $update = League::where('id',$league->id)->update([ 
-                'draft_status'=>1,
-                'draft_nextpick'=>Carbon::now()->addMinutes($league->draftpick_time),
-                'draft_current_drafter'=>$draftPicks->team_id
-            ]);
+                $update = League::where('id',$league->id)->update([ 
+                    'draft_status'=>1,
+                    'draft_nextpick'=>Carbon::now()->addMinutes($league->draftpick_time),
+                    'draft_current_drafter'=>$draftPicks->team_id
+                ]);
 
-            $lastUpdate = uniqid();
-            Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
-        }
+                $lastUpdate = uniqid();
+                Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
+            }
 
 
-        // Autopicks
+            // Autopicks
 
-        $autopick_leagues = League::where('draft_status',1)
-            ->where('draft_nextpick','<=',Carbon::now())
-            ->get();
-
-        foreach($autopick_leagues as $league) {
-            // get all drafted player_ids
-            $draftPicks = DraftPick::where('league_id',$league->id)
-                ->whereNotNull('player_id')
+            $autopick_leagues = League::where('draft_status',1)
+                ->where('draft_nextpick','<=',Carbon::now())
                 ->get();
 
-            $player_ids = array();
-            foreach($draftPicks as $pick) {
-                $player_ids[] = $pick->player_id;
+            foreach($autopick_leagues as $league) {
+                // get all drafted player_ids
+                $draftPicks = DraftPick::where('league_id',$league->id)
+                    ->whereNotNull('player_id')
+                    ->get();
+
+                $player_ids = array();
+                foreach($draftPicks as $pick) {
+                    $player_ids[] = $pick->player_id;
+                }
+                // pick a player not in that list
+                $player = Player::whereNotIn('id',$player_ids)
+                    ->whereIn('position',array("QB","WR","RB","TE","K","DEF"))
+                    ->first();
+
+                $draftPick = DraftPick::where('league_id',$league->id)
+                    ->whereNull('player_id')
+                    ->orderBy('pick_order','asc')
+                    ->first();
+
+                $update = DraftPick::where('id',$draftPick->id)
+                    ->update([
+                        'player_id'=>$player->id
+                    ]);
+                    $rosteritem = new RosterItem;
+                    $rosteritem->team_id = $draftPick->team_id;
+                    $rosteritem->league_id = $league->id;
+                    $rosteritem->player_id = $player->id;
+                    $rosteritem->save();
+
+                // update nextpick and current_drafter
+                $nextPick = DraftPick::where('league_id',$league->id)
+                    ->whereNull('player_id')
+                    ->orderBy('pick_order','asc')
+                    ->first();
+                if ($nextPick) {
+                    $update = League::where('id',$league->id)->update([ 
+                        'draft_nextpick'=>Carbon::now()->addMinutes($league->draftpick_time),
+                        'draft_current_drafter'=>$nextPick->team_id
+                    ]);
+                } else {
+                    $update = League::where('id',$league->id)->update([
+                        'draft_status'=>2
+                    ]);
+                }
+
+                $lastUpdate = uniqid();
+                Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
+
+                    // update lastUpdate
             }
-            // pick a player not in that list
-            $player = Player::whereNotIn('id',$player_ids)
-                ->whereIn('position',array("QB","WR","RB","TE","K","DEF"))
-                ->first();
-
-            $draftPick = DraftPick::where('league_id',$league->id)
-                ->whereNull('player_id')
-                ->orderBy('pick_order','asc')
-                ->first();
-
-              $update = DraftPick::where('id',$draftPick->id)
-                ->update([
-                    'player_id'=>$player->id
-                ]);
-                $rosteritem = new RosterItem;
-                $rosteritem->team_id = $draftPick->team_id;
-                $rosteritem->league_id = $league->id;
-                $rosteritem->player_id = $player->id;
-                $rosteritem->save();
-
-            // update nextpick and current_drafter
-            $nextPick = DraftPick::where('league_id',$league->id)
-                ->whereNull('player_id')
-                ->orderBy('pick_order','asc')
-                ->first();
-            if ($nextPick) {
-                $update = League::where('id',$league->id)->update([ 
-                    'draft_nextpick'=>Carbon::now()->addMinutes($league->draftpick_time),
-                    'draft_current_drafter'=>$nextPick->team_id
-                ]);
-            } else {
-                $update = League::where('id',$league->id)->update([
-                    'draft_status'=>2
-                ]);
-            }
-
-            $lastUpdate = uniqid();
-            Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
-
-                // update lastUpdate
+            sleep(10);
         }
     }
 }
