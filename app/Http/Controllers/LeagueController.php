@@ -120,7 +120,7 @@ class LeagueController extends Controller
             $leagueUser = new LeagueUser;
             $leagueUser->user_id = Auth::user()->id;
             $leagueUser->league_id = $league->id;
-            $leagueUser->draft_order = $highestDraft + 1;
+            $leagueUser->draft_order = $count + 1;
             $leagueUser->name = $request->input('teamname');
             
             $leagueUser->save();
