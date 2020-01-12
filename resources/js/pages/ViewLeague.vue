@@ -661,7 +661,7 @@ import moment from 'moment'
                     this.errors = error.response.data.errors || {};
                 }*/
             });
-            setTimeout(() => { this.getLastUpdate(); }, 2000);
+            setTimeout(() => { this.getLastUpdate(); }, 10000);
         },
         addToQueue(event, player) {
             console.log(player)
