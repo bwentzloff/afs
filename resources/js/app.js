@@ -12,6 +12,7 @@ import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import { Datetime } from 'vue-datetime'
 import 'vue-datetime/dist/vue-datetime.css'
+import VueGtag from "vue-gtag";
 
 // Set Vue globally
 window.Vue = Vue
@@ -22,6 +23,10 @@ Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 Vue.use(Datetime)
 Vue.use(require('vue-moment'));
+
+Vue.use(VueGtag, {
+  config: { id: "UA-133236218-1" }
+});
 
 Vue.component('datetime', Datetime);
 
