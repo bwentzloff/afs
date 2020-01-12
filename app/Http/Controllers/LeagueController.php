@@ -217,7 +217,7 @@ class LeagueController extends Controller
         // Start drafts
         
         $leagues = League::where('draft_status',0)
-            ->whereDate('draft_datetime','<=','NOW()')
+            ->where('draft_datetime','<=',Carbon::now())
             ->get();
         
         foreach($leagues as $league) {
