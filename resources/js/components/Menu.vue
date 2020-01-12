@@ -5,7 +5,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent" v-if="false">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto" v-if="$auth.check(1)">
           <li class="nav-item" v-for="(route, key) in routes.user" v-bind:key="route.path">
             <router-link :to="{ name : route.path }" :key="key" class="nav-link">{{route.name}}</router-link>
@@ -28,7 +28,7 @@
       </ul>
       <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a href="mailto:brian@giffordlakelabs.com">Contact</a>
+            <a href="mailto:brian@altfantasysports.com">Contact</a>
           </li>
       </ul>
 
