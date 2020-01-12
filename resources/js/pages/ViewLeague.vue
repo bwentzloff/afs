@@ -458,6 +458,7 @@ import moment from 'moment'
             if (this.positionFilter == "all") {
                 if (el.position == "QB" || el.position == "RB" || el.position == "WR" || el.position == "TE" || el.position == "K") {
                     if (this.nameFilter == '') {
+                        this.currentPage = 1
                             return true;
                     } else {
                         return el.name.toLowerCase().includes(this.nameFilter.toLowerCase());
@@ -469,12 +470,13 @@ import moment from 'moment'
                 if (this.nameFilter == '') {
                     return (this.positionFilter == el.position)
                 } else {
+                    this.currentPage = 1
                     return (this.positionFilter == el.position) && el.name.toLowerCase().includes(this.nameFilter.toLowerCase());
                 }
             }
               
           });
-          this.currentPage = 1
+          
           return filtered;
       },
       itemsFilteredByTeam() {
