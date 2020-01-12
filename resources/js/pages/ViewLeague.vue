@@ -474,7 +474,7 @@ import moment from 'moment'
             }
               
           });
-          this.currentPage = 1
+          if (this.positionFilter != "all") this.currentPage = 1
           return filtered;
       },
       itemsFilteredByTeam() {
