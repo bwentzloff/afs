@@ -5,7 +5,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" v-if="false">
       <ul class="navbar-nav mr-auto" v-if="$auth.check(1)">
           <li class="nav-item" v-for="(route, key) in routes.user" v-bind:key="route.path">
             <router-link :to="{ name : route.path }" :key="key" class="nav-link">{{route.name}}</router-link>
