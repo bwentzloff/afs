@@ -14,3 +14,5 @@ yarn-error.log
 .styleci.yml
 .gitattributes
 package-lock.json
+public/css/app.css
+public/js/app.js
