@@ -215,7 +215,7 @@ class LeagueController extends Controller
     function updateDraftStatuses() {
         
             // Start drafts
-        for ($i = 0; $i < 5; i++) {    
+        for ($i = 0; $i < 5; $i++) {    
             $leagues = League::where('draft_status',0)
                 ->where('draft_datetime','<=',Carbon::now())
                 ->get();
