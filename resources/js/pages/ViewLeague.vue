@@ -761,6 +761,8 @@ import moment from 'moment'
                 })
                 // get queue items
                 this.refreshQueueItems();
+                this.assignTeams();
+                this.updateDraftBoard()
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);
