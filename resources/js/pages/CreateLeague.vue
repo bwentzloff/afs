@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label for="drafttime">Draft Date/Time</label>
                         <datetime v-model="date" type="datetime" zone="local" value-zone="UTC" :use12-hour=true title="Draft Time" name="draft_datetime"></datetime>
-
+                        <b-alert show>Protip: A lot of people last year chose Super Bowl Sunday as their draft day. It was really fun. Draft XFL in the morning. Watch the Super Bowl in the evening. Good times.</b-alert>
                     </div>
                     <div class="form-group">
                         <label for="draftpickTime">Time allowed for each draft pick</label>
