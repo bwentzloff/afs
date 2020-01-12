@@ -28,7 +28,7 @@
       </ul>
       <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a href="mailto:brian@altfantasysports.com">Contact</a>
+            <a href="mailto:brian@giffordlakelabs.com">Contact</a>
           </li>
       </ul>
 
