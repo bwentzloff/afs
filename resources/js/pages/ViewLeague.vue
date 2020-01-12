@@ -759,6 +759,8 @@ import moment from 'moment'
                     item.fantasyTeam = ''
                     this.$data.items.push(item)
                 })
+                // get queue items
+                this.refreshQueueItems();
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);
@@ -767,8 +769,7 @@ import moment from 'moment'
                 }*/
             });
 
-            // get queue items
-            this.refreshQueueItems();
+            
 
             // get rosters
             axios.post('league/getrosters', {
