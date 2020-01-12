@@ -10,7 +10,7 @@
               <p v-else>Error, unable to connect with these credentials.</p>
             </div>
             <div class="alert alert-warning">
-              <p>If you had an account last year, you will need to create a new account. Account security was updated this summer. I will have a tool out soon to connect your new account to your old one and get all the data back.</p>
+              <p>If you had an account last year, you will need to create a new account. Account security was updated this summer, so passwords couldn't be automatically migrated to the new system. I will have a tool out soon to connect your new account to your old one and get all the data back.</p>
             </div>
             <div class="alert alert-warning">
               <p>If you just registered, you now need to login using the credentials you just registered with.</p>
