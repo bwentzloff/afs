@@ -23,6 +23,11 @@
       </ul>
       <ul class="navbar-nav ml-auto" v-if="$auth.check()">
         <li class="nav-item">
+          <a class="nav-link" href="/dashboard">Dashboard</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto" v-if="$auth.check()">
+        <li class="nav-item">
           <a class="nav-link" href="#" @click.prevent="$auth.logout()">Logout</a>
         </li>
       </ul>
