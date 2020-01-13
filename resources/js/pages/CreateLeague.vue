@@ -107,6 +107,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="rule5">Points per reception</label>
+                            <input type="text" id="rule26" class="form-control" placeholder="" v-model="rule26" required>
+                        </div>
+
+                        <div class="form-group">
                             <label for="rule6">Points per rushing or receiving 1pt conversion</label>
                             <input type="text" id="rule6" class="form-control" placeholder="" v-model="rule6" required>
                         </div>
@@ -342,6 +347,7 @@ import { Datetime } from 'vue-datetime';
         rule23: 2,
         rule24: 2,
         rule25: 1,
+        rule26: .5,
       }
     },
     mounted() {
@@ -394,6 +400,7 @@ import { Datetime } from 'vue-datetime';
             rule23: this.rule23,
             rule24: this.rule24,
             rule25: this.rule25,
+            rule26: this.rule26,
             draftpickTime: this.draftpickTime,
             userAuth: this.$auth.token()
         }).then(response => {

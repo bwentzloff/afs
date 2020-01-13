@@ -65,6 +65,7 @@ class LeagueController extends Controller
         $league->rule23 = $request->input('rule23');
         $league->rule24 = $request->input('rule24');
         $league->rule25 = $request->input('rule25');
+        $league->rule26 = $request->input('rule26');
 
         $league->save();
 

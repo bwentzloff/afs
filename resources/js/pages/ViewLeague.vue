@@ -110,6 +110,10 @@
                                     <td>{{ rule5 }}</td>
                                 </tr>
                                 <tr>
+                                    <td>Points per reception</td>
+                                    <td>{{ rule26 }}</td>
+                                </tr>
+                                <tr>
                                     <td>Points per rushing or receiving 1pt conversion</td>
                                     <td>{{ rule6 }}</td>
                                 </tr>
@@ -391,6 +395,7 @@ import moment from 'moment'
         rule23: '',
         rule24: '',
         rule25: '',
+        rule26: '',
         teams: [],
         draftPicks: [],
         myteam: '',
@@ -613,6 +618,7 @@ import moment from 'moment'
             this.rule23 = this.leagueInfo.rule23;
             this.rule24 = this.leagueInfo.rule24;
             this.rule25 = this.leagueInfo.rule25;
+            this.rule26 = this.leagueInfo.rule26;
             this.teamNames = [];
             for (var i = 0; i < this.leagueInfo.teams.length; i++) {
                 this.teamNames.push({
