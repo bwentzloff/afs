@@ -310,7 +310,36 @@
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Commish Tools" v-if="commishTools">
-                        <b-card-text>Commish Tools</b-card-text>
+                        <b-card-text>
+                            <h1>Draft Settings</h1>
+                            <form autocomplete="off" @submit.prevent="updateDraft" method="post">
+                                <div class="form-group">
+                                    <label for="drafttime">Update Draft Date/Time</label>
+                                    <datetime v-model="updateDraftDatetime" type="datetime" zone="local" value-zone="UTC" :use12-hour=true title="Draft Time" name="draft_datetime"></datetime>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                            <h2>Draft Order</h2>
+                            <b-table
+                                    id="draftOrder-table"
+                                    :items="teamDraftOrder"
+                                    :fields="draftOrderFields"
+                                    :sort-by="draftOrderSort"
+                                    striped 
+                                    hover
+                                >
+                                <template v-slot:cell(actions)="data">
+                                    <div>
+                                        <b-button variant="success" @click="moveUpDraftOrder($event, data.item)" v-if="data.item.draftOrder != 1">
+                                            Move Up
+                                        </b-button>
+                                        <b-button variant="success" @click="moveDownDraftOrder($event, data.item)">
+                                            Move Down
+                                        </b-button>
+                                    </div>
+                                </template>
+                                </b-table>
+                        </b-card-text>
                     </b-tab>
                 </b-tabs>
             </b-card>
@@ -322,6 +351,7 @@ import moment from 'moment'
   export default {
     data() {
       return {
+        updateDraftDatetime: '',
         draftTimeDays: '',
         draftTimeHours: '',
         draftTimeMinutes: '',
@@ -340,6 +370,7 @@ import moment from 'moment'
         queueItems: [],
         processing: false,
         queueSort: 'queueOrder',
+        draftOrderSort: 'draftOrder',
         fields: [
             {key: 'name', sortable: true},
             {key: 'position', sortable: true},
@@ -357,6 +388,11 @@ import moment from 'moment'
             {key: 'team_id'},
             {key: 'pick_order'},
             {key: 'playerName'}
+        ],
+        draftOrderFields: [
+            {key: 'name'},
+            {key: 'draftOrder'},
+            {key: 'actions'}
         ],
         inviteCode: '',
         preDraft: false,
@@ -400,6 +436,7 @@ import moment from 'moment'
         draftPicks: [],
         myteam: '',
         teamNames: [],
+        teamDraftOrder: [],
         commishTools: false,
         rosters: [],
         team_dropdown: '',
@@ -504,6 +541,20 @@ import moment from 'moment'
     },
 
     methods: {
+        updateDraft() {
+            this.errors = {};
+            axios.post('league/updateDraft', {
+                leagueId: this.leagueId,
+                datetime: this.updateDraftDatetime
+            }).then(response => {
+                //
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         updateDraftBoard() {
             // get draftOrder info
             axios.get('league/draftOrder/'+this.leagueId).then(response => {
@@ -627,6 +678,15 @@ import moment from 'moment'
                 })
                 
             }
+            this.teamDraftOrder = [];
+            for (var i = 0; i < this.leagueInfo.teams.length; i++) {
+                this.teamDraftOrder.push({
+                    id: this.leagueInfo.teams[i].id,
+                    name: this.leagueInfo.teams[i].name,
+                    draftOrder: this.leagueInfo.teams[i].draft_order
+                })
+                
+            }
             this.$data.processing = false;
         }).catch(error => {
             console.log(error);
@@ -719,6 +779,34 @@ import moment from 'moment'
                 }
             });
 
+        },
+        moveUpDraftOrder(event, player) {
+            axios.post('league/moveUpDraftOrder', {
+                team_id: player.id,
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                
+                this.getLeagueInfo();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        moveDownDraftOrder(event, player) {
+            axios.post('league/moveDownDraftOrder', {
+                team_id: player.id,
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                
+                this.getLeagueInfo();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
         },
         moveDownQueue(event, player) {
             

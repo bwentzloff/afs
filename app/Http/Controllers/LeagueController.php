@@ -17,6 +17,48 @@ use Illuminate\Support\Facades\Log;
 
 class LeagueController extends Controller
 {
+    public function updateDraft(Request $request) {
+        $league = League::where('id',$request->input('leagueId'))
+            ->update([
+                'draft_datetime'=>Carbon::parse($request->input('datetime'))
+            ]);
+        
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
+    public function moveUpDraftOrder(Request $request) {
+        $requested_team = LeagueUser::where('id',$request->input('team_id'))->first();
+        $other_team = LeagueUser::where('draft_order',$requested_team->draft_order-1)
+            ->where('league_id',$requested_team->league_id)
+            ->first();
+
+        $other_draft_order = $requested_team->draft_order;
+
+        $update_one = LeagueUser::where('id',$requested_team->id)->update([
+            'draft_order'=>$other_team->draft_order
+        ]);
+        $update_two = LeagueUser::where('id',$other_team->id)->update([
+            'draft_order'=>$other_draft_order
+        ]);
+
+        $this->createDraftPicks($requested_team->league_id);
+    }
+    public function moveDownDraftOrder(Request $request) {
+        $requested_team = LeagueUser::where('id',$request->input('team_id'))->first();
+        $other_team = LeagueUser::where('draft_order',$requested_team->draft_order+1)
+            ->where('league_id',$requested_team->league_id)
+            ->first();
+        $other_draft_order = $requested_team->draft_order;
+
+        $update_one = LeagueUser::where('id',$requested_team->id)->update([
+            'draft_order'=>$other_team->draft_order
+        ]);
+        $update_two = LeagueUser::where('id',$other_team->id)->update([
+            'draft_order'=>$other_draft_order
+        ]);
+
+        $this->createDraftPicks($requested_team->league_id);
+    }
     public function create(Request $request)
     {
 

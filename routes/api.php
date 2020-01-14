@@ -37,11 +37,16 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::post('league/create', 'LeagueController@create');
+    Route::post('league/updateDraft', 'LeagueController@updateDraft');
     Route::post('league/getUserLeagues', 'LeagueController@getUserLeagues');
 
     // Join leagues
     Route::post('league/fromInvite/{code}', ['uses'=>'LeagueController@getLeagueInfoFromCode']);
     Route::post('league/join/{code}', ['uses'=>'LeagueController@joinLeagueFromCode']);
+    Route::post('league/moveUpDraftOrder', ['uses'=>'LeagueController@moveUpDraftOrder']);
+    Route::post('league/moveDownDraftOrder', ['uses'=>'LeagueController@moveDownDraftOrder']);
+    
+    
     
     Route::post('player/queue', 'LeagueUserController@queuePlayer');
     Route::post('player/draft', 'LeagueUserController@draftPlayer');
