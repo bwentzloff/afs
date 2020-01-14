@@ -26,11 +26,23 @@
           <a class="nav-link" href="/dashboard">Dashboard</a>
         </li>
       </ul>
+      
+      <ul class="navbar-nav ml-auto" v-if="$auth.check()">
+        <li class="nav-item">
+          <a class="nav-link" href="mailto:brian@altfantasysports.com">Contact</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto" v-if="$auth.check()">
+        <li class="nav-item">
+          <a class="nav-link" href="https://discord.gg/vm7zqz3">Join us on Discord</a>
+        </li>
+      </ul>
       <ul class="navbar-nav ml-auto" v-if="$auth.check()">
         <li class="nav-item">
           <a class="nav-link" href="#" @click.prevent="$auth.logout()">Logout</a>
         </li>
       </ul>
+      
 
       <!-- <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
