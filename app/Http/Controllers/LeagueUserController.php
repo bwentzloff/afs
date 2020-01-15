@@ -33,6 +33,16 @@ class LeagueUserController extends Controller
         $rosteritem->player_id = $request->player_id;
         $rosteritem->save();
 
+        // get leagueUsers
+        // delete drafted player for draft queues
+
+        $leagueusers = LeagueUser::where('league_id',$request->leagueId)->get();
+        foreach($leagueusers as $team) {
+            $delete = DraftQueue::where('leagueuser_id',$team->id)
+                ->where('player_id',$request->player_id)
+                ->delete();
+        }
+
         // set draft pick
         $draftPick = DraftPick::where('league_id',$leagueuser->league_id)
             ->whereNull('player_id')
