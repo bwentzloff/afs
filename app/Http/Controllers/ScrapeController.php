@@ -38,17 +38,24 @@ class ScrapeController extends Controller
                     $player_position = '';
                     $player_college = '';
                     
+                    $college_cell_key = 5;
+                    if ($team == "DC") $college_cell_key = 3;
                     foreach($element->find('td') as $cellkey=>$cell) {
                         if ($cellkey == 1) {
                             $player_name = str_replace("&nbsp;","",trim(strip_tags($cell->innertext)));
                         } else if ($cellkey == 2) {
                             $player_position = trim(strip_tags($cell->innertext));
-                        } else if ($cellkey == 5) {
+                        } else if ($cellkey == $college_cell_key) {
                             $player_college = trim(strip_tags($cell->innertext));
                         }
                     }
                     if ($player_name && $player_position) {
                         $search = Player::where('name',$player_name)->first();
+                        if (strpos($player_name, ",")) {
+                            $name_parts = explode(",", $player_name);
+                            $player_new_name = trim(strip_tags($name_parts[1]." ".$name_parts[0]));
+                            $search = Player::where('name',$player_new_name)->first();
+                        }
                         if (empty($search)) {
                             $new_player = new Player;
                             $new_player->name = $player_name;
@@ -57,6 +64,8 @@ class ScrapeController extends Controller
                             $new_player->sport_id = 8;
                             $new_player->team = $team;
                             $new_player->save();
+                        } else {
+                            print('here');
                         }
                     }
                 }
