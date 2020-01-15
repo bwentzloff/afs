@@ -51,7 +51,7 @@ class ScrapeController extends Controller
                     }
                     if ($player_name && $player_position) {
                         $search = Player::where('name',$player_name)->first();
-                        if (strpos($player_name, ",")) {
+                        if (empty($search) && strpos($player_name, ",")) {
                             $name_parts = explode(",", $player_name);
                             $player_new_name = trim(strip_tags($name_parts[1]." ".$name_parts[0]));
                             $search = Player::where('name',$player_new_name)->first();
@@ -64,13 +64,26 @@ class ScrapeController extends Controller
                             $new_player->sport_id = 8;
                             $new_player->team = $team;
                             $new_player->save();
-                        } else {
-                            print('here');
                         }
                     }
                 }
             }
         }
+        // Deal with comma dupes
+        $search = Player::get();
+        foreach($search as $player) {
+            //$name_parts = explode(" ", $comma_player->name);
+            if (!strpos($player->name, ",") && $player->position != "DEF") {
+                $name_parts = explode(" ",$player->name);
+                $site_name = $name_parts[1].", ".$name_parts[0];
+                $delete = Player::where('name',$site_name)->delete();
+                $update = Player::where('name',$player->name)->update([
+                    'name'=>$site_name
+                ]);
+            }
+        }
+
+
         // Add defenses
         foreach ($urls as $team=>$endpoint) {
             $player_name = $team;
