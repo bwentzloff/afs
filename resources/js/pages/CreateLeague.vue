@@ -233,6 +233,7 @@ import { Datetime } from 'vue-datetime';
         league_type_options: [
           { value: 1, text: 'Head to Head' },
           { value: 2, text: 'Total Points' },
+          { value: 3, text: 'Guillotine' }
         ],
         draftpickTime: 5,
         draftpickTime_options: [
