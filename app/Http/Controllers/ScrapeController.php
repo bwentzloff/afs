@@ -16,7 +16,7 @@ class ScrapeController extends Controller
     public function xflPlayers() {
         $urls = [
             "Dallas" => "https://www.xfl.com/en-US/articles/dallas-renegades-roster",
-            "DC" => "https://www.xfl.com/en-US/articles/dc-defenders-roster",
+            "DC" => "https://www.xfl.com/en-US/teams/washington-dc/defenders-articles/dc-defenders-roster",
             "Houston" => "https://www.xfl.com/en-US/articles/houston-roughnecks-roster",
             "LA" => "https://www.xfl.com/en-US/articles/la-wildcats-roster",
             "New York" => "https://www.xfl.com/en-US/articles/new-york-guardians-roster",
@@ -47,6 +47,7 @@ class ScrapeController extends Controller
                             $player_college = trim(strip_tags($cell->innertext));
                         }
                     }
+                    if ($team == "DC") print($player_name);
                     if ($player_name && $player_position && $player_college) {
                         $search = Player::where('name',$player_name)->first();
                         if (empty($search)) {
