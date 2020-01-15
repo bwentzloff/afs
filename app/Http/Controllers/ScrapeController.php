@@ -47,7 +47,6 @@ class ScrapeController extends Controller
                             $player_college = trim(strip_tags($cell->innertext));
                         }
                     }
-                    if ($team == "DC") print($player_name);
                     if ($player_name && $player_position && $player_college) {
                         $search = Player::where('name',$player_name)->first();
                         if (empty($search)) {
