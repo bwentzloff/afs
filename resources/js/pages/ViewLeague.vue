@@ -727,7 +727,13 @@ import moment from 'moment'
                     this.errors = error.response.data.errors || {};
                 }*/
             });
-            setTimeout(() => { this.getLastUpdate(); }, 2000);
+            if (this.leagueInfo.draft_status == 0) {
+                setTimeout(() => { this.getLastUpdate(); }, 10000);
+            } else if (this.leagueInfo.draft_status == 1) {
+                setTimeout(() => { this.getLastUpdate(); }, 2000);
+            } else if (this.leagueInfo.draft_status == 2) {
+                setTimeout(() => { this.getLastUpdate(); }, 1200000);
+            }
         },
         addToQueue(event, player) {
             console.log(player)
