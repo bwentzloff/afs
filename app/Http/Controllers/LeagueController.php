@@ -230,7 +230,7 @@ class LeagueController extends Controller
 
         $oldPicks = DraftPick::where('league_id',$leagueId)->delete();
 
-        $numPicks = $league->qbs + $league->rbs + $league->wrs + $league->tes + $league->flex + $league->ks + $league->def;
+        $numPicks = $league->qbs + $league->rbs + $league->wrs + $league->tes + $league->flex + $league->ks + $league->def + $league->bench;
 
         $order = "asc";
         $pick = 1;
