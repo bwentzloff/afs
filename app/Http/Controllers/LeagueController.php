@@ -17,6 +17,15 @@ use Illuminate\Support\Facades\Log;
 
 class LeagueController extends Controller
 {
+    public function removeTeam(Request $request) {
+        $team = LeagueUser::where('id',$request->input('team'))
+            ->where('league_id',$request->input('leagueId'))->delete();
+
+        Log::debug("here ".$request->input('team'));
+        $this->createDraftPicks($request->input('leagueId'));
+        $lastUpdate = uniqid();
+        Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
     public function updateDraft(Request $request) {
         $league = League::where('id',$request->input('leagueId'))
             ->update([

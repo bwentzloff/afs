@@ -73,6 +73,11 @@
                     <b-tab title="League Home" active>
                         <b-card-text>
                             <h1>{{ leagueName }}</h1>
+                            <form autocomplete="off" @submit.prevent="updateRoster" method="post">
+                                <b-button @click="leaveLeague()">
+                                    Leave League
+                                </b-button>
+                            </form>
                             <strong>Invite link: </strong>https://altfantasysports.com/league/invite/{{ inviteCode }}/
                             
                             <h2>Rosters</h2>
@@ -348,6 +353,9 @@
                                         </b-button>
                                         <b-button variant="success" @click="moveDownDraftOrder($event, data.item)">
                                             Move Down
+                                        </b-button>
+                                        <b-button @click="removeTeam($event, data.item)">
+                                            Remove Team
                                         </b-button>
                                     </div>
                                 </template>
@@ -781,6 +789,38 @@ import moment from 'moment'
     },
 
     methods: {
+        leaveLeague() {
+            if(confirm("Are you sure you want to leave this league?")) {
+                console.log("confirmed "+this.myteam.id);
+                axios.post('league/remove', {
+                    leagueId: this.leagueId,
+                    team: this.myteam.id
+                }).then(response => {
+                    this.$router.push('/dashboard');
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        removeTeam(event, targetTeam) {
+            if(confirm("Are you sure you want to remove this team?")) {
+                console.log('confirmed');
+                axios.post('league/remove', {
+                    leagueId: this.leagueId,
+                    team: targetTeam.id
+                }).then(response => {
+                    //this.$router.push('/dashboard');
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
         updateDraft() {
             this.errors = {};
             axios.post('league/updateDraft', {
