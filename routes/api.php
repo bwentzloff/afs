@@ -38,6 +38,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('league/create', 'LeagueController@create');
     Route::post('league/updateDraft', 'LeagueController@updateDraft');
+    
     Route::post('league/getUserLeagues', 'LeagueController@getUserLeagues');
 
     // Join leagues
@@ -65,6 +66,8 @@ Route::prefix('v1')->group(function () {
     Route::get('league/draftOrder/{id}', ['uses'=>'LeagueController@getDraftOrder']);
     Route::get('league/myteam/{id}', ['uses'=>'LeagueController@getMyTeam']);
     Route::post('league/getrosters', ['uses'=>'LeagueController@getrosters']);
+    Route::post('league/updateRoster', ['uses'=>'LeagueController@updateRoster']);
+    Route::post('league/updateRules', ['uses'=>'LeagueController@updateRules']);
 
     Route::get('stats', ['uses'=>'LeagueController@stats']);
 

@@ -26,6 +26,57 @@ class LeagueController extends Controller
             $lastUpdate = uniqid();
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
+    public function updateRoster(Request $request) {
+        $league = League::where('id',$request->input('leagueId'))
+            ->update([
+                'qbs'=>$request->input('qbs'),
+                'rbs'=>$request->input('rbs'),
+                'wrs'=>$request->input('wrs'),
+                'tes'=>$request->input('tes'),
+                'flex'=>$request->input('flex'),
+                'ks'=>$request->input('ks'),
+                'def'=>$request->input('def'),
+            ]);
+        
+            $this->createDraftPicks($request->input('leagueId'));
+            
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
+    public function updateRules(Request $request) {
+        $league = League::where('id',$request->input('leagueId'))
+            ->update([
+                'rule1'=>$request->input('rule1'),
+                'rule2'=>$request->input('rule2'),
+                'rule3'=>$request->input('rule3'),
+                'rule4'=>$request->input('rule4'),
+                'rule5'=>$request->input('rule5'),
+                'rule6'=>$request->input('rule6'),
+                'rule7'=>$request->input('rule7'),
+                'rule8'=>$request->input('rule8'),
+                'rule9'=>$request->input('rule9'),
+                'rule10'=>$request->input('rule10'),
+                'rule11'=>$request->input('rule11'),
+                'rule12'=>$request->input('rule12'),
+                'rule13'=>$request->input('rule13'),
+                'rule14'=>$request->input('rule14'),
+                'rule15'=>$request->input('rule15'),
+                'rule16'=>$request->input('rule16'),
+                'rule17'=>$request->input('rule17'),
+                'rule18'=>$request->input('rule18'),
+                'rule19'=>$request->input('rule19'),
+                'rule20'=>$request->input('rule20'),
+                'rule21'=>$request->input('rule21'),
+                'rule22'=>$request->input('rule22'),
+                'rule23'=>$request->input('rule23'),
+                'rule24'=>$request->input('rule24'),
+                'rule25'=>$request->input('rule25'),
+                'rule26'=>$request->input('rule26'),
+            ]);
+                    
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
     public function moveUpDraftOrder(Request $request) {
         $requested_team = LeagueUser::where('id',$request->input('team_id'))->first();
         $other_team = LeagueUser::where('draft_order',$requested_team->draft_order-1)
