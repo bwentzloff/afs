@@ -22,7 +22,7 @@ class LeagueController extends Controller
             ->where('league_id',$request->input('leagueId'))->delete();
 
         Log::debug("here ".$request->input('team'));
-        $this->createDraftPicks($request->input('leagueId'));
+        $this->setDraftOrder($request->input('leagueId'));
         $lastUpdate = uniqid();
         Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
