@@ -331,12 +331,14 @@ class LeagueController extends Controller
                     ->whereNull('player_id')
                     ->orderBy('pick_order','asc')
                     ->first();
-
-                $update = League::where('id',$league->id)->update([ 
-                    'draft_status'=>1,
-                    'draft_nextpick'=>Carbon::now()->addMinutes($league->draftpick_time),
-                    'draft_current_drafter'=>$draftPicks->team_id
-                ]);
+                
+                if ($draftPicks) {
+                    $update = League::where('id',$league->id)->update([ 
+                        'draft_status'=>1,
+                        'draft_nextpick'=>Carbon::now()->addMinutes($league->draftpick_time),
+                        'draft_current_drafter'=>$draftPicks->team_id
+                    ]);
+                }
 
                 $lastUpdate = uniqid();
                 Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
@@ -369,15 +371,17 @@ class LeagueController extends Controller
                     ->orderBy('pick_order','asc')
                     ->first();
 
-                $update = DraftPick::where('id',$draftPick->id)
-                    ->update([
-                        'player_id'=>$player->id
-                    ]);
-                    $rosteritem = new RosterItem;
-                    $rosteritem->team_id = $draftPick->team_id;
-                    $rosteritem->league_id = $league->id;
-                    $rosteritem->player_id = $player->id;
-                    $rosteritem->save();
+                if ($draftPick) {
+                    $update = DraftPick::where('id',$draftPick->id)
+                        ->update([
+                            'player_id'=>$player->id
+                        ]);
+                        $rosteritem = new RosterItem;
+                        $rosteritem->team_id = $draftPick->team_id;
+                        $rosteritem->league_id = $league->id;
+                        $rosteritem->player_id = $player->id;
+                        $rosteritem->save();
+                }
 
                 // update nextpick and current_drafter
                 $nextPick = DraftPick::where('league_id',$league->id)
