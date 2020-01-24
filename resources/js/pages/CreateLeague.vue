@@ -245,6 +245,9 @@ import { Datetime } from 'vue-datetime';
           { value: 60, text: '1 hour' },
           { value: 120, text: '2 hours' },
           { value: 240, text: '4 hours' },
+          { value: 480, text: '8 hours' },
+          { value: 960, text: '16 hours' },
+          { value: 1440, text: '1 day'},
         ],
         qbs: 1,
         qb_options: [
