@@ -316,6 +316,9 @@
                                         <b-button variant="success" @click="moveDownQueue($event, data.item)">
                                             Move Down
                                         </b-button>
+                                        <b-button variant="danger" @click="removeFromQueue($event, data.item)">
+                                            Remove
+                                        </b-button>
                                     </div>
                                     <div v-if="!postDraft && !preDraft && data.item.fantasyTeam == '' && leagueInfo.draft_current_drafter == myteam.id && !processing">
                                         <b-button variant="success" @click="draftPlayer($event, data.item)">
@@ -1151,6 +1154,20 @@ import moment from 'moment'
         moveDownQueue(event, player) {
             
             axios.post('player/moveDownQueue', {
+                player_id: player.id,
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                this.refreshQueueItems();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        removeFromQueue(event, player) {
+            
+            axios.post('player/removeFromQueue', {
                 player_id: player.id,
                 leagueId: this.$data.leagueId,
             }).then(response => {

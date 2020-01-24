@@ -53,6 +53,7 @@ Route::prefix('v1')->group(function () {
     Route::post('player/draft', 'LeagueUserController@draftPlayer');
     Route::post('player/moveUpQueue', 'LeagueUserController@moveUpQueue');
     Route::post('player/moveDownQueue', 'LeagueUserController@moveDownQueue');
+    Route::post('player/removeFromQueue', 'LeagueUserController@removeFromQueue');
     Route::post('player/getqueue', 'LeagueUserController@getQueue');
 
     // Scraping routes

@@ -160,4 +160,11 @@ class LeagueUserController extends Controller
                     'id' => $targetPlayerId
                 ]);
     }
+
+    public function removeFromQueue(Request $request) {
+        $leagueuser = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
+        $draftqueue = DraftQueue::where('leagueuser_id',$leagueuser->id)
+            ->where('player_id',$request->player_id)
+            ->delete();
+    }
 }
