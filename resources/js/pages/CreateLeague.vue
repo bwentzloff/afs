@@ -40,7 +40,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="drafttime">Draft Date/Time</label>
+                        <label for="drafttime">Draft Date/Time <small><em>Times shown are in your local timezone. Other members of your league will have the time converted to their local timezone.</em></small></label>
                         <datetime v-model="date" type="datetime" zone="local" value-zone="UTC" :use12-hour=true title="Draft Time" name="draft_datetime"></datetime>
                         <b-alert show>Protip: A lot of people last year chose Super Bowl Sunday as their AAF draft day. It was really fun. Draft spring football in the morning. Watch the end of fall football in the evening. Good times.</b-alert>
                     </div>

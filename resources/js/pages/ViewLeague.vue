@@ -332,7 +332,7 @@
                             <h1>Draft Settings</h1>
                             <form autocomplete="off" @submit.prevent="updateDraft" method="post">
                                 <div class="form-group">
-                                    <label for="drafttime">Update Draft Date/Time</label>
+                                    <label for="drafttime">Update Draft Date/Time <small><em>Times shown are in your local timezone. Other members of your league will have the time converted to their local timezone.</em></small></label>
                                     <datetime v-model="updateDraftDatetime" type="datetime" zone="local" value-zone="UTC" :use12-hour=true title="Draft Time" name="draft_datetime"></datetime>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Update</button>
