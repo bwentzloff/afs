@@ -18,10 +18,29 @@ use Illuminate\Support\Facades\Log;
 class LeagueController extends Controller
 {
     public function removeTeam(Request $request) {
+        
+
+        // first, change draft orders
+        $teamToRemove = LeagueUser::where('id',$request->input('team'))
+            ->where('league_id',$request->input('leagueId'))->first();
+
+        // get all teams in league
+        $allTeamsInLeague = LeagueUser::where('league_id',$request->input('leagueId'))->get();
+
+        foreach($allTeamsInLeague as $singleTeam) {
+            if ($singleTeam->draft_order > $teamToRemove->draft_order) {
+                $update = LeagueUser::where('id',$singleTeam->id)
+                    ->where('league_id',$request->input('leagueId'))
+                    ->update([
+                        "draft_order"=>$singleTeam->draft_order - 1
+                    ]);
+            }
+        }
+
         $team = LeagueUser::where('id',$request->input('team'))
             ->where('league_id',$request->input('leagueId'))->delete();
 
-        Log::debug("here ".$request->input('team'));
+
         $this->setDraftOrder($request->input('leagueId'));
         $lastUpdate = uniqid();
         Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
