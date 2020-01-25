@@ -48,8 +48,13 @@ class LeagueController extends Controller
     public function updateDraft(Request $request) {
         $league = League::where('id',$request->input('leagueId'))
             ->update([
-                'draft_datetime'=>Carbon::parse($request->input('datetime'))
+                'draft_datetime'=>Carbon::parse($request->input('datetime')),
+                'draft_status'=>0,
             ]);
+
+            $rosters = RosterItem::where('league_id',$request->input('leagueId'))->delete();
+
+            $this->setDraftOrder($request->input('leagueId'));
         
             $lastUpdate = uniqid();
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);

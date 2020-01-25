@@ -347,6 +347,8 @@
                         <b-card-text>
                             <h1>Draft Settings</h1>
                             <form autocomplete="off" @submit.prevent="updateDraft" method="post">
+                                <b-alert variant="danger" show>Warning: Updating your draft date and/or time will reset the draft. Any picks already made will be reverted. This cannot be undone.</b-alert>
+
                                 <div class="form-group">
                                     <label for="drafttime">Update Draft Date/Time <small><em>Times shown are in your local timezone. Other members of your league will have the time converted to their local timezone.</em></small></label>
                                     <datetime v-model="updateDraftDatetime" type="datetime" zone="local" value-zone="UTC" :use12-hour=true title="Draft Time" name="draft_datetime"></datetime>
@@ -838,18 +840,20 @@ import moment from 'moment'
             }
         },
         updateDraft() {
-            this.errors = {};
-            axios.post('league/updateDraft', {
-                leagueId: this.leagueId,
-                datetime: this.updateDraftDatetime
-            }).then(response => {
-                //
-            }).catch(error => {
-                console.log(error);
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors || {};
-                }
-            });
+            if (confirm("Warning: updating the draft time will revert any picks already made. Are you sure you want to do this?")) {
+                this.errors = {};
+                axios.post('league/updateDraft', {
+                    leagueId: this.leagueId,
+                    datetime: this.updateDraftDatetime
+                }).then(response => {
+                    //
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
         },
         updateRoster() {
             this.errors = {};
