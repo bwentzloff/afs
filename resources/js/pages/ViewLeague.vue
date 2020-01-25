@@ -86,13 +86,13 @@
                                     {{ team.text }}
                                 </li>
                             </ul>
-
-                            <h2>My Team Name</h2>
-                                <input type="text" id="myteam" class="form-control" placeholder="" v-model="myteam.name" required>
-                                <b-button variant="success" @click="updateName($event)">
-                                            Update Name
-                                        </b-button>
-
+                            <div v-if="myteam.id">
+                                <h2>My Team Name</h2>
+                                    <input type="text" id="myteam" class="form-control" placeholder="" v-model="myteam.name" required>
+                                    <b-button variant="success" @click="updateName($event)">
+                                                Update Name
+                                            </b-button>
+                            </div>
                             <h2>Rosters</h2>
                             <table>
                                 <tr>
