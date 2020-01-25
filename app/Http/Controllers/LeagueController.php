@@ -246,6 +246,15 @@ class LeagueController extends Controller
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
 
+    public function updateSize(Request $request) {
+        $updatedLeague = League::where('id',$request->leagueId)
+            ->update([
+                'maxSize'=>$request->maxSize
+            ]);
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
+
 
     public function joinLeagueFromCode($code, Request $request) {
         $league = League::where('invite_code',$code)->first();

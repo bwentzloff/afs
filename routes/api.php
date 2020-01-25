@@ -38,6 +38,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('league/create', 'LeagueController@create');
     Route::post('league/updateDraft', 'LeagueController@updateDraft');
+    Route::post('league/updateSize', 'LeagueController@updateSize');
     
     Route::post('league/getUserLeagues', 'LeagueController@getUserLeagues');
 

@@ -378,6 +378,20 @@
                                     </div>
                                 </template>
                             </b-table>
+                            <h2>League Size</h2>
+                            <select v-model="leagueInfo.maxSize">
+                                <option :selected="leagueInfo.maxSize == 2? 'true' : 'false'">2</option>
+                                <option :selected="leagueInfo.maxSize == 4? 'true' : 'false'">4</option>
+                                <option :selected="leagueInfo.maxSize == 6? 'true' : 'false'">6</option>
+                                <option :selected="leagueInfo.maxSize == 8? 'true' : 'false'">8</option>
+                                <option :selected="leagueInfo.maxSize == 10? 'true' : 'false'">10</option>
+                                <option :selected="leagueInfo.maxSize == 12? 'true' : 'false'">12</option>
+                                <option :selected="leagueInfo.maxSize == 14? 'true' : 'false'">14</option>
+                                <option :selected="leagueInfo.maxSize == 16? 'true' : 'false'">16</option>
+                            </select>
+                            <b-button @click="changeLeagueSize($event)">
+                                            Update League Size
+                                        </b-button>
                             <div class="form-group">
                                 <h2>Rosters</h2>
                                 <form autocomplete="off" @submit.prevent="updateRoster" method="post">
@@ -838,6 +852,19 @@ import moment from 'moment'
                     }
                 });
             }
+        },
+        changeLeagueSize() {
+                axios.post('league/updateSize', {
+                    leagueId: this.leagueId,
+                    maxSize: this.leagueInfo.maxSize
+                }).then(response => {
+                    //this.$router.push('/dashboard');
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
         },
         updateDraft() {
             if (confirm("Warning: updating the draft time will revert any picks already made. Are you sure you want to do this?")) {
