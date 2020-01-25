@@ -777,6 +777,32 @@ import moment from 'moment'
       },
       playersFiltered() {
           var filtered = this.items.filter((el) => {
+            if (this.leagueInfo.teamQbs == true && el.position == "QB") {
+                if (el.name == "Dallas" || el.name == "DC" || el.name == "Houston" || el.name == "LA" || el.name == "New York" || el.name == "St Louis" || el.name == "Seattle" || el.name == "Tampa Bay") {
+                    //return true;
+                } else {
+                    return false;
+                }
+            }
+            if (this.leagueInfo.teamQbs == false && el.position == "QB") {
+                if (el.name == "Dallas" || el.name == "DC" || el.name == "Houston" || el.name == "LA" || el.name == "New York" || el.name == "St Louis" || el.name == "Seattle" || el.name == "Tampa Bay") {
+                    return false;
+                }
+            }
+
+            if (this.leagueInfo.teamKs == true && el.position == "K") {
+                if (el.name == "Dallas" || el.name == "DC" || el.name == "Houston" || el.name == "LA" || el.name == "New York" || el.name == "St Louis" || el.name == "Seattle" || el.name == "Tampa Bay") {
+                    //return true;
+                } else {
+                    return false;
+                }
+            }
+            if (this.leagueInfo.teamKs == false && el.position == "K") {
+                if (el.name == "Dallas" || el.name == "DC" || el.name == "Houston" || el.name == "LA" || el.name == "New York" || el.name == "St Louis" || el.name == "Seattle" || el.name == "Tampa Bay") {
+                    return false;
+                }
+            }
+
             if (this.positionFilter == "all") {
                 if (el.position == "QB" || el.position == "RB" || el.position == "WR" || el.position == "TE" || el.position == "K") {
                     if (this.nameFilter == '') {

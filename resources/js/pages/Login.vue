@@ -25,6 +25,7 @@
                 <input type="password" id="password" class="form-control" v-model="password" required>
               </div>
               <button type="submit" class="btn btn-primary">Signin</button>
+              <!--a href="/reset">Forgot Your Password?</a>-->
             </form>
           </div>
         </div>

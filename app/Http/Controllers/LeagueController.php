@@ -170,6 +170,9 @@ class LeagueController extends Controller
         $league->def = $request->input('def');
         $league->bench = $request->input('bench');
 
+        $league->teamQbs = $request->input('teamQbs');
+        $league->teamKs = $request->input('teamKs');
+
         $league->rule1 = $request->input('rule1');
         $league->rule2 = $request->input('rule2');
         $league->rule3 = $request->input('rule3');

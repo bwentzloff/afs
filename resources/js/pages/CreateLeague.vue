@@ -56,7 +56,8 @@
                         <h2>Rosters</h2>
                         <label for="qbs">Quarterbacks</label>
                         <b-form-select v-model="qbs" :options="qb_options" size="sm"></b-form-select>
-                        <br /><br /><br />
+                        <b-form-checkbox v-model="teamQbs" size="sm">Team Quarterbacks</b-form-checkbox>
+                        <br />
                         <label for="rbs">Running Backs</label>
                         <b-form-select size="sm" v-model="rbs" :options="rb_options"></b-form-select>
                         <br /><br /><br />
@@ -71,7 +72,8 @@
                         <br /><br /><br />
                         <label for="k">Kickers</label>
                         <b-form-select size="sm" v-model="ks" :options="k_options"></b-form-select>
-                        <br /><br /><br />
+                        <b-form-checkbox v-model="teamKs" size="sm">Team Kickers</b-form-checkbox>
+                        <br />
                         <label for="def">Defenses</label>
                         <b-form-select size="sm" v-model="def" :options="def_options"></b-form-select>
                         <br /><br /><br />
@@ -224,6 +226,8 @@ import { Datetime } from 'vue-datetime';
         date: null,
         waiver_day: "Wednesday",
         playoff_length: 2,
+        teamQbs: false,
+        teamKs: false,
         playoff_length_options: [
           { value: 1, text: '1 week' },
           { value: 2, text: '2 weeks' },
@@ -371,6 +375,8 @@ import { Datetime } from 'vue-datetime';
             waiver_day: this.waiver_day,
             playoff_length: this.playoff_length,
             league_type: this.league_type,
+            teamQbs: this.teamQbs,
+            teamKs: this.teamKs,
             qbs: this.qbs,
             rbs: this.rbs,
             wrs: this.wrs,

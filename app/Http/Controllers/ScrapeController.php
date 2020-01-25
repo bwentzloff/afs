@@ -101,11 +101,47 @@ class ScrapeController extends Controller
         // Add defenses
         foreach ($urls as $team=>$endpoint) {
             $player_name = $team;
-            $search = Player::where('name',$player_name)->first();
+            $search = Player::where('name',$player_name)
+                ->where('position','DEF')
+                ->first();
             if (empty($search)) {
                 $new_player = new Player;
                 $new_player->name = $player_name;
                 $new_player->position = 'DEF';
+                $new_player->extrainfo = '';
+                $new_player->sport_id = 8;
+                $new_player->team = $team;
+                $new_player->save();
+            }
+        }
+
+        // Add team Qbs
+        foreach ($urls as $team=>$endpoint) {
+            $player_name = $team;
+            $search = Player::where('name',$player_name)
+                ->where('position','QB')
+                ->first();
+            if (empty($search)) {
+                $new_player = new Player;
+                $new_player->name = $player_name;
+                $new_player->position = 'QB';
+                $new_player->extrainfo = '';
+                $new_player->sport_id = 8;
+                $new_player->team = $team;
+                $new_player->save();
+            }
+        }
+
+        // Add team kickers
+        foreach ($urls as $team=>$endpoint) {
+            $player_name = $team;
+            $search = Player::where('name',$player_name)
+                ->where('position','K')    
+                ->first();
+            if (empty($search)) {
+                $new_player = new Player;
+                $new_player->name = $player_name;
+                $new_player->position = 'K';
                 $new_player->extrainfo = '';
                 $new_player->sport_id = 8;
                 $new_player->team = $team;

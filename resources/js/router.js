@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import Reset from './pages/Reset'
 import Dashboard from './pages/user/Dashboard'
 import AdminDashboard from './pages/admin/Dashboard'
 import CreateLeague from './pages/CreateLeague'
@@ -40,6 +41,14 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
+    meta: {
+      auth: false
+    }
+  },
+  {
+    path: '/reset',
+    name: 'reset',
+    component: Reset,
     meta: {
       auth: false
     }
