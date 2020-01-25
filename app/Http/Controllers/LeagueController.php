@@ -202,14 +202,16 @@ class LeagueController extends Controller
 
         $league->save();
 
-        // Add commish to league
-        $leagueUser = new LeagueUser;
-        $leagueUser->user_id = Auth::user()->id;
-        $leagueUser->league_id = $league->id;
-        $leagueUser->name = $request->input('teamname');
-        
-        $leagueUser->save();
-        $this->setDraftOrder($league->id);
+        if (!$request->input('justCommish')) {
+            // Add commish to league
+            $leagueUser = new LeagueUser;
+            $leagueUser->user_id = Auth::user()->id;
+            $leagueUser->league_id = $league->id;
+            $leagueUser->name = $request->input('teamname');
+            
+            $leagueUser->save();
+            $this->setDraftOrder($league->id);
+        }
     }
 
     public function getUserLeagues(Request $request) {
@@ -218,6 +220,12 @@ class LeagueController extends Controller
 
         foreach($league_users as $lu) {
             $leagues[] = League::where('id',$lu->league_id)->first();
+        }
+
+        // get commissioned leagues
+        $commishLeagues = League::where('commish_id',Auth::user()->id)->get();
+        foreach($commishLeagues as $commishLeague) {
+            $leagues[] = $commishLeague;
         }
 
         return response()->json($leagues);

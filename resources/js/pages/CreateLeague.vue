@@ -14,7 +14,8 @@
                     </div>
                     <div class="form-group">
                         <label for="name">My Team's Name</label>
-                        <input type="text" id="text" class="form-control" placeholder="" v-model="teamname" required>
+                        <input type="text" id="text" class="form-control" placeholder="" v-model="teamname">
+                        <b-form-checkbox v-model="justCommish" size="sm">I just want to be commissioner, I don't want to manage a team.</b-form-checkbox>
                     </div>
                     <div class="form-group">
                         <label for="maxSize">Maximum Size</label>
@@ -228,6 +229,7 @@ import { Datetime } from 'vue-datetime';
         playoff_length: 2,
         teamQbs: false,
         teamKs: false,
+        justCommish: false,
         playoff_length_options: [
           { value: 1, text: '1 week' },
           { value: 2, text: '2 weeks' },
@@ -377,6 +379,7 @@ import { Datetime } from 'vue-datetime';
             league_type: this.league_type,
             teamQbs: this.teamQbs,
             teamKs: this.teamKs,
+            justCommish: this.justCommish,
             qbs: this.qbs,
             rbs: this.rbs,
             wrs: this.wrs,
