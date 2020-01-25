@@ -268,6 +268,9 @@ class LeagueController extends Controller
             $leagueUser->save();
 
             $this->setDraftOrder($league->id);
+
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
         }
     }
 
