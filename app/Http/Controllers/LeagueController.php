@@ -217,15 +217,16 @@ class LeagueController extends Controller
     public function getUserLeagues(Request $request) {
         $leagues = array();
         $league_users = LeagueUser::where('user_id',Auth::user()->id)->get();
-
+        $league_ids = array();
         foreach($league_users as $lu) {
             $leagues[] = League::where('id',$lu->league_id)->first();
+            $league_ids[] = $lu->league_id;
         }
 
         // get commissioned leagues
         $commishLeagues = League::where('commish_id',Auth::user()->id)->get();
         foreach($commishLeagues as $commishLeague) {
-            $leagues[] = $commishLeague;
+            if (!in_array($commishLeague->id,$league_ids)) $leagues[] = $commishLeague;
         }
 
         return response()->json($leagues);
