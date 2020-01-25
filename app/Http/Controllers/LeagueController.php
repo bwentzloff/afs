@@ -102,6 +102,8 @@ class LeagueController extends Controller
         ]);
 
         $this->createDraftPicks($requested_team->league_id);
+        $lastUpdate = uniqid();
+        Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
     public function moveDownDraftOrder(Request $request) {
         $requested_team = LeagueUser::where('id',$request->input('team_id'))->first();
@@ -118,6 +120,8 @@ class LeagueController extends Controller
         ]);
 
         $this->createDraftPicks($requested_team->league_id);
+        $lastUpdate = uniqid();
+        Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
     public function create(Request $request)
     {
@@ -207,6 +211,17 @@ class LeagueController extends Controller
 
         return response()->json($league);
     }
+
+    public function updateName(Request $request) {
+        $updatedTeam = LeagueUser::where('league_id',$request->leagueId)
+            ->where('user_id',Auth::user()->id)
+            ->update([
+                'name'=>$request->newName
+            ]);
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
+
 
     public function joinLeagueFromCode($code, Request $request) {
         $league = League::where('invite_code',$code)->first();

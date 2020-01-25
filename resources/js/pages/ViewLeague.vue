@@ -80,6 +80,19 @@
                             </form>
                             <strong>Invite link: </strong>https://altfantasysports.com/league/invite/{{ inviteCode }}/
                             
+                            <h2>Current Teams</h2>
+                            <ul id="team-name-list">
+                                <li v-for="(team,key) in teamNames">
+                                    {{ team.text }}
+                                </li>
+                            </ul>
+
+                            <h2>My Team Name</h2>
+                                <input type="text" id="myteam" class="form-control" placeholder="" v-model="myteam.name" required>
+                                <b-button variant="success" @click="updateName($event)">
+                                            Update Name
+                                        </b-button>
+
                             <h2>Rosters</h2>
                             <table>
                                 <tr>
@@ -850,6 +863,19 @@ import moment from 'moment'
                 ks: this.ks,
                 def: this.def,
                 bench: this.bench
+            }).then(response => {
+                //
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        updateName() {
+            axios.post('league/updateName', {
+                leagueId: this.leagueId,
+                newName: this.myteam.name,
             }).then(response => {
                 //
             }).catch(error => {
