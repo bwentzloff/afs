@@ -85,9 +85,13 @@ class LeagueUserController extends Controller
     public function getQueue(Request $request) {
         $leagueuser = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
 
-        $draftqueue = DraftQueue::where('leagueuser_id',$leagueuser->id)
-            ->orderBy('id')
-            ->get();
+        if ($leagueuser) {
+            $draftqueue = DraftQueue::where('leagueuser_id',$leagueuser->id)
+                ->orderBy('id')
+                ->get();
+        } else {
+            $draftqueue = "";
+        }
         return response()->json($draftqueue);
     }
 
