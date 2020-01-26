@@ -111,10 +111,16 @@
                                     <td>Flex (RB/WR/TE)</td><td>{{ flex }}</td>
                                 </tr>
                                 <tr>
+                                    <td>Superflex (QB/RB/WR/TE)</td><td>{{ superflex }}</td>
+                                </tr>
+                                <tr>
                                     <td>Kickers</td><td>{{ ks }}</td>
                                 </tr>
                                 <tr>
                                     <td>Defense / Special Teams</td><td>{{ def }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Bench</td><td>{{ bench }}</td>
                                 </tr>
                             </table>
                             
@@ -410,6 +416,9 @@
                                 <label for="flex">Flex (RB/WR/TE)</label>
                                 <b-form-select size="sm" v-model="flex" :options="flex_options"></b-form-select>
                                 <br /><br /><br />
+                                <label for="flex">Superflex (QB/RB/WR/TE)</label>
+                                <b-form-select size="sm" v-model="superflex" :options="superflex_options"></b-form-select>
+                                <br /><br /><br />
                                 <label for="k">Kickers</label>
                                 <b-form-select size="sm" v-model="ks" :options="k_options"></b-form-select>
                                 <br /><br /><br />
@@ -613,6 +622,7 @@ import moment from 'moment'
         wrs: '',
         tes: '',
         flex: '',
+        superflex: '',
         ks: '',
         def: '',
         bench: '',
@@ -649,6 +659,14 @@ import moment from 'moment'
           { value: 5, text: '5' }
         ],
         flex_options: [
+          { value: 0, text: '0' },
+          { value: 1, text: '1' },
+          { value: 2, text: '2' },
+          { value: 3, text: '3' },
+          { value: 4, text: '4' },
+          { value: 5, text: '5' }
+        ],
+        superflex_options: [
           { value: 0, text: '0' },
           { value: 1, text: '1' },
           { value: 2, text: '2' },
@@ -917,6 +935,7 @@ import moment from 'moment'
                 wrs: this.wrs,
                 tes: this.tes,
                 flex: this.flex,
+                superflex: this.superflex,
                 ks: this.ks,
                 def: this.def,
                 bench: this.bench
@@ -1067,6 +1086,7 @@ import moment from 'moment'
             this.wrs = this.leagueInfo.wrs;
             this.tes = this.leagueInfo.tes;
             this.flex = this.leagueInfo.flex;
+            this.superflex = this.leagueInfo.superflex;
             this.ks = this.leagueInfo.ks;
             this.def = this.leagueInfo.def;
             this.bench = this.leagueInfo.bench;

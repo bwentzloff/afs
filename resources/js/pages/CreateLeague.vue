@@ -71,6 +71,9 @@
                         <label for="flex">Flex (RB/WR/TE)</label>
                         <b-form-select size="sm" v-model="flex" :options="flex_options"></b-form-select>
                         <br /><br /><br />
+                        <label for="flex">Superflex (QB/RB/WR/TE)</label>
+                        <b-form-select size="sm" v-model="superflex" :options="superflex_options"></b-form-select>
+                        <br /><br /><br />
                         <label for="k">Kickers</label>
                         <b-form-select size="sm" v-model="ks" :options="k_options"></b-form-select>
                         <b-form-checkbox v-model="teamKs" size="sm">Team Kickers</b-form-checkbox>
@@ -300,6 +303,15 @@ import { Datetime } from 'vue-datetime';
           { value: 4, text: '4' },
           { value: 5, text: '5' }
         ],
+        superflex: 0,
+        superflex_options: [
+          { value: 0, text: '0' },
+          { value: 1, text: '1' },
+          { value: 2, text: '2' },
+          { value: 3, text: '3' },
+          { value: 4, text: '4' },
+          { value: 5, text: '5' }
+        ],
         ks: 1,
         k_options: [
           { value: 0, text: '0' },
@@ -387,6 +399,7 @@ import { Datetime } from 'vue-datetime';
             flex: this.flex,
             ks: this.ks,
             def: this.def,
+            superflex: this.superflex,
             bench: this.bench,
             rule1: this.rule1,
             rule2: this.rule2,

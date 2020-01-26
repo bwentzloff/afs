@@ -67,6 +67,7 @@ class LeagueController extends Controller
                 'wrs'=>$request->input('wrs'),
                 'tes'=>$request->input('tes'),
                 'flex'=>$request->input('flex'),
+                'superflex'=>$request->input('superflex'),
                 'ks'=>$request->input('ks'),
                 'def'=>$request->input('def'),
             ]);
@@ -169,6 +170,7 @@ class LeagueController extends Controller
         $league->ks = $request->input('ks');
         $league->def = $request->input('def');
         $league->bench = $request->input('bench');
+        $league->superflex = $request->input('superflex');
 
         $league->teamQbs = $request->input('teamQbs');
         $league->teamKs = $request->input('teamKs');
@@ -353,7 +355,7 @@ class LeagueController extends Controller
 
         $oldPicks = DraftPick::where('league_id',$leagueId)->delete();
 
-        $numPicks = $league->qbs + $league->rbs + $league->wrs + $league->tes + $league->flex + $league->ks + $league->def + $league->bench;
+        $numPicks = $league->qbs + $league->rbs + $league->wrs + $league->tes + $league->flex + $league->superflex + $league->ks + $league->def + $league->bench;
 
         $order = "asc";
         $pick = 1;
