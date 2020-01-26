@@ -42,6 +42,7 @@ class ScrapeController extends Controller
                     if ($team == "DC") $college_cell_key = 6;
                     if ($team == "Dallas") $college_cell_key = 6;
                     if ($team == "LA") $college_cell_key = 6;
+                    if ($team == "Seattle") $college_cell_key = 5;
                     foreach($element->find('td') as $cellkey=>$cell) {
                         if ($cellkey == 1) {
                             if ($team == "Dallas" || $team == "DC" || $team == "LA") {
@@ -53,10 +54,11 @@ class ScrapeController extends Controller
                             if ($team == "Dallas" || $team == "DC" || $team == "LA") {
                                 $player_last_name = str_replace("&nbsp;","",trim(strip_tags($cell->innertext)));
                                 $player_name = $player_last_name.", ".$player_first_name;
+                            
                             } else {
                                 $player_position = trim(strip_tags($cell->innertext));
                             }
-                        } else if ($team == ("Dallas" || "DC" || $team == "LA") && $cellkey == 3) {
+                        } else if (($team == "Dallas" || $team == "DC" || $team == "LA") && $cellkey == 3) {
                             $player_position = trim(strip_tags($cell->innertext));
                         } else if ($cellkey == $college_cell_key) {
                             $player_college = trim(strip_tags($cell->innertext));
@@ -77,6 +79,12 @@ class ScrapeController extends Controller
                             $new_player->sport_id = 8;
                             $new_player->team = $team;
                             $new_player->save();
+                        } else {
+                            $updatePlayer = Player::where('name',$player_name)
+                                ->update([
+                                    "team"=>$team,
+                                    "position"=>$player_position
+                                ]);
                         }
                     }
                 }
