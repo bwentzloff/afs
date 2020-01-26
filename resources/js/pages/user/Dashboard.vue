@@ -3,6 +3,8 @@
         <div class="card card-default">
             <div class="card-header">My Leagues</div>
             <div class="card-body">
+                <b-alert show>If you clicked on an invite link and don't see the league now listed here, click the link again. You need to be logged in to accept invites.</b-alert>
+
                 <b-table
                     id="league-table"
                     :items="items"
