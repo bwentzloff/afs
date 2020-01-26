@@ -70,6 +70,7 @@ class LeagueController extends Controller
                 'superflex'=>$request->input('superflex'),
                 'ks'=>$request->input('ks'),
                 'def'=>$request->input('def'),
+                'bench'=>$request->input('bench'),
             ]);
         
             $this->createDraftPicks($request->input('leagueId'));
