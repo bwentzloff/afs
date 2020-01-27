@@ -78,6 +78,16 @@ class LeagueController extends Controller
             $lastUpdate = uniqid();
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
+    public function updateSettings(Request $request) {
+        $league = League::where('id',$request->input('leagueId'))
+            ->update([
+                'waiver_day'=>$request->input('waiver_day'),
+                'draftpick_time'=>$request->input('draftpick_time')
+            ]);
+        
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
     public function updateRules(Request $request) {
         $league = League::where('id',$request->input('leagueId'))
             ->update([

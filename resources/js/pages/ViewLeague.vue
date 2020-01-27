@@ -384,6 +384,19 @@
                                     </div>
                                 </template>
                             </b-table>
+                            <h2>Other Settings</h2>
+                            <div class="form-group">
+                                <label for="draftpickTime">Time allowed for each draft pick</label>
+                                <b-form-select v-model="leagueInfo.draftpick_time" :options="draftpickTime_options"></b-form-select>
+                            </div>
+                            <div class="form-group">
+                                <label for="waiver_day">Day waivers are processed</label>
+                                <b-form-select v-model="leagueInfo.waiver_day" :options="waiver_day_options">
+                                </b-form-select>
+                            </div>
+                            <b-button @click="updateSettings($event)">
+                                            Update Settings
+                                        </b-button>
                             <h2>League Size</h2>
                             <select v-model="leagueInfo.maxSize">
                                 <option :selected="leagueInfo.maxSize == 2? 'true' : 'false'">2</option>
@@ -591,6 +604,26 @@ import moment from 'moment'
         processing: false,
         queueSort: 'queueOrder',
         draftOrderSort: 'draftOrder',
+        draftpickTime_options: [
+          { value: 2, text: '2 minutes' },
+          { value: 5, text: '5 minutes' },
+          { value: 10, text: '10 minutes' },
+          { value: 15, text: '15 minutes' },
+          { value: 30, text: '30 minutes' },
+          { value: 60, text: '1 hour' },
+          { value: 120, text: '2 hours' },
+          { value: 240, text: '4 hours' },
+          { value: 480, text: '8 hours' },
+          { value: 960, text: '16 hours' },
+          { value: 1440, text: '1 day'},
+        ],
+        waiver_day_options: [
+            { value: "Tuesday", text: "Tuesday"},
+            { value: "Wednesday", text: "Wednesday"},
+            { value: "Thursday", text: "Thursday"},
+            { value: "Friday", text: "Friday"},
+            { value: "Saturday", text: "Saturday"},
+        ],
         fields: [
             {key: 'name', sortable: true},
             {key: 'position', sortable: true},
@@ -880,6 +913,21 @@ import moment from 'moment'
                     }
                 });
             }
+        },
+        updateSettings(event) {
+            
+                axios.post('league/updateSettings', {
+                    leagueId: this.leagueId,
+                    waiver_day: this.leagueInfo.waiver_day,
+                    draftpick_time: this.leagueInfo.draftpick_time,
+                }).then(response => {
+                    //this.$router.push('/dashboard');
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
         },
         changeLeagueSize() {
                 axios.post('league/updateSize', {
