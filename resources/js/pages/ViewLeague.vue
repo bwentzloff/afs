@@ -237,7 +237,7 @@
                     <b-tab title="Players">
                         <b-card-text>
                             <div class="overflow-auto">
-                                <b-form-select v-model="positionFilter" size="sm" class="w-25">
+                                <b-form-select v-model="positionFilter" size="sm" class="w-25" v-on:change="resetPagination">
                                     <option value="all">All Offensive Players</option>
                                     <option value="QB">Quarterbacks</option>
                                     <option value="RB">Running Backs</option>
@@ -879,7 +879,7 @@ import moment from 'moment'
             }
               
           });
-          if (this.positionFilter != "all") this.currentPage = 1
+          //if (this.positionFilter != "all") this.currentPage = 1
           return filtered;
       },
       itemsFilteredByTeam() {
@@ -904,6 +904,9 @@ import moment from 'moment'
     },
 
     methods: {
+        resetPagination() {
+            if (this.positionFilter != "all") this.currentPage = 1
+        },
         getMatchups() {
             axios.post('league/getMatchups', {
                 leagueId: this.leagueId,
