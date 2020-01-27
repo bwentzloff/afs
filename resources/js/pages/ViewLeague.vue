@@ -83,7 +83,7 @@
                             
                             <h2>Current Teams</h2>
                             <ul id="team-name-list">
-                                <li v-for="(team,key) in teamNames">
+                                <li v-for="(team,key) in teamNames" v-if="team.text != 'No Team'">
                                     {{ team.text }}
                                 </li>
                             </ul>
@@ -433,6 +433,7 @@
                                 <form autocomplete="off" @submit.prevent="updateRoster" method="post">
                                 <label for="qbs">Quarterbacks</label>
                                 <b-form-select v-model="qbs" :options="qb_options" size="sm"></b-form-select>
+                                <b-form-checkbox v-model="teamQbs" size="sm">Team Quarterbacks</b-form-checkbox>
                                 <br /><br /><br />
                                 <label for="rbs">Running Backs</label>
                                 <b-form-select size="sm" v-model="rbs" :options="rb_options"></b-form-select>
@@ -451,6 +452,7 @@
                                 <br /><br /><br />
                                 <label for="k">Kickers</label>
                                 <b-form-select size="sm" v-model="ks" :options="k_options"></b-form-select>
+                                <b-form-checkbox v-model="teamKs" size="sm">Team Kickers</b-form-checkbox>
                                 <br /><br /><br />
                                 <label for="def">Defenses</label>
                                 <b-form-select size="sm" v-model="def" :options="def_options"></b-form-select>
@@ -676,6 +678,8 @@ import moment from 'moment'
         ks: '',
         def: '',
         bench: '',
+        teamQbs: false,
+        teamKs: false,
         qb_options: [
           { value: 0, text: '0' },
           { value: 1, text: '1' },
@@ -821,7 +825,8 @@ import moment from 'moment'
         
 
         this.refreshPlayerList();
-        this.getLastUpdate()
+        this.getLastUpdate();
+        this.getMatchups();
     },
     computed: {
       rows() {
@@ -899,8 +904,20 @@ import moment from 'moment'
     },
 
     methods: {
+        getMatchups() {
+            axios.post('league/getMatchups', {
+                leagueId: this.leagueId,
+            }).then(response => {
+                console.log('matchups');
+                console.log(response.data);
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         commishUpdatePlayerTeam(event, item) {
-            console.log('here');
             axios.post('league/assignPlayer', {
                 leagueId: this.leagueId,
                 team_id: event,
@@ -916,7 +933,6 @@ import moment from 'moment'
         },
         leaveLeague() {
             if(confirm("Are you sure you want to leave this league?")) {
-                console.log("confirmed "+this.myteam.id);
                 axios.post('league/remove', {
                     leagueId: this.leagueId,
                     team: this.myteam.id
@@ -1002,7 +1018,9 @@ import moment from 'moment'
                 superflex: this.superflex,
                 ks: this.ks,
                 def: this.def,
-                bench: this.bench
+                bench: this.bench,
+                teamQbs: this.teamQbs,
+                teamKs: this.teamKs
             }).then(response => {
                 //
             }).catch(error => {
@@ -1154,6 +1172,12 @@ import moment from 'moment'
             this.ks = this.leagueInfo.ks;
             this.def = this.leagueInfo.def;
             this.bench = this.leagueInfo.bench;
+            if (this.leagueInfo.teamQbs == 1) {
+                this.teamQbs = true;
+            }
+            if (this.leagueInfo.teamKs == 1) {
+                this.teamKs = true;
+            }
             this.rule1 = this.leagueInfo.rule1;
             this.rule2 = this.leagueInfo.rule2;
             this.rule3 = this.leagueInfo.rule3;

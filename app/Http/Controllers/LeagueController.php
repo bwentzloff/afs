@@ -12,12 +12,71 @@ use App\Models\LeagueUser;
 use App\Models\DraftPick;
 use App\Models\RosterItem;
 use App\Models\DraftQueue;
+use App\Models\Matchup;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
 
 class LeagueController extends Controller
 {
+    public function getMatchups(Request $request) {
+        $matchups = Matchup::where('league_id',$request->leagueId)->get();
+        
+
+        if ($matchups->count() == 0) {
+            $teams = LeagueUser::where('league_id',$request->leagueId)->get();
+            $league = League::where('id',$request->leagueId)->first();
+
+            $home_array = array();
+            $away_array = array();
+
+            $numOfRegularWeeks = 10 - $league->playoff_length;
+
+            // separate into two arrays
+            $count = 1;
+            foreach($teams as $team) {
+                if ($count <= ceil($teams->count() / 2)) {
+                    $home_array[] = $team->id;
+                } else {
+                    $away_array[] = $team->id;
+                }
+                $count++;
+            }
+            for($week = 1; $week <= $numOfRegularWeeks; $week++) {
+                for($game = 0; $game < count($home_array); $game++) {
+                    $newmatchup = new Matchup;
+                    $newmatchup->week = $week;
+                    $newmatchup->home_id = $home_array[$game];
+                    if (isset($away_array[$game])) {
+                        $newmatchup->away_id = $away_array[$game];
+                    } else {
+                        $newmatchup->away_id = 0;
+                    }
+                    $newmatchup->league_id = $request->leagueId;
+                    $newmatchup->save();
+                }
+
+                if ($teams->count() % 2) {
+                    $first_element_of_home_array = array_shift($home_array);
+                    $last_element_of_away_array = array_pop($away_array);
+
+                    array_unshift($away_array,$first_element_of_home_array);
+                    $home_array[] = $last_element_of_away_array;
+                } else {
+                    $last_element_of_home_array = array_pop($home_array);
+                    $last_element_of_away_array = array_pop($away_array);
+
+                    array_unshift($away_array,$last_element_of_home_array);
+                    $home_array[] = $last_element_of_away_array;
+                }
+
+            }
+            $matchups = Matchup::where('league_id',$request->leagueId)->get();
+            return $matchups;
+        } else {
+            return $matchups;
+        }
+    }
     public function assignPlayer(Request $request) {
         // first, remove that player_id from the league
         $delete = RosterItem::where('league_id',$request->leagueId)
@@ -89,6 +148,8 @@ class LeagueController extends Controller
                 'ks'=>$request->input('ks'),
                 'def'=>$request->input('def'),
                 'bench'=>$request->input('bench'),
+                'teamQbs'=>$request->input('teamQbs'),
+                'teamKs'=>$request->input('teamKs')
             ]);
         
             $this->createDraftPicks($request->input('leagueId'));

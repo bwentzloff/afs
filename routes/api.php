@@ -50,6 +50,7 @@ Route::prefix('v1')->group(function () {
     Route::post('league/moveUpDraftOrder', ['uses'=>'LeagueController@moveUpDraftOrder']);
     Route::post('league/moveDownDraftOrder', ['uses'=>'LeagueController@moveDownDraftOrder']);
     Route::post('league/updateSettings', ['uses'=>'LeagueController@updateSettings']);
+    Route::post('league/getMatchups', ['uses'=>'LeagueController@getMatchups']);
     
     
     
