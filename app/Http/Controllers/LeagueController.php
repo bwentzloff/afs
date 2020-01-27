@@ -53,7 +53,7 @@ class LeagueController extends Controller
                         $newmatchup->away_id = 0;
                     }
                     $newmatchup->league_id = $request->leagueId;
-                    $newmatchup->save();
+                    //$newmatchup->save();
                 }
 
                 if ($teams->count() % 2) {
