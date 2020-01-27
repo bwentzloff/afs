@@ -768,23 +768,7 @@ import moment from 'moment'
 
         
 
-        // get my team
-        axios.get('league/myteam/'+this.leagueId).then(response => {
-            this.myteam = response.data;
-            this.team_dropdown = this.myteam.id
-            console.log(response.data);
-
-            if (this.myteam.user_id == this.leagueInfo.commish_id) {
-                this.commishTools = true;
-            }
-
-
-        }).catch(error => {
-            console.log(error);
-            if (error.response.status === 422) {
-                this.errors = error.response.data.errors || {};
-            }
-        });
+        
 
         this.refreshPlayerList();
         this.getLastUpdate()
@@ -1134,6 +1118,23 @@ import moment from 'moment'
                 
             }
             this.$data.processing = false;
+                    // get my team
+                axios.get('league/myteam/'+this.leagueId).then(response => {
+                    this.myteam = response.data;
+                    this.team_dropdown = this.myteam.id
+                    console.log(response.data);
+
+                    if (this.myteam.user_id == this.leagueInfo.commish_id) {
+                        this.commishTools = true;
+                    }
+
+
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
         }).catch(error => {
             console.log(error);
             if (error.response.status === 422) {
