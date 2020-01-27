@@ -284,7 +284,7 @@
                                         </b-button>
                                     </div>
                                     
-                                    <div v-if="commishTools">
+                                    <div v-if="commishTools && leagueInfo.draft_status == 2">
                                         Commish Tools -- Assign Team:
                                         <b-form-select v-model="data.item.fantasyTeamId" :options="teamNames"
                                             v-on:change="commishUpdatePlayerTeam($event, data.item)"
@@ -319,7 +319,7 @@
                                     hover
                                 >
                             <template v-slot:cell(actions)="data">
-                                <div v-if="commishTools">
+                                <div v-if="commishTools && leagueInfo.draft_status == 2">
                                         Commish Tools -- Assign Team:
                                         <b-form-select v-model="data.item.fantasyTeamId" :options="teamNames"
                                             v-on:change="commishUpdatePlayerTeam($event, data.item)"
