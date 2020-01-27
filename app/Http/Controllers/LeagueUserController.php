@@ -27,14 +27,15 @@ class LeagueUserController extends Controller
     public function draftPlayer(Request $request) {
         $leagueuser = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
         $league = League::where('id',$request->leagueId)->first();
-        $rosteritem = new RosterItem;
-        $rosteritem->team_id = $leagueuser->id;
-        $rosteritem->league_id = $leagueuser->league_id;
-        $rosteritem->player_id = $request->player_id;
-        $rosteritem->save();
+        
 
         if ($league->draft_current_drafter == $leagueuser->id) {
-
+            $rosteritem = new RosterItem;
+            $rosteritem->team_id = $leagueuser->id;
+            $rosteritem->league_id = $leagueuser->league_id;
+            $rosteritem->player_id = $request->player_id;
+            $rosteritem->save();
+            
             // get leagueUsers
             // delete drafted player for draft queues
 
