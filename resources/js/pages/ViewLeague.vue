@@ -23,7 +23,7 @@
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="postDraft">
                 <b-card-body>
-                    <b-card-title>Your draft is complete. Waivers, trades, and lineups will start one week before the season opening.</b-card-title>
+                    <b-card-title>Your draft is complete. Waivers, trades, and lineups will start on Monday, February 3rd.</b-card-title>
                     <b-card-text>
                         <b-button v-b-modal.modal-1>
                             See Draft Board
