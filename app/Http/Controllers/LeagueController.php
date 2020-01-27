@@ -18,6 +18,23 @@ use Illuminate\Support\Facades\Log;
 
 class LeagueController extends Controller
 {
+    public function assignPlayer(Request $request) {
+        // first, remove that player_id from the league
+        $delete = RosterItem::where('league_id',$request->leagueId)
+            ->where('player_id',$request->player_id)
+            ->delete();
+        // then, add that player to the team
+        if ($request->team_id > 0) {
+            $newrosteritem = new RosterItem;
+            $newrosteritem->league_id = $request->leagueId;
+            $newrosteritem->player_id = $request->player_id;
+            $newrosteritem->team_id = $request->team_id;
+            $newrosteritem->save();
+        }
+
+        $lastUpdate = uniqid();
+        Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
     public function removeTeam(Request $request) {
         
 

@@ -283,6 +283,14 @@
                                             Draft
                                         </b-button>
                                     </div>
+                                    
+                                    <div v-if="commishTools">
+                                        Commish Tools -- Assign Team:
+                                        <b-form-select v-model="data.item.fantasyTeamId" :options="teamNames"
+                                            v-on:change="commishUpdatePlayerTeam($event, data.item)"
+                                        ></b-form-select>
+                                        </div>
+                                    
                                 </template>
                                 </b-table>
 
@@ -310,6 +318,14 @@
                                     striped 
                                     hover
                                 >
+                            <template v-slot:cell(actions)="data">
+                                <div v-if="commishTools">
+                                        Commish Tools -- Assign Team:
+                                        <b-form-select v-model="data.item.fantasyTeamId" :options="teamNames"
+                                            v-on:change="commishUpdatePlayerTeam($event, data.item)"
+                                        ></b-form-select>
+                                        </div>
+                                </template>
                             </b-table>
 
                         </b-card-text>
@@ -882,6 +898,21 @@ import moment from 'moment'
     },
 
     methods: {
+        commishUpdatePlayerTeam(event, item) {
+            console.log('here');
+            axios.post('league/assignPlayer', {
+                leagueId: this.leagueId,
+                team_id: event,
+                player_id: item.id
+            }).then(response => {
+                //this.$router.push('/dashboard');
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         leaveLeague() {
             if(confirm("Are you sure you want to leave this league?")) {
                 console.log("confirmed "+this.myteam.id);
@@ -1149,6 +1180,10 @@ import moment from 'moment'
             this.rule25 = this.leagueInfo.rule25;
             this.rule26 = this.leagueInfo.rule26;
             this.teamNames = [];
+            this.teamNames.push({
+                value: 0,
+                text: "No Team"
+            });
             for (var i = 0; i < this.leagueInfo.teams.length; i++) {
                 this.teamNames.push({
                     value: this.leagueInfo.teams[i].id,
@@ -1467,6 +1502,7 @@ import moment from 'moment'
                             for (var teamNames = 0; teamNames < this.$data.teams.length; teamNames++) {
                                 if (this.$data.teams[teamNames].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].team_id) {
                                     this.$data.items[players].fantasyTeam = this.$data.teams[teamNames].name;
+                                    this.$data.items[players].fantasyTeamId = this.$data.teams[teamNames].id;
                                 }
                             }
                         }
