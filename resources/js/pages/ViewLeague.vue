@@ -1341,7 +1341,7 @@ import moment from 'moment'
                     for (var i = 0; i < response.data.length; i++) {
                         if (response.data[i].player_id == player_item.id) {
                             player_item.draftQueue = true;
-                            player_item.queueOrder = response.data[i].id;
+                            player_item.queueOrder = response.data[i].queue_order;
                             this.$data.queueItems.push(player_item);
                         }
                     }

@@ -17,11 +17,40 @@ use Carbon\Carbon;
 class LeagueUserController extends Controller
 {
     public function queuePlayer(Request $request) {
+
         $leagueuser = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
+        $highestqueue = $this->getHighestQueue($leagueuser->id);
+
         $draftqueue = new DraftQueue;
         $draftqueue->leagueuser_id = $leagueuser->id;
         $draftqueue->player_id = $request->player_id;
+        $draftqueue->queue_order = $highestqueue + 1;
         $draftqueue->save();
+
+        $this->reorderDraftQueue($leagueuser->id);
+    }
+
+    public function getHighestQueue($team_id) {
+        $draftqueues = DraftQueue::where('leagueuser_id',$team_id)->get();
+        $highestqueue = 0;
+        foreach ($draftqueues as $queue_item) {
+            if ($queue_item->queue_order > $highestqueue) $highestqueue = $queue_item->queue_order;
+        }
+
+        return $highestqueue;
+    }
+
+    public function reorderDraftQueue($team_id) {
+        $draftqueues = DraftQueue::where('leagueuser_id',$team_id)->orderBy('queue_order','asc')->get();
+
+        $counter = 1;
+        foreach($draftqueues as $queue_item) {
+            $update = DraftQueue::where('id',$queue_item->id)
+                ->update([
+                    'queue_order'=>$counter
+                ]);
+            $counter++;
+        }
     }
 
     public function draftPlayer(Request $request) {
@@ -35,7 +64,7 @@ class LeagueUserController extends Controller
             $rosteritem->league_id = $leagueuser->league_id;
             $rosteritem->player_id = $request->player_id;
             $rosteritem->save();
-            
+
             // get leagueUsers
             // delete drafted player for draft queues
 
@@ -44,6 +73,7 @@ class LeagueUserController extends Controller
                 $delete = DraftQueue::where('leagueuser_id',$team->id)
                     ->where('player_id',$request->player_id)
                     ->delete();
+                $this->reorderDraftQueue($team->id);
             }
 
             // set draft pick
@@ -98,72 +128,50 @@ class LeagueUserController extends Controller
 
     public function moveUpQueue(Request $request) {
         $leagueuser = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
-        $draftqueue = DraftQueue::where('leagueuser_id',$leagueuser->id)
-            ->orderBy('id')
-            ->get();
-
-        $targetPlayerId = '';
-        $previousPlayerId = '';
-        $previousPick = 0;
-        $highestId = 0;
+        $target_queue_item = DraftQueue::where('leagueuser_id',$leagueuser->id)
+            ->where('player_id',$request->player_id)
+            ->first();
         
-        foreach ($draftqueue as $pick) {
-            if ($pick->player_id == $request->player_id) {
-                $targetPlayerId = $pick->id;
-                $previousPlayerId = $previousPick;
-            }
-            $previousPick = $pick->id;
-            if ($pick->id > $highestId) $highestId = $pick->id;
+        $queue_item_in_the_way = DraftQueue::where('leagueuser_id',$leagueuser->id)
+            ->where('queue_order',$target_queue_item->queue_order-1)
+            ->first();
+
+        if ($queue_item_in_the_way) {
+            $update = DraftQueue::where('id',$queue_item_in_the_way->id)
+                ->update([
+                    'queue_order'=>$target_queue_item->queue_order
+                ]);
         }
-        $updateone = DraftQueue::where('id',$previousPlayerId)
+        $secondupdate = DraftQueue::where('id',$target_queue_item->id)
             ->update([
-                'id' => $highestId + 1
+                'queue_order'=>$target_queue_item->queue_order-1
             ]);
-        $updatetwo = DraftQueue::where('id',$targetPlayerId)
-                ->update([
-                    'id' => $previousPlayerId
-                ]);
-        $updatethree = DraftQueue::where('id',$previousPlayerId)
-                ->update([
-                    'id' => $targetPlayerId
-                ]);
+
+            $this->reorderDraftQueue($leagueuser->id);
     }
 
     public function moveDownQueue(Request $request) {
         $leagueuser = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
-        $draftqueue = DraftQueue::where('leagueuser_id',$leagueuser->id)
-            ->orderBy('id')
-            ->get();
-
-        $targetPlayerId = '';
-        $previousPlayerId = '';
-        $previousPick = 0;
-        $highestId = 0;
-
-        $grabNext = false;
+        $target_queue_item = DraftQueue::where('leagueuser_id',$leagueuser->id)
+            ->where('player_id',$request->player_id)
+            ->first();
         
-        foreach ($draftqueue as $pick) {
-            if ($pick->player_id == $request->player_id) {
-                $targetPlayerId = $pick->id;
-                //$previousPlayerId = $previousPick;
-                $grabNext = true;
-            }
-            if ($grabNext) $previousPlayerId = $pick->player_id;
-            $previousPick = $pick->id;
-            if ($pick->id > $highestId) $highestId = $pick->id;
+        $queue_item_in_the_way = DraftQueue::where('leagueuser_id',$leagueuser->id)
+            ->where('queue_order',$target_queue_item->queue_order+1)
+            ->first();
+
+        if ($queue_item_in_the_way) {
+            $update = DraftQueue::where('id',$queue_item_in_the_way->id)
+                ->update([
+                    'queue_order'=>$target_queue_item->queue_order
+                ]);
         }
-        $updateone = DraftQueue::where('id',$previousPlayerId)
+        $secondupdate = DraftQueue::where('id',$target_queue_item->id)
             ->update([
-                'id' => $highestId + 1
+                'queue_order'=>$target_queue_item->queue_order+1
             ]);
-        $updatetwo = DraftQueue::where('id',$targetPlayerId)
-                ->update([
-                    'id' => $previousPlayerId
-                ]);
-        $updatethree = DraftQueue::where('id',$previousPlayerId)
-                ->update([
-                    'id' => $targetPlayerId
-                ]);
+
+            $this->reorderDraftQueue($leagueuser->id);
     }
 
     public function removeFromQueue(Request $request) {
@@ -171,5 +179,6 @@ class LeagueUserController extends Controller
         $draftqueue = DraftQueue::where('leagueuser_id',$leagueuser->id)
             ->where('player_id',$request->player_id)
             ->delete();
+        $this->reorderDraftQueue($leagueuser->id);
     }
 }
