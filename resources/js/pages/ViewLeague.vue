@@ -76,9 +76,10 @@
                             <form autocomplete="off" @submit.prevent="updateRoster" method="post">
                                 <b-button @click="leaveLeague()">
                                     Leave League
-                                </b-button>
+                                </b-button><br /><br />
                             </form>
-                            <strong>Invite link: </strong>https://altfantasysports.com/league/invite/{{ inviteCode }}/
+                                                    <b-alert show>To invite teams to your league, send them this link: https://altfantasysports.com/league/invite/{{ inviteCode }}/</b-alert>
+
                             
                             <h2>Current Teams</h2>
                             <ul id="team-name-list">
