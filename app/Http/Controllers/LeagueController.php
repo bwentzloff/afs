@@ -11,6 +11,7 @@ use App\Models\Player;
 use App\Models\LeagueUser;
 use App\Models\DraftPick;
 use App\Models\RosterItem;
+use App\Models\DraftQueue;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
@@ -437,16 +438,32 @@ class LeagueController extends Controller
                 foreach($draftPicks as $pick) {
                     $player_ids[] = $pick->player_id;
                 }
-                // pick a player not in that list
-                $player = Player::whereNotIn('id',$player_ids)
-                    ->whereIn('position',array("QB","WR","RB","TE","K","DEF"))
-                    ->first();
+                
 
                 $draftPick = DraftPick::where('league_id',$league->id)
                     ->whereNull('player_id')
                     ->orderBy('pick_order','asc')
                     ->first();
+                
+                    // pick a player from the draft queue first
+                $queue_item = DraftQueue::where('leagueuser_id',$draftPick->team_id)
+                    ->orderBy('queue_order','asc')
+                    ->first();
 
+                $player = "";
+                if ($queue_item) {
+                    $player = Player::where('id',$queue_item->player_id)
+                        ->first();
+                    
+                }
+                if (!$player) {
+                    // pick a player not in that list
+                    $player = Player::whereNotIn('id',$player_ids)
+                        ->whereIn('position',array("QB","WR","RB","TE","K","DEF"))
+                        ->first();
+
+                }
+                
                 if ($draftPick) {
                     $update = DraftPick::where('id',$draftPick->id)
                         ->update([
@@ -457,6 +474,14 @@ class LeagueController extends Controller
                         $rosteritem->league_id = $league->id;
                         $rosteritem->player_id = $player->id;
                         $rosteritem->save();
+                    
+                    // delete players from draft queues
+                    $leagueusers = LeagueUser::where('league_id',$league->id)->get();
+                    foreach($leagueusers as $team) {
+                        $delete = DraftQueue::where('leagueuser_id',$team->id)
+                            ->where('player_id',$player->id)
+                            ->delete();
+                    }
                 }
 
                 // update nextpick and current_drafter
