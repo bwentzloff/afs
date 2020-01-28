@@ -332,7 +332,18 @@
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Matchups">
-                        <b-card-text>Matchups will be auto-generated one week before the first kickoff.</b-card-text>
+                        <b-card-text>
+                            
+                            <b-table
+                                    id="matchups-table"
+                                    :items="matchups"
+                                    :fields="matchupsFields"
+                                    :sort-by="matchupsSort"
+                                    striped 
+                                    hover
+                                >
+                            </b-table>
+                        </b-card-text>
                     </b-tab>
                     <b-tab title="Draft Queue" v-if="!postDraft">
                         <b-card-text>
@@ -623,6 +634,7 @@ import moment from 'moment'
         queueItems: [],
         processing: false,
         queueSort: 'queueOrder',
+        matchupsSort: 'week',
         draftOrderSort: 'draftOrder',
         draftpickTime_options: [
           { value: 2, text: '2 minutes' },
@@ -657,6 +669,13 @@ import moment from 'moment'
             {key: 'team' },
             {key: 'actions'}
         ],
+        matchupsFields: [
+            {key: 'home_name'},
+            {key: 'away_name'},
+            {key: 'home_score'},
+            {key: 'away_score'},
+            {key: 'week'}
+        ],
         draftBoardFields: [
             {key: 'team_id'},
             {key: 'pick_order'},
@@ -667,6 +686,7 @@ import moment from 'moment'
             {key: 'draftOrder'},
             {key: 'actions'}
         ],
+        matchups: [],
         inviteCode: '',
         preDraft: false,
         postDraft: false,
@@ -912,8 +932,11 @@ import moment from 'moment'
             axios.post('league/getMatchups', {
                 leagueId: this.leagueId,
             }).then(response => {
-                console.log('matchups');
-                console.log(response.data);
+                this.matchups = response.data;
+                for (var i = 0; i < this.matchups.length; i++) {
+                    this.matchups[i].home_name = this.getTeamNameFromId(this.matchups[i].home_id);
+                    this.matchups[i].away_name = this.getTeamNameFromId(this.matchups[i].away_id);
+                }
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
