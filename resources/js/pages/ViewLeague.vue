@@ -47,7 +47,7 @@
                     <b-card-text>
                         <div>
                             Current Drafter: {{ currentDrafter }}<br />
-                                {{ countdownMinutes }} minutes, {{ countdownSeconds }} seconds
+                                {{ countdownHours }} hours, {{ countdownMinutes }} minutes, {{ countdownSeconds }} seconds
                             </div>
                         <b-button v-b-modal.modal-1>
                             See Draft Board
@@ -608,6 +608,7 @@ import moment from 'moment'
         draftTimeHours: '',
         draftTimeMinutes: '',
         draftTimeSeconds: '',
+        countdownHours: '',
         countdownMinutes: '',
         countdownSeconds: '',
         currentDrafter: '',
@@ -1158,6 +1159,7 @@ import moment from 'moment'
 
             var countdownDiff = moment.utc(this.leagueInfo.draft_nextpick).diff(moment());
             diffDuration = moment.duration(countdownDiff);
+            this.countdownHours = diffDuration.hours();
             this.countdownMinutes = diffDuration.minutes();
             this.countdownSeconds = diffDuration.seconds();
 
@@ -1265,6 +1267,7 @@ import moment from 'moment'
             } else {
                 var diff = moment.utc(this.leagueInfo.draft_nextpick).diff(moment());
                 const diffDuration = moment.duration(diff);
+                this.countdownHours = diffDuration.hours();
                 this.countdownMinutes = diffDuration.minutes();
                 this.countdownSeconds = diffDuration.seconds();
                 var that = this;
