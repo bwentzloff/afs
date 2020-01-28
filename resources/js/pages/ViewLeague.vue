@@ -1503,7 +1503,7 @@ import moment from 'moment'
                         }
                     }
                 })
-                this.refreshWaivers();
+                
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
@@ -1525,6 +1525,7 @@ import moment from 'moment'
                 this.assignTeams();
                 this.updateDraftBoard()
                 this.refreshQueueItems();
+                this.refreshWaivers();
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);
