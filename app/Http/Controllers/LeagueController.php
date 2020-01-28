@@ -523,10 +523,13 @@ class LeagueController extends Controller
                     ->orderBy('pick_order','asc')
                     ->first();
                 
+                $queue_item = "";
+                if ($draftPick) {
                     // pick a player from the draft queue first
                 $queue_item = DraftQueue::where('leagueuser_id',$draftPick->team_id)
                     ->orderBy('queue_order','asc')
                     ->first();
+                }
 
                 $player = "";
                 if ($queue_item) {
