@@ -46,7 +46,11 @@ class LeagueController extends Controller
                 for($game = 0; $game < count($home_array); $game++) {
                     $newmatchup = new Matchup;
                     $newmatchup->week = $week;
-                    $newmatchup->home_id = $home_array[$game];
+                    if (isset($home_array[$game])) {
+                        $newmatchup->home_id = $home_array[$game];
+                    } else {
+                        $newmatchup->home_id = 0;
+                    }
                     if (isset($away_array[$game])) {
                         $newmatchup->away_id = $away_array[$game];
                     } else {
