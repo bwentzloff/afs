@@ -284,6 +284,14 @@
                                             Draft
                                         </b-button>
                                     </div>
+                                    <div v-if="postDraft && data.item.fantasyTeam == '' && !data.item.waiverMade">
+                                        <b-button variant="success" @click="createClaim($event, data.item)">
+                                            Create Waiver Claim
+                                        </b-button>
+                                    </div>
+                                    <div v-if="postDraft && data.item.fantasyTeam == '' && data.item.waiverMade">
+                                        <em>Waiver claim created</em>
+                                    </div>
                                     
                                     <div v-if="commishTools && leagueInfo.draft_status == 2">
                                         Commish Tools -- Assign Team:
@@ -607,6 +615,28 @@
                 </b-tabs>
             </b-card>
         </div>
+        <b-modal id="waiver-modal" hide-footer>
+            <template v-slot:modal-title>
+                If this waiver claim goes through, which player would you like to drop?
+            </template>
+            <b-table
+                id="waiver-players-table"
+                :items="rosters[myteam.id]"
+                :fields="waiverTableFields"
+                striped 
+                hover
+            >
+                <template v-slot:cell(actions)="data">
+                    <div>
+                        <b-button @click="selectDropPlayer($event, data.item.player_id)">
+                            Select
+                        </b-button>
+                    </div>
+                </template>
+            </b-table>
+            <b-button class="mt-3" block @click="$bvModal.hide('waiver-modal')">Cancel</b-button>
+            
+        </b-modal>
     </div>
 </template>
 <script>
@@ -684,6 +714,10 @@ import moment from 'moment'
         draftOrderFields: [
             {key: 'name'},
             {key: 'draftOrder'},
+            {key: 'actions'}
+        ],
+        waiverTableFields: [
+            {key: 'player_name'},
             {key: 'actions'}
         ],
         matchups: [],
@@ -822,6 +856,7 @@ import moment from 'moment'
         draftedKs: 0,
         draftedDef: 0,
         draftedBench: 0,
+        currentClaimId: 0,
       }
     },
     mounted() {
@@ -829,25 +864,7 @@ import moment from 'moment'
 
         this.getLeagueInfo();
 
-        // get team info
-        axios.get('league/teams/'+this.leagueId).then(response => {
-            console.log(response);
-            this.teams = response.data;
-
-        }).catch(error => {
-            console.log(error);
-            if (error.response.status === 422) {
-                this.errors = error.response.data.errors || {};
-            }
-        });
-
         
-
-        
-
-        this.refreshPlayerList();
-        this.getLastUpdate();
-        this.getMatchups();
     },
     computed: {
       rows() {
@@ -927,6 +944,26 @@ import moment from 'moment'
     methods: {
         resetPagination() {
             if (this.positionFilter != "all") this.currentPage = 1
+        },
+        createClaim(event, item) {
+            this.currentClaimId = item.id;
+            this.$bvModal.show("waiver-modal");
+            /**/
+        },
+        selectDropPlayer(event, item) {
+            this.$bvModal.hide('waiver-modal');
+            axios.post('league/createClaim', {
+                leagueId: this.leagueId,
+                player_id: this.currentClaimId,
+                drop_player_id: item
+            }).then(response => {
+                //this.$router.push('/dashboard');
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
         },
         getMatchups() {
             axios.post('league/getMatchups', {
@@ -1153,10 +1190,25 @@ import moment from 'moment'
         getLeagueInfo() {
             // get league info
             axios.get('league/info/'+this.leagueId).then(response => {
-            console.log(response);
-            this.inviteCode = response.data.invite_code;
-            this.leagueInfo = response.data;
-            console.log(this.leagueInfo);
+                console.log(response);
+                this.inviteCode = response.data.invite_code;
+                this.leagueInfo = response.data;
+                console.log(this.leagueInfo);
+                // get team info
+                axios.get('league/teams/'+this.leagueId).then(response => {
+                    console.log(response);
+                    this.teams = response.data;
+
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+                this.refreshPlayerList();
+                this.getLastUpdate();
+                this.getMatchups();
+
             if (this.leagueInfo.draft_status == 0) {
                 this.preDraft = true;
                 this.postDraft = false;
@@ -1301,9 +1353,7 @@ import moment from 'moment'
             axios.get('league/getLastUpdate/'+this.$data.leagueId).then(response => {
                 if (this.$data.lastUpdate != response.data) {
                     this.getLeagueInfo();
-                    this.refreshPlayerList();
                     this.$data.lastUpdate = response.data;
-                    console.log(response.data);
                 }
             }).catch(error => {
                 console.log(error);
@@ -1420,6 +1470,24 @@ import moment from 'moment'
                 }
             });
         },
+        refreshWaivers() {
+            axios.post('player/getwaivers', {
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                this.$data.items.forEach((player_item) => {
+                    for (var i = 0; i < response.data.length; i++) {
+                        if (response.data[i].player_id == player_item.id) {
+                            player_item.waiverMade = true;
+                        }
+                    }
+                })
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.$data.errors = error.response.data.errors || {};
+                }
+            });
+        },
         refreshQueueItems() {
             axios.post('player/getqueue', {
                 leagueId: this.$data.leagueId,
@@ -1435,6 +1503,7 @@ import moment from 'moment'
                         }
                     }
                 })
+                this.refreshWaivers();
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
@@ -1482,6 +1551,10 @@ import moment from 'moment'
                 this.$data.draftedKs = 0;
                 this.$data.draftedDef = 0;
                 this.$data.draftedBench = 0;
+
+                for (var j = 0; j < this.$data.rosters[this.$data.myteam.id].length; j++) {
+                    this.$data.rosters[this.$data.myteam.id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[this.$data.myteam.id][j].player_id);
+                }
                 
                 // calculate drafted player totals
                 for (var i = 0; i < this.$data.rosters[this.$data.myteam.id].length; i++) {

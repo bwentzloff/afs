@@ -51,6 +51,7 @@ Route::prefix('v1')->group(function () {
     Route::post('league/moveDownDraftOrder', ['uses'=>'LeagueController@moveDownDraftOrder']);
     Route::post('league/updateSettings', ['uses'=>'LeagueController@updateSettings']);
     Route::post('league/getMatchups', ['uses'=>'LeagueController@getMatchups']);
+    Route::post('league/createClaim', ['uses'=>'LeagueController@createClaim']);
     
     
     
@@ -60,6 +61,7 @@ Route::prefix('v1')->group(function () {
     Route::post('player/moveDownQueue', 'LeagueUserController@moveDownQueue');
     Route::post('player/removeFromQueue', 'LeagueUserController@removeFromQueue');
     Route::post('player/getqueue', 'LeagueUserController@getQueue');
+    Route::post('player/getwaivers', 'LeagueUserController@getWaivers');
 
     // Scraping routes
     Route::get('scrape/xfl/players', 'ScrapeController@xflPlayers');

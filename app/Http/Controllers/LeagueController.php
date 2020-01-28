@@ -13,6 +13,7 @@ use App\Models\DraftPick;
 use App\Models\RosterItem;
 use App\Models\DraftQueue;
 use App\Models\Matchup;
+use App\Models\Waiver;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
@@ -443,6 +444,20 @@ class LeagueController extends Controller
         }
 
         $this->createDraftPicks($leagueId);
+    }
+
+    function createClaim(Request $request) {
+        $team = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
+
+        $waiver = new Waiver;
+        $waiver->league_id = $request->leagueId;
+        $waiver->team_id = $team->id;
+        $waiver->player_id = $request->player_id;
+        $waiver->drop_player_id = $request->drop_player_id;
+        $waiver->save();
+
+        $lastUpdate = uniqid();
+        Cache::put('leagueUpdate'.$request->leagueId, $lastUpdate,600);
     }
 
     function createDraftPicks($leagueId) {

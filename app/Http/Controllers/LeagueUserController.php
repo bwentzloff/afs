@@ -12,6 +12,7 @@ use App\Models\Player;
 use App\Models\DraftQueue;
 use App\Models\DraftPick;
 use App\Models\RosterItem;
+use App\Models\Waiver;
 use Carbon\Carbon;
 
 class LeagueUserController extends Controller
@@ -124,6 +125,19 @@ class LeagueUserController extends Controller
             $draftqueue = "";
         }
         return response()->json($draftqueue);
+    }
+
+    public function getWaivers(Request $request) {
+        $leagueuser = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
+
+        if ($leagueuser) {
+            $waivers = Waiver::where('team_id',$leagueuser->id)
+                ->orderBy('id')
+                ->get();
+        } else {
+            $waivers = "";
+        }
+        return response()->json($waivers);
     }
 
     public function moveUpQueue(Request $request) {
