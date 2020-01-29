@@ -1237,6 +1237,9 @@ import moment from 'moment'
             this.draftTimeHours = diffDuration.hours();
             this.draftTimeMinutes = diffDuration.minutes();
             this.draftTimeSeconds = diffDuration.seconds();
+            if (this.draftTimeSeconds < 0) {
+                this.draftTimeSeconds = 0;
+            }
 
             var countdownDiff = moment.utc(this.leagueInfo.draft_nextpick).diff(moment());
             diffDuration = moment.duration(countdownDiff);
