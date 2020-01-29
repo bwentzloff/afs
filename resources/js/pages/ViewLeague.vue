@@ -1361,7 +1361,7 @@ import moment from 'moment'
                     this.errors = error.response.data.errors || {};
                 }*/
             });
-            if (this.leagueInfo < 2) {
+            if (this.leagueInfo.draft_status < 2) {
                 setTimeout(() => { this.getLastUpdate(); }, 1000);
             } else {
                 setTimeout(() => { this.getLastUpdate(); }, 10000);
