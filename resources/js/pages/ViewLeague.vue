@@ -957,7 +957,7 @@ import moment from 'moment'
                 player_id: this.currentClaimId,
                 drop_player_id: item
             }).then(response => {
-                //this.$router.push('/dashboard');
+                this.refreshPlayerList();
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
