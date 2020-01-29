@@ -696,6 +696,8 @@ import moment from 'moment'
         ],
         fields: [
             {key: 'combinedInfo'},
+            {key: 'percent', label: '% Drafted', sortable: true},
+            {key: 'adp', label: 'ADP', sortable: true},
             {key: 'extrainfo', sortable: true, class:"d-none d-lg-table-cell"},
             {key: 'actions'}
         ],

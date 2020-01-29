@@ -8,11 +8,44 @@ use App\Models\League;
 use App\Models\User;
 use App\Models\LeagueUser;
 use App\Models\Player;
+use App\Models\DraftPick;
 
 include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 
 class ScrapeController extends Controller
 {
+    public function calculatePercent() {
+        // get number of leagues
+        $numOfLeagues = League::where('draft_status',2)
+            ->count();
+
+        // get all players
+        $players = Player::get();
+        foreach ($players as $player) {
+            // count how many draft picks that guy has
+            $allPicks = DraftPick::where('player_id',$player->id)->get();
+
+            $update = Player::where('id',$player->id)
+                ->update([
+                    'percent'=>($allPicks->count() / $numOfLeagues)*100
+                ]);
+            $tally = 0;
+            foreach ($allPicks as $pick) {
+                $tally = $tally + $pick->pick_order;
+            }
+            if ($tally > 0 && $allPicks->count() > 0) {
+                $update = Player::where('id',$player->id)
+                    ->update([
+                        'adp'=>$tally / $allPicks->count()
+                    ]);
+            } else {
+                $update = Player::where('id',$player->id)
+                    ->update([
+                        'adp'=>100
+                    ]);
+            }
+        }
+    }
     public function xflPlayers() {
         $urls = [
             "Dallas" => "https://www.xfl.com/en-US/teams/dallas/renegades-articles/dallas-renegades-roster",

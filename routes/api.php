@@ -83,6 +83,7 @@ Route::prefix('v1')->group(function () {
 
     // Get player info
     Route::get('players/xfl', 'PlayerController@xflPlayers');
+    Route::get('players/stats', 'ScrapeController@calculatePercent');
 
     // Cronjobs
     //Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
