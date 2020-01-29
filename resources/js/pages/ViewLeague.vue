@@ -267,6 +267,10 @@
                                     striped 
                                     hover
                                 >
+                                <template v-slot:cell(combinedInfo)="data">
+                                    {{ data.item.name }}<br />
+                                    {{ data.item.position }} - {{ data.item.team }}
+                                </template>
                                 <template v-slot:cell(actions)="data">
                                     <div>
                                         {{ data.item.fantasyTeam }}
@@ -327,6 +331,10 @@
                                     striped 
                                     hover
                                 >
+                                <template v-slot:cell(combinedInfo)="data">
+                                    {{ data.item.name }}<br />
+                                    {{ data.item.position }} - {{ data.item.team }}
+                                </template>
                             <template v-slot:cell(actions)="data">
                                 <div v-if="commishTools && leagueInfo.draft_status == 2">
                                         Commish Tools -- Assign Team:
@@ -687,9 +695,7 @@ import moment from 'moment'
             { value: "Saturday", text: "Saturday"},
         ],
         fields: [
-            {key: 'name', sortable: true},
-            {key: 'position', sortable: true},
-            {key: 'team', sortable: true},
+            {key: 'combinedInfo'},
             {key: 'extrainfo', sortable: true, class:"d-none d-lg-table-cell"},
             {key: 'actions'}
         ],
