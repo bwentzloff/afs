@@ -1361,7 +1361,11 @@ import moment from 'moment'
                     this.errors = error.response.data.errors || {};
                 }*/
             });
-            setTimeout(() => { this.getLastUpdate(); }, 1000);
+            if (this.leagueInfo < 2) {
+                setTimeout(() => { this.getLastUpdate(); }, 1000);
+            } else {
+                setTimeout(() => { this.getLastUpdate(); }, 10000);
+            }
         },
         addToQueue(event, player) {
             console.log(player)
