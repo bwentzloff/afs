@@ -61,8 +61,8 @@
           success: function() {
             // handle redirection
             app.success = true
-            const redirectTo = redirect ? redirect.from.name : this.$auth.user().role === -1 ? 'admin.dashboard' : 'dashboard'
-            // const redirectTo = 'dashboard'
+            //const redirectTo = redirect ? redirect.from.name : this.$auth.user().role === -1 ? 'admin.dashboard' : 'dashboard'
+            const redirectTo = 'dashboard'
             this.$router.push({name: redirectTo})
           },
           error: function() {
