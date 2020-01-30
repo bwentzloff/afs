@@ -348,6 +348,7 @@
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Matchups">
+                        <!--
                         <b-card-text>
                             
                             <b-table
@@ -360,6 +361,8 @@
                                 >
                             </b-table>
                         </b-card-text>
+                        -->
+                        Matchups will be live soon
                     </b-tab>
                     <b-tab title="Draft Queue" v-if="!postDraft">
                         <b-card-text>
