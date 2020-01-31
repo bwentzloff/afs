@@ -246,6 +246,7 @@ import { Datetime } from 'vue-datetime';
         ],
         draftpickTime: 5,
         draftpickTime_options: [
+            { value: 1, text: '1 minute' },
           { value: 2, text: '2 minutes' },
           { value: 5, text: '5 minutes' },
           { value: 10, text: '10 minutes' },
