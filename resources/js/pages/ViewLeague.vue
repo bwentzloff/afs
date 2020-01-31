@@ -1371,17 +1371,19 @@ import moment from 'moment'
                     this.getLeagueInfo();
                     this.$data.lastUpdate = response.data;
                 }
+                if (this.leagueInfo.draft_status < 2) {
+                    setTimeout(() => { this.getLastUpdate(); }, 5000);
+                } else {
+                    setTimeout(() => { this.getLastUpdate(); }, 10000);
+                }
             }).catch(error => {
                 console.log(error);
                 /*if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
                 }*/
+                setTimeout(() => { this.getLastUpdate(); }, 15000);
             });
-            if (this.leagueInfo.draft_status < 2) {
-                setTimeout(() => { this.getLastUpdate(); }, 5000);
-            } else {
-                setTimeout(() => { this.getLastUpdate(); }, 10000);
-            }
+            
         },
         addToQueue(event, player) {
             console.log(player)
