@@ -17,8 +17,11 @@
           </li>
       </ul>
       <ul class="navbar-nav ml-auto" v-if="!$auth.check()">
-          <li class="nav-item" v-for="(route, key) in routes.unlogged" v-bind:key="route.path">
-            <router-link :to="{ name : route.path }" :key="key" class="nav-link">{{route.name}}</router-link>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
           </li>
       </ul>
       <ul class="navbar-nav ml-auto" v-if="$auth.check()">
