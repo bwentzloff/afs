@@ -3,6 +3,8 @@
         <div class="card card-default">
             <div class="card-header">Create League</div>
             <div class="card-body">
+                <b-alert show>Protip: The Fantasy Addiction Network has created a great video on recommended ways to set up your XFL fantasy league: <a href="https://www.youtube.com/watch?v=lnO3rmrifNU&feature=youtu.be" target="_blank">https://www.youtube.com/watch?v=lnO3rmrifNU&feature=youtu.be</a></b-alert>
+
                 <form autocomplete="off" @submit.prevent="create" method="post">
                     <div class="form-group">
                         <label for="name">League Name</label>
