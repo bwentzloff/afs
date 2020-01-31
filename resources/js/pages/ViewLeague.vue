@@ -1378,7 +1378,7 @@ import moment from 'moment'
                 }*/
             });
             if (this.leagueInfo.draft_status < 2) {
-                setTimeout(() => { this.getLastUpdate(); }, 1000);
+                setTimeout(() => { this.getLastUpdate(); }, 5000);
             } else {
                 setTimeout(() => { this.getLastUpdate(); }, 10000);
             }
