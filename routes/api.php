@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
             Route::get('user', 'AuthController@user');
             // Logout user from application
             Route::post('logout', 'AuthController@logout');
+            Route::get('refresh', 'AuthController@refresh')->name('api.jwt.refresh');
         });
 
         
