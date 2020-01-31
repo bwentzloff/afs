@@ -607,7 +607,7 @@ class LeagueController extends Controller
 
                     // update lastUpdate
             }
-            sleep(10);
+            sleep(100);
         }
     }
 
