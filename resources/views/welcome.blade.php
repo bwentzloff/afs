@@ -17,6 +17,8 @@
   <div id="app">
     <index></index>
   </div>
+  <div><em>The servers had some major problems today. They have been fixed, but the incident left some people with some faulty authentication tokens. If you're unable to login, you can clear your browser cache and everything should go back to normal. Another method is to access the site through a private browser window. Sorry for the inconvenience.
+  </em></div>
   <!-- Scripts -->
   <script src="{{ asset('js/app.js') }}" defer></script>
 </body>
