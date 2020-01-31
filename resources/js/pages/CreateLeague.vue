@@ -213,6 +213,42 @@
                             <label for="rule25">Points per sack</label>
                             <input type="text" id="rule25" class="form-control" placeholder="" v-model="rule25" required>
                         </div>
+
+                        <div class="form-group">
+                            <label for="rule25">0 Points Allowed</label>
+                            <input type="text" id="rule27" class="form-control" placeholder="" v-model="rule27" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">1-6 Points Allowed</label>
+                            <input type="text" id="rule28" class="form-control" placeholder="" v-model="rule28" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">7-13 Points Allowed</label>
+                            <input type="text" id="rule29" class="form-control" placeholder="" v-model="rule29" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">14-20 Points Allowed:</label>
+                            <input type="text" id="rule30" class="form-control" placeholder="" v-model="rule30" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">21-27 Points Allowed</label>
+                            <input type="text" id="rule31" class="form-control" placeholder="" v-model="rule31" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">28-34 Points Allowed</label>
+                            <input type="text" id="rule32" class="form-control" placeholder="" v-model="rule32" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">35-41 Points Allowed</label>
+                            <input type="text" id="rule33" class="form-control" placeholder="" v-model="rule33" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">42+ Points Allowed</label>
+                            <input type="text" id="rule34" class="form-control" placeholder="" v-model="rule34" required>
+                        </div>
+
+            
+
                     </div>
                     <button type="submit" class="btn btn-primary">Create League</button>
                 </form>
@@ -373,6 +409,14 @@ import { Datetime } from 'vue-datetime';
         rule24: 2,
         rule25: 1,
         rule26: .5,
+        rule27: 10,
+        rule28: 8,
+        rule29: 6,
+        rule30: 2,
+        rule31: 1,
+        rule32: 0,
+        rule33: -2,
+        rule34: -4,
       }
     },
     mounted() {
@@ -430,6 +474,14 @@ import { Datetime } from 'vue-datetime';
             rule24: this.rule24,
             rule25: this.rule25,
             rule26: this.rule26,
+            rule27: this.rule27,
+            rule28: this.rule28,
+            rule29: this.rule29,
+            rule30: this.rule30,
+            rule31: this.rule31,
+            rule32: this.rule32,
+            rule33: this.rule33,
+            rule34: this.rule34,
             draftpickTime: this.draftpickTime,
             userAuth: this.$auth.token()
         }).then(response => {

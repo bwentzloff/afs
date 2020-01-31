@@ -231,6 +231,38 @@
                                     <td>Points per sack</td>
                                     <td>{{ rule25 }}</td>
                                 </tr>
+                                <tr>
+                                    <td>0 Points Allowed</td>
+                                    <td>{{ rule27 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>1-6 Points Allowed</td>
+                                    <td>{{ rule28 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>7-13 Points Allowed</td>
+                                    <td>{{ rule29 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>14-20 Points Allowed</td>
+                                    <td>{{ rule30 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>21-27 Points Allowed</td>
+                                    <td>{{ rule31 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>28-34 Points Allowed</td>
+                                    <td>{{ rule32 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>35-41 Points Allowed</td>
+                                    <td>{{ rule33 }}</td>
+                                </tr>
+                                <tr>
+                                    <td>42+ Points Allowed</td>
+                                    <td>{{ rule34 }}</td>
+                                </tr>
                             </table>
                         </b-card-text>
                     </b-tab>
@@ -619,6 +651,38 @@
                             <label for="rule25">Points per sack</label>
                             <input type="text" id="rule25" class="form-control" placeholder="" v-model="rule25" required>
                         </div>
+                        <div class="form-group">
+                            <label for="rule25">0 Points Allowed</label>
+                            <input type="text" id="rule27" class="form-control" placeholder="" v-model="rule27" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">1-6 Points Allowed</label>
+                            <input type="text" id="rule28" class="form-control" placeholder="" v-model="rule28" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">7-13 Points Allowed</label>
+                            <input type="text" id="rule29" class="form-control" placeholder="" v-model="rule29" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">14-20 Points Allowed:</label>
+                            <input type="text" id="rule30" class="form-control" placeholder="" v-model="rule30" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">21-27 Points Allowed</label>
+                            <input type="text" id="rule31" class="form-control" placeholder="" v-model="rule31" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">28-34 Points Allowed</label>
+                            <input type="text" id="rule32" class="form-control" placeholder="" v-model="rule32" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">35-41 Points Allowed</label>
+                            <input type="text" id="rule33" class="form-control" placeholder="" v-model="rule33" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule25">42+ Points Allowed</label>
+                            <input type="text" id="rule34" class="form-control" placeholder="" v-model="rule34" required>
+                        </div>
                         <button type="submit" class="btn btn-primary">Update Rules</button>
                         </form>
                         </b-card-text>
@@ -851,6 +915,14 @@ import moment from 'moment'
         rule24: '',
         rule25: '',
         rule26: '',
+        rule27: '',
+        rule28: '',
+        rule29: '',
+        rule30: '',
+        rule31: '',
+        rule32: '',
+        rule33: '',
+        rule34: '',
         teams: [],
         draftPicks: [],
         myteam: '',
@@ -1149,6 +1221,14 @@ import moment from 'moment'
                 rule24: this.rule24,
                 rule25: this.rule25,
                 rule26: this.rule26,
+                rule27: this.rule27,
+                rule28: this.rule28,
+                rule29: this.rule29,
+                rule30: this.rule30,
+                rule31: this.rule31,
+                rule32: this.rule32,
+                rule33: this.rule33,
+                rule34: this.rule34,
             }).then(response => {
                 //
             }).catch(error => {
@@ -1299,6 +1379,14 @@ import moment from 'moment'
             this.rule24 = this.leagueInfo.rule24;
             this.rule25 = this.leagueInfo.rule25;
             this.rule26 = this.leagueInfo.rule26;
+            this.rule27 = this.leagueInfo.rule27;
+            this.rule28 = this.leagueInfo.rule28;
+            this.rule29 = this.leagueInfo.rule29;
+            this.rule30 = this.leagueInfo.rule30;
+            this.rule31 = this.leagueInfo.rule31;
+            this.rule32 = this.leagueInfo.rule32;
+            this.rule33 = this.leagueInfo.rule33;
+            this.rule34 = this.leagueInfo.rule34;
             this.teamNames = [];
             this.teamNames.push({
                 value: 0,

@@ -202,6 +202,14 @@ class LeagueController extends Controller
                 'rule24'=>$request->input('rule24'),
                 'rule25'=>$request->input('rule25'),
                 'rule26'=>$request->input('rule26'),
+                'rule27'=>$request->input('rule27'),
+                'rule28'=>$request->input('rule28'),
+                'rule29'=>$request->input('rule29'),
+                'rule30'=>$request->input('rule30'),
+                'rule31'=>$request->input('rule31'),
+                'rule32'=>$request->input('rule32'),
+                'rule33'=>$request->input('rule33'),
+                'rule34'=>$request->input('rule34'),
             ]);
                     
             $lastUpdate = uniqid();
@@ -297,6 +305,15 @@ class LeagueController extends Controller
         $league->rule24 = $request->input('rule24');
         $league->rule25 = $request->input('rule25');
         $league->rule26 = $request->input('rule26');
+        $league->rule27 = $request->input('rule27');
+        $league->rule28 = $request->input('rule28');
+        $league->rule29 = $request->input('rule29');
+        $league->rule30 = $request->input('rule30');
+        $league->rule31 = $request->input('rule31');
+        $league->rule32 = $request->input('rule32');
+        $league->rule33 = $request->input('rule33');
+        $league->rule34 = $request->input('rule34');
+        
 
         $league->save();
 
