@@ -17,65 +17,49 @@ use App\Models\Waiver;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
+include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function generateMatchups($leagueId) {
+        
+
+        $teams = LeagueUser::where('league_id',$leagueId)->get();
+        $league = League::where('id',$leagueId)->first();
+        $teamids = [];
+        $numOfRegularWeeks = 10 - $league->playoff_length;
+
+        foreach($teams as $aTeam) {
+            $teamids[] = $aTeam->id;
+        }
+        $scheduleBuiler = new \ScheduleBuilder($teamids,$numOfRegularWeeks);
+        $schedule = $scheduleBuiler->build();
+
+        foreach($schedule as $week=>$matchups) {
+            foreach($matchups as $matchup) {
+                $newmatchup = new Matchup;
+                if (!$matchup[0]) {
+                    $newmatchup->home_id = 0;
+                } else {
+                    $newmatchup->home_id = $matchup[0];
+                }
+                if (!$matchup[1]) {
+                    $newmatchup->away_id = 0;
+                } else {
+                    $newmatchup->away_id = $matchup[1];
+                }
+                $newmatchup->league_id = $leagueId;
+                $newmatchup->week = $week;
+                $newmatchup->save();
+            }
+        }
+    }
     public function getMatchups(Request $request) {
         $matchups = Matchup::where('league_id',$request->leagueId)->get();
         
 
         if ($matchups->count() == 0) {
-            $teams = LeagueUser::where('league_id',$request->leagueId)->get();
-            $league = League::where('id',$request->leagueId)->first();
-
-            $home_array = array();
-            $away_array = array();
-
-            $numOfRegularWeeks = 10 - $league->playoff_length;
-
-            // separate into two arrays
-            $count = 1;
-            foreach($teams as $team) {
-                if ($count <= ceil($teams->count() / 2)) {
-                    $home_array[] = $team->id;
-                } else {
-                    $away_array[] = $team->id;
-                }
-                $count++;
-            }
-            for($week = 1; $week <= $numOfRegularWeeks; $week++) {
-                for($game = 0; $game < count($home_array); $game++) {
-                    $newmatchup = new Matchup;
-                    $newmatchup->week = $week;
-                    if (isset($home_array[$game])) {
-                        $newmatchup->home_id = $home_array[$game];
-                    } else {
-                        $newmatchup->home_id = 0;
-                    }
-                    if (isset($away_array[$game])) {
-                        $newmatchup->away_id = $away_array[$game];
-                    } else {
-                        $newmatchup->away_id = 0;
-                    }
-                    $newmatchup->league_id = $request->leagueId;
-                    $newmatchup->save();
-                }
-
-                if ($teams->count() % 2) {
-                    $first_element_of_home_array = array_shift($home_array);
-                    $last_element_of_away_array = array_pop($away_array);
-
-                    array_unshift($away_array,$first_element_of_home_array);
-                    $home_array[] = $last_element_of_away_array;
-                } else {
-                    $last_element_of_home_array = array_pop($home_array);
-                    $last_element_of_away_array = array_pop($away_array);
-
-                    array_unshift($away_array,$last_element_of_home_array);
-                    $home_array[] = $last_element_of_away_array;
-                }
-
-            }
+            $this->generateMatchups($request->leagueId);
             $matchups = Matchup::where('league_id',$request->leagueId)->get();
             return $matchups;
         } else {

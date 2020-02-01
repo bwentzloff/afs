@@ -95,4 +95,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::resource('user', 'UserController')->only(['index','show']);
     });
+    Route::group(['middleware' => 'jwt'], function () {
+        // Protected routes
+       Route::resource('index', 'IndexController');
+     });
 });
