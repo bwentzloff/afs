@@ -14,6 +14,7 @@ use App\Models\RosterItem;
 use App\Models\DraftQueue;
 use App\Models\Matchup;
 use App\Models\Waiver;
+use App\Models\Trade;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,86 @@ include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function createTrade(Request $request) {
+        $trade = new Trade;
+        $trade->league_id = $request->leagueId;
+        $trade->team1_id = $request->team1;
+        $trade->team2_id = $request->team2;
+        $trade->team1_selected = serialize($request->team1_players);
+        $trade->team2_selected = serialize($request->team2_players);
+        $trade->save();
+    }
+    public function cancelTrade(Request $request) {
+        $delete = Trade::where('league_id', $request->leagueId)
+            ->where('id',$request->trade_id)
+            ->delete();
+    }
+    public function acceptTrade(Request $request) {
+        // get the trade
+        $trade = Trade::where('league_id',$request->leagueId)
+            ->where('id',$request->trade_id)
+            ->first();
+        // get the teams
+        $team1 = LeagueUser::where('league_id',$request->leagueId)
+            ->where('id',$trade->team1_id)
+            ->first();
+        $team2 = LeagueUser::where('league_id',$request->leagueId)
+            ->where('id',$trade->team2_id)
+            ->first();
+        // exchange players
+        $team1_player_ids_to_get = unserialize($trade->team1_selected);
+        $team2_player_ids_to_get = unserialize($trade->team2_selected);
+
+        foreach($team1_player_ids_to_get as $player_id) {
+            $update = RosterItem::where('player_id',$player_id)
+                ->where('league_id',$request->leagueId)
+                ->update([
+                    'team_id'=>$team1->id
+                ]);
+        }
+
+        foreach($team2_player_ids_to_get as $player_id) {
+            $update = RosterItem::where('player_id',$player_id)
+                ->where('league_id',$request->leagueId)
+                ->update([
+                    'team_id'=>$team2->id
+                ]);
+        }
+
+        // delete other trades in that league with either of those players in it
+        $all_trades = Trade::where('league_id',$request->leagueId)
+            ->get();
+
+        foreach($all_trades as $trade) {
+            $foundPlayer = false;
+            foreach (unserialize($trade->team1_selected) as $player_id) {
+                if (in_array($player_id, $team1_player_ids_to_get)) $foundPlayer = true;
+                if (in_array($player_id, $team2_player_ids_to_get)) $foundPlayer = true;
+            }
+            if ($foundPlayer) {
+                $delete = Trade::where('league_id',$request->leagueId)
+                    ->where('id',$trade->id)
+                    ->delete();
+            }
+        }
+    }
+    public function getTrades(Request $request) {
+        $team = LeagueUser::where('league_id',$request->leagueId)
+            ->where('user_id',Auth::user()->id)
+            ->first();
+
+        $trades = Trade::where('league_id',$request->leagueId)
+            ->where('team1_id',$team->id)
+            ->orWhere('team2_id',$team->id)
+            ->get();
+
+        for ($i = 0; $i < $trades->count(); $i++) {
+            $trades[$i]->team1_selected = unserialize($trades[$i]->team1_selected);
+            $trades[$i]->team2_selected = unserialize($trades[$i]->team2_selected);
+        }
+
+        return response()->json($trades);
+    }
     public function cancelWaiver(Request $request) {
         $delete = Waiver::where('id',$request->waiver_id)->delete();
     }
@@ -625,7 +706,7 @@ class LeagueController extends Controller
 
                     // update lastUpdate
             }
-            sleep(1);
+            sleep(10);
         }
     }
 
