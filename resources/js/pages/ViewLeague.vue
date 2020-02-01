@@ -391,6 +391,30 @@
                                     striped 
                                     hover
                                 >
+                                <template v-slot:cell(home_name)="data">
+                                    <div v-if="!data.item.home_name">
+                                        Bye
+                                    </div>
+                                    <h3>{{ data.item.home_name }}</h3>
+                                    <div v-if="commishTools">
+                                        <small>Change home team to:</small>
+                                        <b-form-select  :options="teamNames"
+                                            v-on:change="updateMatchup($event, data.item, 'home')"
+                                        ></b-form-select>
+                                    </div>
+                                </template>
+                                <template v-slot:cell(away_name)="data">
+                                    <div v-if="!data.item.away_name">
+                                        Bye
+                                    </div>
+                                    <h3>{{ data.item.away_name }}</h3>
+                                    <div v-if="commishTools">
+                                        <small>Change away team to:</small>
+                                        <b-form-select  :options="teamNames"
+                                            v-on:change="updateMatchup($event, data.item, 'away')"
+                                        ></b-form-select> 
+                                    </div>
+                                </template>
                             </b-table>
                         </b-card-text>
                         
@@ -1025,6 +1049,24 @@ import moment from 'moment'
     },
 
     methods: {
+        updateMatchup(event, item, homeOrAway) {
+            console.log(event);
+            console.log(item);
+            console.log(homeOrAway);
+            axios.post('league/updateMatchup', {
+                leagueId: this.leagueId,
+                matchupId: item.id,
+                targetTeam: event,
+                homeOrAway: homeOrAway
+            }).then(response => {
+                this.getMatchups();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         resetPagination() {
             if (this.positionFilter != "all") this.currentPage = 1
         },

@@ -21,6 +21,20 @@ include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function updateMatchup(Request $request) {
+        if ($request->homeOrAway == "home") {
+            $update = Matchup::where('id',$request->matchupId)
+                ->update([
+                    'home_id'=>$request->targetTeam
+                ]);
+        } else {
+            $update = Matchup::where('id',$request->matchupId)
+                ->update([
+                    'away_id'=>$request->targetTeam
+                ]);
+        }
+            
+    }
     public function generateMatchups($leagueId) {
         
 

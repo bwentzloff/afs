@@ -53,6 +53,7 @@ Route::prefix('v1')->group(function () {
     Route::post('league/updateSettings', ['uses'=>'LeagueController@updateSettings']);
     Route::post('league/getMatchups', ['uses'=>'LeagueController@getMatchups']);
     Route::post('league/createClaim', ['uses'=>'LeagueController@createClaim']);
+    Route::post('league/updateMatchup', ['uses'=>'LeagueController@updateMatchup']);
     
     
     
