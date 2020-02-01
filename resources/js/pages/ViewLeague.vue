@@ -40,6 +40,21 @@
                         </b-modal>
                     </b-card-text>
                 </b-card-body>
+                <b-card-body>
+                    <b-card-title>Pending Transactions</b-card-title>
+                    <b-card-text>
+                        <template>
+                            <table>
+                            <tr v-for="waiver in waivers">
+                                <td>Waiver request for {{ waiver.player_name }} (drop {{ waiver.drop_player_name }}) </td>
+                                <td><b-button @click="cancelWaiver(waiver.id)">
+                                    Cancel
+                                </b-button></td>
+                            </tr>
+                            </table>
+                        </template>
+                    </b-card-text>
+                </b-card-body>
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="!preDraft && !postDraft">
                 <b-card-body>
@@ -964,6 +979,7 @@ import moment from 'moment'
         draftedDef: 0,
         draftedBench: 0,
         currentClaimId: 0,
+        waivers: [],
       }
     },
     mounted() {
@@ -1049,10 +1065,19 @@ import moment from 'moment'
     },
 
     methods: {
+        cancelWaiver(waiverId) {
+            axios.post('league/cancelWaiver', {
+                waiver_id: waiverId,
+            }).then(response => {
+                this.refreshWaivers();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         updateMatchup(event, item, homeOrAway) {
-            console.log(event);
-            console.log(item);
-            console.log(homeOrAway);
             axios.post('league/updateMatchup', {
                 leagueId: this.leagueId,
                 matchupId: item.id,
@@ -1625,6 +1650,11 @@ import moment from 'moment'
             axios.post('player/getwaivers', {
                 leagueId: this.$data.leagueId,
             }).then(response => {
+                this.$data.waivers = response.data;
+                for (var j = 0; j < this.$data.waivers.length; j++) {
+                    this.$data.waivers[j].player_name = this.getPlayerNameFromId(this.$data.waivers[j].player_id);
+                    this.$data.waivers[j].drop_player_name = this.getPlayerNameFromId(this.$data.waivers[j].drop_player_id);
+                }
                 this.$data.items.forEach((player_item) => {
                     for (var i = 0; i < response.data.length; i++) {
                         if (response.data[i].player_id == player_item.id) {

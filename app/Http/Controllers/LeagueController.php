@@ -21,6 +21,9 @@ include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function cancelWaiver(Request $request) {
+        $delete = Waiver::where('id',$request->waiver_id)->delete();
+    }
     public function updateMatchup(Request $request) {
         if ($request->homeOrAway == "home") {
             $update = Matchup::where('id',$request->matchupId)
