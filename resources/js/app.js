@@ -33,7 +33,7 @@ Vue.component('datetime', Datetime);
 // Set Vue authentication
 Vue.use(VueAxios, axios);
 // axios.defaults.baseURL = process.env.MIX_APP_URL;
-axios.defaults.baseURL = `${process.env.MIX_APP_URL}api/v1`;
+axios.defaults.baseURL = `/api/v1`;
 Vue.use(VueAuth, auth);
 
 // Load Index
