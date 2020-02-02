@@ -85,6 +85,7 @@ Route::prefix('v1')->group(function () {
     Route::post('league/updateRules', ['uses'=>'LeagueController@updateRules']);
     Route::post('league/updateName', ['uses'=>'LeagueController@updateName']);
     Route::post('league/remove', ['uses'=>'LeagueController@removeTeam']);
+    Route::post('league/fixMatchups', ['uses'=>'LeagueController@fixMatchups']);
 
     Route::get('stats', ['uses'=>'LeagueController@stats']);
 
