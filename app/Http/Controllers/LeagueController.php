@@ -596,7 +596,7 @@ class LeagueController extends Controller
     function updateDraftStatuses() {
         $end_time = Carbon::now()->addSeconds(1);
             // Start drafts
-        while (Carbon::now() < $end_time) {    
+        //while (Carbon::now() < $end_time) {    
            
             $leagues = League::where('draft_status',0)
                 ->where('draft_datetime','<=',Carbon::now())
@@ -712,7 +712,7 @@ class LeagueController extends Controller
                     
             }
             
-        }
+        //}
     }
 
     function stats() {
