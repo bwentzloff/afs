@@ -51,6 +51,23 @@
                                     Cancel
                                 </b-button></td>
                             </tr>
+                            <tr v-for="trade in trades">
+                                <td>Trade Proposal:<br />
+                                    {{ getTeamNameFromId(trade.team1_id) }} gets: 
+                                    <div v-for="player in trade.team1_selected">{{ getPlayerNameFromId(player) }}</div>
+                                    {{ getTeamNameFromId(trade.team2_id) }} gets: 
+                                    <div v-for="player in trade.team2_selected">{{ getPlayerNameFromId(player) }}</div>
+                                    <hr />
+                                </td>
+                                <td>
+                                <b-button @click="cancelTrade(trade.id)" v-if="myteam.id == trade.team1_id">
+                                    Cancel
+                                </b-button>
+                                <b-button @click="acceptTrade(trade.id)" v-if="myteam.id == trade.team2_id">
+                                    Accept
+                                </b-button>
+                                <hr /></td>
+                            </tr>
                             </table>
                         </template>
                     </b-card-text>
@@ -321,6 +338,9 @@
                                 <template v-slot:cell(actions)="data">
                                     <div>
                                         {{ data.item.fantasyTeam }}
+                                        <b-button variant="success" @click="createTrade($event, data.item)" v-if="postDraft && data.item.fantasyTeam && data.item.fantasyTeam != myteam.name">
+                                            Propose Trade
+                                        </b-button>
                                     </div>
                                     <div v-if="!postDraft && data.item.draftQueue == false && data.item.fantasyTeam == ''">
                                         <b-button variant="success" @click="addToQueue($event, data.item)">
@@ -750,6 +770,36 @@
             <b-button class="mt-3" block @click="$bvModal.hide('waiver-modal')">Cancel</b-button>
             
         </b-modal>
+        <b-modal id="trade-modal" hide-footer>
+            <template v-slot:modal-title>
+                Trade Proposal
+            </template>
+            <strong>{{ trade_team1name }} gets:</strong>
+            
+            <b-form-checkbox-group
+                id="checkbox-group-1"
+                v-model="trade_team1_selections"
+                :options="trade_team1roster"
+                text-field="player_name"
+                value-field="player_id"
+                name="flavour-1"
+                stacked
+            ></b-form-checkbox-group>
+
+            
+            <strong>{{ trade_team2name }} gets:</strong>
+            <b-form-checkbox-group
+                id="checkbox-group-2"
+                v-model="trade_team2_selections"
+                :options="trade_team2roster"
+                text-field="player_name"
+                value-field="player_id"
+                name="flavour-2"
+                stacked
+            ></b-form-checkbox-group>
+            <b-button class="mt-3" block @click="finalizeTrade()">Propose Trade</b-button>
+            
+        </b-modal>
     </div>
 </template>
 <script>
@@ -831,6 +881,10 @@ import moment from 'moment'
             {key: 'actions'}
         ],
         waiverTableFields: [
+            {key: 'player_name'},
+            {key: 'actions'}
+        ],
+        tradeTableFields: [
             {key: 'player_name'},
             {key: 'actions'}
         ],
@@ -980,6 +1034,15 @@ import moment from 'moment'
         draftedBench: 0,
         currentClaimId: 0,
         waivers: [],
+        trade_team1roster: [],
+        trade_team2roster: [],
+        trade_team1name: '',
+        trade_team2name: '',
+        trade_team1_selections: [],
+        trade_team2_selections: [],
+        trade_team1id: '',
+        trade_team2id: '',
+        trades: []
       }
     },
     mounted() {
@@ -1065,6 +1128,32 @@ import moment from 'moment'
     },
 
     methods: {
+        cancelTrade(tradeId) {
+            axios.post('league/cancelTrade', {
+                trade_id: tradeId,
+                leagueId: this.leagueId,
+            }).then(response => {
+                this.refreshTrades();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        acceptTrade(tradeId) {
+            axios.post('league/acceptTrade', {
+                trade_id: tradeId,
+                leagueId: this.leagueId,
+            }).then(response => {
+                this.refreshTrades();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         cancelWaiver(waiverId) {
             axios.post('league/cancelWaiver', {
                 waiver_id: waiverId,
@@ -1099,6 +1188,50 @@ import moment from 'moment'
             this.currentClaimId = item.id;
             this.$bvModal.show("waiver-modal");
             /**/
+        },
+        finalizeTrade() {
+            axios.post('league/createTrade', {
+                leagueId: this.leagueId,
+                team1: this.trade_team1id,
+                team2: this.trade_team2id,
+                team1_players: this.trade_team1_selections,
+                team2_players: this.trade_team2_selections,
+            }).then(response => {
+                this.refreshTrades();
+                this.$bvModal.hide('trade-modal');
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        createTrade(event, item) {
+            this.$bvModal.show("trade-modal");
+            this.trade_team1name = this.myteam.name
+            this.trade_team2name = item.fantasyTeam
+            this.trade_team1id = this.myteam.id
+            this.trade_team2id = item.fantasyTeamId
+            this.trade_team1_selections = []
+            this.trade_team2_selections = []
+            this.trade_team1_selections.push(item.id);
+            for (var team in this.rosters) {
+                if (item.fantasyTeamId == team) {
+                    // Load this team into my list
+                    this.trade_team1roster = this.rosters[team]
+                }
+                if (this.myteam.id == team) {
+                    this.trade_team2roster = this.rosters[team]
+                }
+            }
+            for (var j = 0; j < this.trade_team1roster.length; j++) {
+                this.trade_team1roster[j].player_name = this.getPlayerNameFromId(this.trade_team1roster[j].player_id)
+            }
+            for (var j = 0; j < this.trade_team2roster.length; j++) {
+                this.trade_team2roster[j].player_name = this.getPlayerNameFromId(this.trade_team2roster[j].player_id)
+            }
+
+/**/
         },
         selectDropPlayer(event, item) {
             this.$bvModal.hide('waiver-modal');
@@ -1669,6 +1802,18 @@ import moment from 'moment'
                 }
             });
         },
+        refreshTrades() {
+            axios.post('league/getTrades', {
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                this.trades = response.data;
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.$data.errors = error.response.data.errors || {};
+                }
+            });
+        },
         refreshQueueItems() {
             axios.post('player/getqueue', {
                 leagueId: this.$data.leagueId,
@@ -1707,6 +1852,7 @@ import moment from 'moment'
                 this.updateDraftBoard()
                 this.refreshQueueItems();
                 this.refreshWaivers();
+                this.refreshTrades();
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);
