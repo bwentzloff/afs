@@ -715,7 +715,8 @@ class LeagueController extends Controller
         $users = User::count();
         $teams = LeagueUser::count();
         $drafted = League::where('draft_status',2)->count();
+        $drafting = League::where('draft_status',1)->count();
 
-        print_r("Leagues: ".$leagues."<br />Users: ".$users."<br />Teams: ".$teams."<br />Drafted: ".$drafted);die();
+        print_r("Leagues: ".$leagues."<br />Users: ".$users."<br />Teams: ".$teams."<br />Drafted: ".$drafted."<br />Drafting: ".$drafting);die();
     }
 }
