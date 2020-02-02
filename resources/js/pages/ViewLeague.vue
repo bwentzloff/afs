@@ -70,6 +70,7 @@
                             </tr>
                             </table>
                         </template>
+                        <b-alert show variant="danger">High site traffic is expected today. When this happens, little glitches appear here and there. If something strange is happening on your page, give the page a refresh and it'll probably clear up.</b-alert>
                     </b-card-text>
                 </b-card-body>
             </b-card>
