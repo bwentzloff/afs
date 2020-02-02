@@ -76,6 +76,7 @@ Route::prefix('v1')->group(function () {
 
     // Get league info
     Route::get('league/info/{id}', ['uses'=>'LeagueController@getLeagueInfo']);
+    Route::get('league/myuserid', ['uses'=>'LeagueController@getUserId']);
     Route::get('league/teams/{id}', ['uses'=>'LeagueController@getTeamInfo']);
     Route::get('league/draftOrder/{id}', ['uses'=>'LeagueController@getDraftOrder']);
     Route::get('league/myteam/{id}', ['uses'=>'LeagueController@getMyTeam']);

@@ -22,6 +22,9 @@ include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function getuserid() {
+        return response()->json(Auth::user()->id);
+    }
     public function createTrade(Request $request) {
         $trade = new Trade;
         $trade->league_id = $request->leagueId;
@@ -89,18 +92,19 @@ class LeagueController extends Controller
         $team = LeagueUser::where('league_id',$request->leagueId)
             ->where('user_id',Auth::user()->id)
             ->first();
+        if ($team) {
+            $trades = Trade::where('league_id',$request->leagueId)
+                ->where('team1_id',$team->id)
+                ->orWhere('team2_id',$team->id)
+                ->get();
 
-        $trades = Trade::where('league_id',$request->leagueId)
-            ->where('team1_id',$team->id)
-            ->orWhere('team2_id',$team->id)
-            ->get();
+            for ($i = 0; $i < $trades->count(); $i++) {
+                $trades[$i]->team1_selected = unserialize($trades[$i]->team1_selected);
+                $trades[$i]->team2_selected = unserialize($trades[$i]->team2_selected);
+            }
 
-        for ($i = 0; $i < $trades->count(); $i++) {
-            $trades[$i]->team1_selected = unserialize($trades[$i]->team1_selected);
-            $trades[$i]->team2_selected = unserialize($trades[$i]->team2_selected);
+            return response()->json($trades);
         }
-
-        return response()->json($trades);
     }
     public function cancelWaiver(Request $request) {
         $delete = Waiver::where('id',$request->waiver_id)->delete();
