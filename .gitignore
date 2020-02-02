@@ -21,3 +21,5 @@ public/js/app.js
 vendor/round-robin/.DS_Store
 vendor/round-robin/round-robin/.gitignore
 package-lock.json
+*.iml
+*.idea
