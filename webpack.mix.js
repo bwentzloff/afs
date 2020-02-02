@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+require('mix-env-file');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,5 +12,5 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.env(process.env.ENV_FILE).js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css');

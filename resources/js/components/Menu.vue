@@ -18,15 +18,15 @@
       </ul>
       <ul class="navbar-nav ml-auto" v-if="!$auth.check()">
           <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
+            <router-link to="register" class="nav-link">Register</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
+            <router-link to="login" class="nav-link">Login</router-link>
           </li>
       </ul>
       <ul class="navbar-nav ml-auto" v-if="$auth.check()">
         <li class="nav-item">
-          <a class="nav-link" href="/dashboard">Dashboard</a>
+          <router-link to="dashboard" class="nav-link">Dashboard</router-link>
         </li>
       </ul>
       

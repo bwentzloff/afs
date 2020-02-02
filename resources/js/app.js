@@ -15,13 +15,13 @@ import 'vue-datetime/dist/vue-datetime.css'
 import VueGtag from "vue-gtag";
 
 // Set Vue globally
-window.Vue = Vue
+window.Vue = Vue;
 
 // Set Vue router
-Vue.router = router
-Vue.use(VueRouter)
-Vue.use(BootstrapVue)
-Vue.use(Datetime)
+Vue.router = router;
+Vue.use(VueRouter);
+Vue.use(BootstrapVue);
+Vue.use(Datetime);
 Vue.use(require('vue-moment'));
 
 Vue.use(VueGtag, {
@@ -31,13 +31,14 @@ Vue.use(VueGtag, {
 Vue.component('datetime', Datetime);
 
 // Set Vue authentication
-Vue.use(VueAxios, axios)
-axios.defaults.baseURL = `${process.env.MIX_APP_URL}/api/v1`
-Vue.use(VueAuth, auth)
+Vue.use(VueAxios, axios);
+// axios.defaults.baseURL = process.env.MIX_APP_URL;
+axios.defaults.baseURL = `${process.env.MIX_APP_URL}api/v1`;
+Vue.use(VueAuth, auth);
 
 // Load Index
-Vue.component('index', Index)
+Vue.component('index', Index);
 const app = new Vue({
   el: '#app',
   router
-})
+});
