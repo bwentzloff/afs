@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         // Below mention routes are public, user can access those without any restriction.
@@ -30,7 +29,7 @@ Route::prefix('v1')->group(function () {
             Route::get('user', 'AuthController@user');
             // Logout user from application
             Route::post('logout', 'AuthController@logout');
-            Route::get('refresh', 'AuthController@refresh')->name('api.jwt.refresh');
+            Route::get('guardedRefresh', 'AuthController@guardedRefresh')->name('api.jwt.refresh');
         });
 
         
@@ -95,8 +94,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::resource('user', 'UserController')->only(['index','show']);
     });
-    Route::group(['middleware' => 'jwt'], function () {
-        // Protected routes
-       Route::resource('index', 'IndexController');
-     });
+//    Route::group(['middleware' => 'jwt'], function () {
+//        // Protected routes
+//       Route::resource('index', 'IndexController');
+//     });
 });
