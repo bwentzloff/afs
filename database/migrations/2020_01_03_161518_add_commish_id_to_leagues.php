@@ -14,7 +14,7 @@ class AddCommishIdToLeagues extends Migration
     public function up()
     {
         Schema::table('leagues', function (Blueprint $table) {
-            $table->bigInteger('commish_id');
+            $table->bigInteger('commish_id')->nullable();
         });
     }
 

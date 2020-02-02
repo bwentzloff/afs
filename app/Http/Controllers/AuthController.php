@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Auth;
-use Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-
-use Hash;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Auth\Events\PasswordReset;
+
 
 class AuthController extends Controller
 {
     /**
      * Register a new user
+     * @param Request $request
+     * @return JsonResponse
      */
     public function register(Request $request)
     {
@@ -41,6 +46,8 @@ class AuthController extends Controller
 
     /**
      * Login user and return a token
+     * @param Request $request
+     * @return JsonResponse
      */
     public function login(Request $request)
     {
@@ -65,6 +72,8 @@ class AuthController extends Controller
 
     /**
      * Get authenticated user
+     * @param Request $request
+     * @return JsonResponse
      */
     public function user(Request $request)
     {
@@ -76,16 +85,25 @@ class AuthController extends Controller
     }
 
     /**
-     * Refresh JWT token
+     * Refresh JWT token before token expires
+     */
+    public function guardedRefresh()
+    {
+        $token = $this->guard()->refresh();
+        return response()
+            ->json(['status' => 'successs'], 200)
+            ->header('Authorization', $token);
+    }
+
+    /**
+     * Refresh JWT token after token expires
      */
     public function refresh()
     {
-        if ($token = $this->guard()->refresh()) {
-            return response()
-                ->json(['status' => 'successs'], 200)
-                ->header('Authorization', $token);
-        }
-        return response()->json(['error' => 'refresh_token_error'], 401);
+        $token = auth()->refresh();
+        return response()
+            ->json(['status' => 'successs'], 200)
+            ->header('Authorization', $token);
     }
 
     /**
@@ -97,7 +115,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Send password reset link. 
+     * Send password reset link.
+     * @param Request $request
+     * @return
      */
     public function sendPasswordResetLink(Request $request)
     {
@@ -107,9 +127,9 @@ class AuthController extends Controller
     /**
      * Get the response for a successful password reset link.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return RedirectResponse|JsonResponse
      */
     protected function sendResetLinkResponse(Request $request, $response)
     {
@@ -122,9 +142,9 @@ class AuthController extends Controller
     /**
      * Get the response for a failed password reset link.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return RedirectResponse|JsonResponse
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
@@ -132,7 +152,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle reset password 
+     * Handle reset password
+     * @param Request $request
+     * @return
      */
     public function callResetPassword(Request $request)
     {
@@ -142,7 +164,7 @@ class AuthController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param  CanResetPassword  $user
      * @param  string  $password
      * @return void
      */
@@ -156,9 +178,9 @@ class AuthController extends Controller
     /**
      * Get the response for a successful password reset.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return RedirectResponse|JsonResponse
      */
     protected function sendResetResponse(Request $request, $response)
     {
@@ -168,9 +190,9 @@ class AuthController extends Controller
     /**
      * Get the response for a failed password reset.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return RedirectResponse|JsonResponse
      */
     protected function sendResetFailedResponse(Request $request, $response)
     {
