@@ -88,6 +88,9 @@ class LeagueController extends Controller
             }
         }
     }
+    public function fixMatchups(Request $request) {
+        $delete = Matchup::where('league_id',$request->leagueId)->delete();
+    }
     public function getTrades(Request $request) {
         $team = LeagueUser::where('league_id',$request->leagueId)
             ->where('user_id',Auth::user()->id)

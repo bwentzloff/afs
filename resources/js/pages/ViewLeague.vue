@@ -424,6 +424,13 @@
                     <b-tab title="Matchups">
                         
                         <b-card-text>
+                            <b-alert show v-if="commishTools">
+                                If your matchups look weird or some team didn't get added to the matchups or something like that, click this button to refresh your matchup list. Keep in mind this will erase any customizations you've made.
+                                <b-button variant="danger" @click="fixMatchups()">
+                                            Fix matchups
+                                        </b-button>
+                            </b-alert>
+
                             
                             <b-table
                                     id="matchups-table"
@@ -1135,6 +1142,18 @@ import moment from 'moment'
     },
 
     methods: {
+        fixMatchups() {
+            axios.post('league/fixMatchups', {
+                leagueId: this.leagueId,
+            }).then(response => {
+                this.getMatchups();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         cancelTrade(tradeId) {
             axios.post('league/cancelTrade', {
                 trade_id: tradeId,
