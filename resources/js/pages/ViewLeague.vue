@@ -1,6 +1,13 @@
 <template>
     <div class="container">
         <div>
+            <b-card bg-variant="danger" text-variant="white">
+                <b-card-body>
+                    <b-card-text>
+                    High site traffic is expected today. When this happens, little glitches appear here and there. If something strange is happening on your page, give the page a refresh and it'll probably clear up.
+                    </b-card-text>
+                </b-card-body>
+            </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
                     <b-card-title>Your draft is in {{ draftTimeDays }} Days, {{ draftTimeHours }} Hours, {{ draftTimeMinutes }} Minutes, {{ draftTimeSeconds }} Seconds</b-card-title>
@@ -70,7 +77,6 @@
                             </tr>
                             </table>
                         </template>
-                        <b-alert show variant="danger">High site traffic is expected today. When this happens, little glitches appear here and there. If something strange is happening on your page, give the page a refresh and it'll probably clear up.</b-alert>
                     </b-card-text>
                 </b-card-body>
             </b-card>
