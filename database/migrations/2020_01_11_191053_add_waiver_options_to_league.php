@@ -14,7 +14,7 @@ class AddWaiverOptionsToLeague extends Migration
     public function up()
     {
         Schema::table('leagues', function (Blueprint $table) {
-            $table->string('waiver_day');
+            $table->string('waiver_day')->nullable();
         });
     }
 

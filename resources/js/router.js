@@ -102,10 +102,12 @@ const routes = [
       }
     }
   },
-]
+];
+
 const router = new VueRouter({
   history: true,
   mode: 'history',
+  base: process.env.MIX_APP_URL,
   routes,
-})
+});
 export default router

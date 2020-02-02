@@ -101,7 +101,7 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', null),
+    'ttl' => env('JWT_TTL', 60),
 
     /*
     |--------------------------------------------------------------------------
@@ -120,7 +120,7 @@ return [
     |
     */
 
-    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160000),
+    'refresh_ttl' => env('JWT_REFRESH_TTL', 1440),
 
 
     /*
@@ -220,7 +220,7 @@ return [
     |
     */
 
-    'blacklist_enabled' => false,
+    'blacklist_enabled' => true,
 
     /*
     | -------------------------------------------------------------------------

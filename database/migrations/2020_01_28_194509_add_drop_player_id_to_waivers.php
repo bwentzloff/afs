@@ -14,7 +14,7 @@ class AddDropPlayerIdToWaivers extends Migration
     public function up()
     {
         Schema::table('waivers', function (Blueprint $table) {
-            $table->integer('drop_player_id');
+            $table->integer('drop_player_id')->nullable();
         });
     }
 

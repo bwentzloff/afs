@@ -14,7 +14,7 @@ class AddTeamToPlayer extends Migration
     public function up()
     {
         Schema::table('players', function (Blueprint $table) {
-            $table->string('team');
+            $table->string('team')->nullable();
         });
     }
 
