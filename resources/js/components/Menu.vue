@@ -26,7 +26,7 @@
       </ul>
       <ul class="navbar-nav ml-auto" v-if="$auth.check()">
         <li class="nav-item">
-          <router-link to="dashboard" class="nav-link">Dashboard</router-link>
+          <a class="nav-link" href="/dashboard">Dashboard</a>
         </li>
       </ul>
       
@@ -65,9 +65,9 @@
             { name: 'Login', path: 'login'}
           ],
           // LOGGED USER
-          user: [
+          /*user: [
             { name: 'Dashboard', path: 'dashboard' }
-          ],
+          ],*/
           // LOGGED ADMIN
           admin: [
             { name: 'Dashboard', path: 'admin.dashboard' }
