@@ -486,7 +486,7 @@ class LeagueController extends Controller
             $leagueUser->save();
 
             $this->setDraftOrder($league->id);
-            if ($league->draft_status > 1) $matchups = Matchup::where('league_id',$request->input('leagueId'))->delete();
+            $matchups = Matchup::where('league_id',$request->input('leagueId'))->delete();
             $lastUpdate = uniqid();
             Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
         }
