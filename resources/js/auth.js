@@ -42,5 +42,5 @@ const config = {
     enabled: true, 
     interval: 30
   }
-}
+};
 export default config

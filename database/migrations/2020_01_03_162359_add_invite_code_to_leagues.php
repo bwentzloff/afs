@@ -14,7 +14,7 @@ class AddInviteCodeToLeagues extends Migration
     public function up()
     {
         Schema::table('leagues', function (Blueprint $table) {
-            $table->string('invite_code');
+            $table->string('invite_code')->nullable();
         });
     }
 

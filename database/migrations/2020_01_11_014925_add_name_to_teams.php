@@ -14,7 +14,7 @@ class AddNameToTeams extends Migration
     public function up()
     {
         Schema::table('league_users', function (Blueprint $table) {
-            $table->string('name');
+            $table->string('name')->nullable();
         });
     }
 

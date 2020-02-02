@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "npm run development",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "development": "cross-env NODE_ENV=development ENV_FILE=./.env node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "watch": "npm run development -- --watch",
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
@@ -28,6 +28,7 @@
         "bootstrap-vue": "^2.1.0",
         "es6-promise": "^4.2.8",
         "luxon": "^1.21.3",
+        "mix-env-file": "^0.1.0",
         "vue-axios": "^2.1.5",
         "vue-datetime": "^1.0.0-beta.11",
         "vue-gtag": "^1.1.2",
