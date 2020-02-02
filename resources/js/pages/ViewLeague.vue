@@ -1615,6 +1615,20 @@ import moment from 'moment'
                 
             }
             this.$data.processing = false;
+                axios.get('league/myuserid/').then(response => {
+
+                    if (response.data == this.leagueInfo.commish_id) {
+                        this.commishTools = true;
+                    }
+
+
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            
                     // get my team
                 axios.get('league/myteam/'+this.leagueId).then(response => {
                     this.myteam = response.data;
@@ -1632,6 +1646,7 @@ import moment from 'moment'
                         this.errors = error.response.data.errors || {};
                     }
                 });
+                
         }).catch(error => {
             console.log(error);
             if (error.response.status === 422) {
