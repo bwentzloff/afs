@@ -21,7 +21,7 @@
                     </b-card-text>
                 </b-card-body>
             </b-card>
-            <b-card bg-variant="dark" text-variant="white" v-if="postDraft">
+            <b-card bg-variant="dark" text-variant="white" v-if="postDraft && ((waivers.length > 0) || (trades.length > 0))" >
                 
                 <b-card-body>
                     <b-card-title>Pending Transactions</b-card-title>
@@ -48,6 +48,9 @@
                                 </b-button>
                                 <b-button @click="acceptTrade(trade.id)" v-if="myteam.id == trade.team2_id">
                                     Accept
+                                </b-button>
+                                <b-button @click="cancelTrade(trade.id)" v-if="myteam.id == trade.team2_id">
+                                    Reject
                                 </b-button>
                                 <hr /></td>
                             </tr>
