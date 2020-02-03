@@ -4,7 +4,7 @@
             <b-card bg-variant="danger" text-variant="white">
                 <b-card-body>
                     <b-card-text>
-                    High site traffic is expected today. When this happens, little glitches appear here and there. If something strange is happening on your page, give the page a refresh and it'll probably clear up.
+                    The ability to set your lineup will be launching tonight.
                     </b-card-text>
                 </b-card-body>
             </b-card>
