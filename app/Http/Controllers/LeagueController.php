@@ -15,6 +15,8 @@ use App\Models\DraftQueue;
 use App\Models\Matchup;
 use App\Models\Waiver;
 use App\Models\Trade;
+use App\Models\Sport;
+use App\Models\Lineup;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
@@ -24,6 +26,79 @@ class LeagueController extends Controller
 {
     public function getuserid() {
         return response()->json(Auth::user()->id);
+    }
+    public function getLineup(Request $request) {
+        $players = Lineup::where('league_id',$request->leagueId)
+            ->where('team_id',$request->team_id)
+            ->where('week', $request->week)
+            ->get();
+
+        if ($players->count() == 0) {
+            // put all players on bench
+            $roster = RosterItem::where('league_id',$request->leagueId)
+                ->where('team_id',$request->team_id)
+                ->get();
+            foreach ($roster as $player) {
+                $lineup = new Lineup;
+                $lineup->week = $request->week;
+                $lineup->team_id = $request->team_id;
+                $lineup->league_id = $request->leagueId;
+                $lineup->player_id = $player->player_id;
+                $lineup->position = "BENCH";
+                $lineup->save();
+            }
+            $players = Lineup::where('league_id',$request->leagueId)
+                ->where('team_id',$request->team_id)
+                ->where('week', $request->week)
+                ->get();
+        } else {
+            $roster = RosterItem::where('league_id',$request->leagueId)
+                ->where('team_id',$request->team_id)
+                ->get();
+            foreach ($roster as $player) {
+                Log::debug($request);
+                $check = Lineup::where('league_id',$request->leagueId)
+                    ->where('team_id',$request->team_id)
+                    ->where('player_id',$player->player_id)
+                    ->where('week',$request->week)
+                    ->get();
+                if ($check->count() == 0) {
+                    $lineup = new Lineup;
+                    $lineup->week = $request->week;
+                    $lineup->team_id = $request->team_id;
+                    $lineup->league_id = $request->leagueId;
+                    $lineup->player_id = $player->player_id;
+                    $lineup->position = "BENCH";
+                    $lineup->save();
+                }
+            }
+            $players = Lineup::where('league_id',$request->leagueId)
+                ->where('team_id',$request->team_id)
+                ->where('week', $request->week)
+                ->get();
+        }
+        return $players;
+    }
+    public function startPlayer(Request $request) {
+        Log::debug($request);
+        $update = Lineup::where('league_id',$request->leagueId)
+            ->where('team_id',$request->team_id)
+            ->where('week',$request->week)
+            ->where('player_id',$request->player_id)
+            ->update([
+                'position'=>$request->position
+            ]);
+
+    }
+    public function benchPlayer(Request $request) {
+        $update = Lineup::where('league_id',$request->leagueId)
+            ->where('team_id',$request->team_id)
+            ->where('week',$request->week)
+            ->where('player_id',$request->player_id)
+            ->update([
+                'position'=>"BENCH"
+            ]);
+
     }
     public function createTrade(Request $request) {
         $trade = new Trade;
@@ -502,6 +577,8 @@ class LeagueController extends Controller
     public function getLeagueInfo($id) {
         $league = League::where('id',$id)->first();
         $teams = LeagueUser::where('league_id',$league->id)->get();
+        $sport = Sport::where('id',8)->first();
+        $league->current_week = $sport->current_week;
         $league->teams = $teams;
         return response()->json($league);
     }

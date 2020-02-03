@@ -1,13 +1,6 @@
 <template>
     <div class="container">
         <div>
-            <b-card bg-variant="danger" text-variant="white">
-                <b-card-body>
-                    <b-card-text>
-                    The ability to set your lineup will be launching tonight.
-                    </b-card-text>
-                </b-card-body>
-            </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
                     <b-card-title>Your draft is in {{ draftTimeDays }} Days, {{ draftTimeHours }} Hours, {{ draftTimeMinutes }} Minutes, {{ draftTimeSeconds }} Seconds</b-card-title>
@@ -29,24 +22,7 @@
                 </b-card-body>
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="postDraft">
-                <b-card-body>
-                    <b-card-title>Your draft is complete. Waivers, trades, and lineups will start on Monday, February 3rd.</b-card-title>
-                    <b-card-text>
-                        <b-button v-b-modal.modal-1>
-                            See Draft Board
-                        </b-button>
-                        <b-modal id="modal-1" title="Draft Board">
-                            <b-table
-                                    id="draftpicks-table"
-                                    :items="draftPicks"
-                                    :fields="draftBoardFields"
-                                    striped 
-                                    hover
-                                >
-                            </b-table>
-                        </b-modal>
-                    </b-card-text>
-                </b-card-body>
+                
                 <b-card-body>
                     <b-card-title>Pending Transactions</b-card-title>
                     <b-card-text>
@@ -444,7 +420,7 @@
                                     <div v-if="!data.item.home_name">
                                         Bye
                                     </div>
-                                    <h3>{{ data.item.home_name }}</h3>
+                                    <div>{{ data.item.home_name }}</div>
                                     <div v-if="commishTools">
                                         <small>Change home team to:</small>
                                         <b-form-select  :options="teamNames"
@@ -456,12 +432,24 @@
                                     <div v-if="!data.item.away_name">
                                         Bye
                                     </div>
-                                    <h3>{{ data.item.away_name }}</h3>
+                                    <div>{{ data.item.away_name }}</div>
                                     <div v-if="commishTools">
                                         <small>Change away team to:</small>
                                         <b-form-select  :options="teamNames"
                                             v-on:change="updateMatchup($event, data.item, 'away')"
                                         ></b-form-select> 
+                                    </div>
+                                </template>
+                                <template v-slot:cell(actions)="data">
+                                    <div v-if="(data.item.home_id == myteam.id || data.item.away_id == myteam.id) && leagueInfo.current_week == data.item.week">
+                                        <b-button variant="success" @click="showMatchup($event, data.item)">
+                                            Set your lineup
+                                        </b-button>
+                                    </div>
+                                    <div v-if="(data.item.home_id != myteam.id && data.item.away_id != myteam.id) || (leagueInfo.current_week != data.item.week)">
+                                        <b-button @click="showMatchup($event, data.item)">
+                                            View Matchup
+                                        </b-button>
                                     </div>
                                 </template>
                             </b-table>
@@ -814,6 +802,312 @@
             <b-button class="mt-3" block @click="finalizeTrade()">Propose Trade</b-button>
             
         </b-modal>
+
+        <b-modal id="matchup-modal" hide-footer>
+            <template v-slot:modal-title>
+                {{ matchup_home_name }} vs. {{ matchup_away_name }}
+            </template>
+            
+            <table class="table b-table table-striped table-hover">
+                <tr>
+                    <td><strong>{{ matchup_home_name }}</strong></td>
+                    <td></td>
+                    <td><strong>{{ matchup_away_name }}</strong></td>
+                </tr>
+                <tr v-for="(n, index) in qbs">
+                    <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_qb_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_qb_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>QB</center></td>
+                    <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_qb_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_qb_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(n, index) in rbs">
+                    <td>{{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_rb_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_rb_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>RB</center></td>
+                    <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_rb_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_rb_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(n, index) in wrs">
+                    <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_wr_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_wr_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>WR</center></td>
+                    <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_wr_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_wr_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(n, index) in tes">
+                    <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_te_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_te_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>TE</center></td>
+                    <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_te_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_te_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(n, index) in flex">
+                    <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_flex_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_flex_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>WR/RB/TE</center></td>
+                    <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_flex_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_flex_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(n, index) in superflex">
+                    <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_superflex_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_superflex_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>QB/WR/RB/TE</center></td>
+                    <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_superflex_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_superflex_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(n, index) in ks">
+                    <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_k_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_k_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>K</center></td>
+                    <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_k_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_k_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(n, index) in def">
+                    <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_home_id == myteam.id && matchup_home_def_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_home_def_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                    <td><center>DST</center></td>
+                    <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].player_name: "empty" }}
+
+                        <div v-if="matchup_away_id == myteam.id && matchup_away_def_starters[index]">        
+                            <b-button @click="benchPlayer($event, matchup_away_def_starters[index].player_id)">
+                                Bench
+                            </b-button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <center>Bench</center>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <ul style="list-style-type: none">
+                            <li v-for="(n, index) in matchup_home_bench">
+                                {{ n.player_name }}
+                                
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="n.position == 'QB' && qbs && matchup_home_qb_starters.length < qbs">
+                                        <b-button @click="startPlayer($event, n.player_id, 'QB')">
+                                            Start at QB
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="n.position == 'WR' && wrs && matchup_home_wr_starters.length < wrs">
+                                        <b-button @click="startPlayer($event, n.player_id, 'WR')">
+                                            Start at WR
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="n.position == 'RB' && rbs && matchup_home_rb_starters.length < rbs">
+                                        <b-button @click="startPlayer($event, n.player_id, 'RB')">
+                                            Start at RB
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="n.position == 'TE' && tes && matchup_home_te_starters.length < tes">
+                                        <b-button @click="startPlayer($event, n.player_id, 'TE')">
+                                            Start at TE
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="n.position == 'K' && ks && matchup_home_k_starters.length < ks">
+                                        <b-button @click="startPlayer($event,n.player_id, 'K')">
+                                            Start at K
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="n.position == 'DEF' && def && matchup_home_def_starters.length < def">
+                                        <b-button @click="startPlayer($event, n.player_id, 'DEF')">
+                                            Start at DEF
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && matchup_home_superflex_starters.length < superflex">
+                                        <b-button @click="startPlayer($event, n.player_id, 'SUPERFLEX')">
+                                            Start at Superflex
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_home_id == myteam.id">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && matchup_home_flex_starters.length < flex">
+                                        <b-button @click="startPlayer($event, n.player_id, 'FLEX')">
+                                            Start at Flex
+                                        </b-button>
+                                    </div>
+                                </div>
+
+                                <hr />
+                            </li>
+                        </ul>
+                    </td>
+                    <td></td>
+                    <td>
+                        <ul style="list-style-type: none">
+                            <li v-for="(n, index) in matchup_away_bench">
+                                {{ n.player_name }}
+
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="n.position == 'QB' && qbs && matchup_away_qb_starters.length < qbs">
+                                        <b-button @click="startPlayer($event, n.player_id, 'QB')">
+                                            Start at QB
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="n.position == 'WR' && wrs && matchup_away_wr_starters.length < wrs">
+                                        <b-button @click="startPlayer($event, n.player_id, 'WR')">
+                                            Start at WR
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="n.position == 'RB' && rbs && matchup_away_rb_starters.length < rbs">
+                                        <b-button @click="startPlayer($event, n.player_id, 'RB')">
+                                            Start at RB
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="n.position == 'TE' && tes && matchup_away_te_starters.length < tes">
+                                        <b-button @click="startPlayer($event, n.player_id, 'TE')">
+                                            Start at TE
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="n.position == 'K' && ks && matchup_away_k_starters.length < ks">
+                                        <b-button @click="startPlayer($event, n.player_id, 'K')">
+                                            Start at K
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="n.position == 'DEF' && def && matchup_away_def_starters.length < def">
+                                        <b-button @click="startPlayer($event, n.player_id, 'DEF')">
+                                            Start at DEF
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && matchup_away_superflex_starters.length < superflex">
+                                        <b-button @click="startPlayer($event, n.player_id, 'SUPERFLEX')">
+                                            Start at Superflex
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <div v-if="matchup_away_id == myteam.id">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && matchup_away_flex_starters.length < flex">
+                                        <b-button @click="startPlayer($event, n.player_id, 'FLEX')">
+                                            Start at Flex
+                                        </b-button>
+                                    </div>
+                                </div>
+                                <hr />
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            
+        </b-modal>
     </div>
 </template>
 <script>
@@ -882,7 +1176,8 @@ import moment from 'moment'
             {key: 'away_name'},
             {key: 'home_score'},
             {key: 'away_score'},
-            {key: 'week'}
+            {key: 'week'},
+            {key: 'actions'}
         ],
         draftBoardFields: [
             {key: 'team_id'},
@@ -1056,7 +1351,30 @@ import moment from 'moment'
         trade_team2_selections: [],
         trade_team1id: '',
         trade_team2id: '',
-        trades: []
+        trades: [],
+        matchup_home_name: '',
+        matchup_away_name: '',
+        matchup_home_id: '',
+        matchup_away_id: '',
+        matchup_home_bench: [],
+        matchup_away_bench: [],
+        matchup_home_qb_starters: [],
+        matchup_home_rb_starters: [],
+        matchup_home_wr_starters: [],
+        matchup_home_te_starters: [],
+        matchup_home_flex_starters: [],
+        matchup_home_superflex_starters: [],
+        matchup_home_k_starters: [],
+        matchup_home_def_starters: [],
+        matchup_away_qb_starters: [],
+        matchup_away_rb_starters: [],
+        matchup_away_wr_starters: [],
+        matchup_away_te_starters: [],
+        matchup_away_flex_starters: [],
+        matchup_away_superflex_starters: [],
+        matchup_away_k_starters: [],
+        matchup_away_def_starters: [],
+        tempItem: [],
       }
     },
     mounted() {
@@ -1259,6 +1577,167 @@ import moment from 'moment'
             }
 
 /**/
+        },
+        startPlayer(event, player_id, position) {
+            axios.post('league/startPlayer', {
+                leagueId: this.leagueId,
+                team_id: this.myteam.id,
+                week: this.leagueInfo.current_week,
+                player_id: player_id,
+                position: position
+            }).then(response => {
+                this.showMatchup(event, this.tempItem)
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        benchPlayer(event, player_id) {
+            axios.post('league/benchPlayer', {
+                leagueId: this.leagueId,
+                team_id: this.myteam.id,
+                week: this.leagueInfo.current_week,
+                player_id: player_id,
+            }).then(response => {
+                this.showMatchup(event, this.tempItem)
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        showMatchup(event, item) {
+            this.tempItem = item
+            for (var j = 0; j < this.$data.rosters[item.home_id].length; j++) {
+                this.$data.rosters[item.home_id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[item.home_id][j].player_id);
+            }
+            for (var j = 0; j < this.$data.rosters[item.away_id].length; j++) {
+                this.$data.rosters[item.away_id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[item.away_id][j].player_id);
+            }
+            //this.matchup_home_bench = this.$data.rosters[item.home_id]
+            //this.matchup_away_bench = this.$data.rosters[item.away_id]
+            for (var j = 0; j < this.$data.rosters[item.home_id].length; j++) {
+                this.$data.rosters[item.home_id][j].position = this.getPlayerPositionFromId(this.$data.rosters[item.home_id][j].player_id);
+            }
+            for (var j = 0; j < this.$data.rosters[item.away_id].length; j++) {
+                this.$data.rosters[item.away_id][j].position = this.getPlayerPositionFromId(this.$data.rosters[item.away_id][j].player_id);
+            }
+            this.matchup_home_bench = []
+            this.matchup_away_bench = []
+            this.matchup_home_qb_starters = []
+            this.matchup_home_rb_starters = []
+            this.matchup_home_wr_starters = []
+            this.matchup_home_te_starters = []
+            this.matchup_home_flex_starters = []
+            this.matchup_home_superflex_starters = []
+            this.matchup_home_k_starters = []
+            this.matchup_home_defense_starters = []
+            this.matchup_away_qb_starters = []
+            this.matchup_away_rb_starters = []
+            this.matchup_away_wr_starters = []
+            this.matchup_away_te_starters = []
+            this.matchup_away_flex_starters = []
+            this.matchup_away_superflex_starters = []
+            this.matchup_away_k_starters = []
+            this.matchup_away_defense_starters = []
+            axios.post('league/getLineup', {
+                leagueId: this.leagueId,
+                team_id: item.home_id,
+                week: this.tempItem.week
+            }).then(response => {
+                this.matchup_home_bench = []
+                this.matchup_away_bench = []
+                this.matchup_home_qb_starters = []
+                for (var i = 0; i < response.data.length; i++) {
+                    if (response.data[i].position == "BENCH") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
+                        this.matchup_home_bench.push(response.data[i])
+                    } else if (response.data[i].position == "QB") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_qb_starters.push(response.data[i])
+                    } else if (response.data[i].position == "RB") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_rb_starters.push(response.data[i])
+                    } else if (response.data[i].position == "WR") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_wr_starters.push(response.data[i])
+                    } else if (response.data[i].position == "TE") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_te_starters.push(response.data[i])
+                    } else if (response.data[i].position == "FLEX") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_flex_starters.push(response.data[i])
+                    } else if (response.data[i].position == "SUPERFLEX") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_superflex_starters.push(response.data[i])
+                    } else if (response.data[i].position == "K") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_k_starters.push(response.data[i])
+                    } else if (response.data[i].position == "DEF") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_home_def_starters.push(response.data[i])
+                    }
+                }
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+            axios.post('league/getLineup', {
+                leagueId: this.leagueId,
+                team_id: item.away_id,
+                week: this.tempItem.week
+            }).then(response => {
+                for (var i = 0; i < response.data.length; i++) {
+                    if (response.data[i].position == "BENCH") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
+                        this.matchup_away_bench.push(response.data[i])
+                    } else if (response.data[i].position == "QB") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_qb_starters.push(response.data[i])
+                    } else if (response.data[i].position == "RB") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_rb_starters.push(response.data[i])
+                    } else if (response.data[i].position == "WR") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_wr_starters.push(response.data[i])
+                    } else if (response.data[i].position == "TE") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_te_starters.push(response.data[i])
+                    } else if (response.data[i].position == "FLEX") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_flex_starters.push(response.data[i])
+                    } else if (response.data[i].position == "SUPERFLEX") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_superflex_starters.push(response.data[i])
+                    } else if (response.data[i].position == "K") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_k_starters.push(response.data[i])
+                    } else if (response.data[i].position == "DEF") {
+                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
+                        this.matchup_away_def_starters.push(response.data[i])
+                    }
+                }
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+            
+
+            this.$bvModal.show("matchup-modal");
+            this.matchup_home_name = item.home_name
+            this.matchup_away_name = item.away_name
+            this.matchup_home_id = item.home_id
+            this.matchup_away_id = item.away_id
+            console.log(this.rosters)
         },
         selectDropPlayer(event, item) {
             this.$bvModal.hide('waiver-modal');
@@ -1508,13 +1987,10 @@ import moment from 'moment'
         getLeagueInfo() {
             // get league info
             axios.get('league/info/'+this.leagueId).then(response => {
-                console.log(response);
                 this.inviteCode = response.data.invite_code;
                 this.leagueInfo = response.data;
-                console.log(this.leagueInfo);
                 // get team info
                 axios.get('league/teams/'+this.leagueId).then(response => {
-                    console.log(response);
                     this.teams = response.data;
 
                 }).catch(error => {
