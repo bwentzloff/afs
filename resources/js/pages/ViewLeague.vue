@@ -1063,6 +1063,7 @@ import moment from 'moment'
         this.leagueId = this.$route.params.id;
 
         this.getLeagueInfo();
+        this.getLastUpdate();
 
         
     },
@@ -1523,7 +1524,7 @@ import moment from 'moment'
                     }
                 });
                 this.refreshPlayerList();
-                this.getLastUpdate();
+                
                 this.getMatchups();
 
             if (this.leagueInfo.draft_status == 0) {
