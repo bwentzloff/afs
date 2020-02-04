@@ -341,9 +341,14 @@
                                             Draft
                                         </b-button>
                                     </div>
-                                    <div v-if="postDraft && data.item.fantasyTeam == '' && !data.item.waiverMade">
+                                    <div v-if="postDraft && data.item.fantasyTeam == '' && !data.item.waiverMade && leagueInfo.waiver_status == 0">
                                         <b-button variant="success" @click="createClaim($event, data.item)">
                                             Create Waiver Claim
+                                        </b-button>
+                                    </div>
+                                    <div v-if="postDraft && data.item.fantasyTeam == '' && !data.item.waiverMade && leagueInfo.waiver_status == 1">
+                                        <b-button variant="success" @click="addFreeAgent($event, data.item)">
+                                            Add Free Agent
                                         </b-button>
                                     </div>
                                     <div v-if="postDraft && data.item.fantasyTeam == '' && data.item.waiverMade">
@@ -767,6 +772,28 @@
                 <template v-slot:cell(actions)="data">
                     <div>
                         <b-button @click="selectDropPlayer($event, data.item.player_id)">
+                            Select
+                        </b-button>
+                    </div>
+                </template>
+            </b-table>
+            <b-button class="mt-3" block @click="$bvModal.hide('waiver-modal')">Cancel</b-button>
+            
+        </b-modal>
+        <b-modal id="freeagent-modal" hide-footer>
+            <template v-slot:modal-title>
+                Which player would you like to drop?
+            </template>
+            <b-table
+                id="waiver-players-table"
+                :items="rosters[myteam.id]"
+                :fields="waiverTableFields"
+                striped 
+                hover
+            >
+                <template v-slot:cell(actions)="data">
+                    <div>
+                        <b-button @click="selectDropForFreeAgent($event, data.item.player_id)">
                             Select
                         </b-button>
                     </div>
@@ -1380,6 +1407,7 @@ import moment from 'moment'
         matchup_away_k_starters: [],
         matchup_away_def_starters: [],
         tempItem: [],
+        currentFreeAgentId: 0,
       }
     },
     mounted() {
@@ -1538,6 +1566,26 @@ import moment from 'moment'
             this.currentClaimId = item.id;
             this.$bvModal.show("waiver-modal");
             /**/
+        },
+        addFreeAgent(event, item) {
+            this.currentFreeAgentId = item.id;
+            this.$bvModal.show("freeagent-modal");
+            /**/
+        },
+        selectDropForFreeAgent(event, item) {
+            this.$bvModal.hide('freeagent-modal');
+            axios.post('league/addFreeAgent', {
+                leagueId: this.leagueId,
+                player_id: this.currentFreeAgentId,
+                drop_player_id: item
+            }).then(response => {
+                this.refreshPlayerList();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
         },
         finalizeTrade() {
             axios.post('league/createTrade', {
