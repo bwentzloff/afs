@@ -320,6 +320,18 @@
                                 <template v-slot:cell(combinedInfo)="data">
                                     {{ data.item.name }}<br />
                                     {{ data.item.position }} - {{ data.item.team }}
+                                    <div v-if="commishTools">
+                                        <small>Change player eligibility</small>
+                                        <select v-on:change="updatePlayerEligibility($event, data.item)">
+                                            <option slected="selected">-- choose eligibility --</option>
+                                            <option value="QB">QB</option>
+                                            <option value="RB">RB</option>
+                                            <option value="WR">WR</option>
+                                            <option value="TE">TE</option>
+                                            <option value="K">K</option>
+                                            <option value="DEF">DEF</option>
+                                        </select>
+                                    </div>
                                 </template>
                                 <template v-slot:cell(actions)="data">
                                     <div>
@@ -1532,6 +1544,20 @@ import moment from 'moment'
     },
 
     methods: {
+        updatePlayerEligibility(event, item) {
+            axios.post('league/updatePlayerEligibility', {
+                leagueId: this.leagueId,
+                player_id: item.id,
+                position: event.target.value
+            }).then(response => {
+                this.refreshPlayerList();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
         fixMatchups() {
             axios.post('league/fixMatchups', {
                 leagueId: this.leagueId,
@@ -2561,6 +2587,24 @@ import moment from 'moment'
                 }
             });
         },
+        assignEligibilities() {
+            axios.post('league/getEligibilities', {
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                response.data.forEach((elig) => {
+                    for (var players = 0; players < this.$data.items.length; players++) {
+                        if (elig.player_id == this.$data.items[players].id) {
+                            this.$data.items[players].position = elig.position;
+                        }
+                    }
+                });
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.$data.errors = error.response.data.errors || {};
+                }
+            });
+        },
         refreshPlayerList() {
             // get player list
             axios.get('players/xfl').then(response => {
@@ -2571,7 +2615,7 @@ import moment from 'moment'
                     this.$data.items.push(item)
                 })
                 // get queue items
-                
+                this.assignEligibilities();
                 this.assignTeams();
                 this.updateDraftBoard()
                 this.refreshQueueItems();

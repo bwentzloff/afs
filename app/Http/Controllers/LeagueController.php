@@ -17,6 +17,7 @@ use App\Models\Waiver;
 use App\Models\Trade;
 use App\Models\Sport;
 use App\Models\Lineup;
+use App\Models\Eligibility;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
@@ -24,6 +25,41 @@ include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function updatePlayerEligibility(Request $request) {
+        $search = Eligibility::where('league_id',$request->leagueId)
+            ->where('player_id',$request->player_id)
+            ->first();
+
+        if ($search) {
+            // update
+            $update = Eligibility::where('league_id',$request->leagueId)
+                ->where('player_id',$request->player_id)
+                ->update([
+                    'position'=>$request->position
+                ]);
+        } else {
+            // insert
+            $newE = new Eligibility;
+            $newE->player_id = $request->player_id;
+            $newE->league_id = $request->leagueId;
+            $newE->position = $request->position;
+            $newE->save();
+        }
+        // get current week
+        $sport = Sport::where('id',8)->first();
+        $update = Lineup::where('league_id',$request->leagueId)
+            ->where('week',$sport->current_week)
+            ->where('player_id',$request->player_id)
+            ->update([
+                'position'=>"BENCH"
+            ]);
+
+    }
+    public function getPlayerEligibilities(Request $request) {
+        $elig = Eligibility::where('league_id',$request->leagueId)
+            ->get();
+        return response()->json($elig);
+    }
     public function getuserid() {
         return response()->json(Auth::user()->id);
     }
@@ -56,7 +92,6 @@ class LeagueController extends Controller
                 ->where('team_id',$request->team_id)
                 ->get();
             foreach ($roster as $player) {
-                Log::debug($request);
                 $check = Lineup::where('league_id',$request->leagueId)
                     ->where('team_id',$request->team_id)
                     ->where('player_id',$player->player_id)
@@ -80,7 +115,6 @@ class LeagueController extends Controller
         return $players;
     }
     public function startPlayer(Request $request) {
-        Log::debug($request);
         $update = Lineup::where('league_id',$request->leagueId)
             ->where('team_id',$request->team_id)
             ->where('week',$request->week)
