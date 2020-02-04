@@ -580,6 +580,17 @@ class LeagueController extends Controller
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
 
+    public function updatePlayoffLength(Request $request) {
+        $updatedLeague = League::where('id',$request->leagueId)
+            ->update([
+                'playoff_length'=>$request->playoff_length
+            ]);
+
+        $delete = Matchup::where('league_id',$request->leagueId)
+                ->where('week','>',10-$request->playoff_length)
+                ->delete();
+    }
+
 
     public function joinLeagueFromCode($code, Request $request) {
         $league = League::where('invite_code',$code)->first();

@@ -39,6 +39,8 @@ Route::prefix('v1')->group(function () {
     Route::post('league/create', 'LeagueController@create');
     Route::post('league/updateDraft', 'LeagueController@updateDraft');
     Route::post('league/updateSize', 'LeagueController@updateSize');
+    Route::post('league/updatePlayoffLength', 'LeagueController@updatePlayoffLength');
+    
     Route::post('league/assignPlayer', ['uses'=>'LeagueController@assignPlayer']);
     Route::post('user/sendEmailLink', 'AuthController@sendPasswordResetLink');
     

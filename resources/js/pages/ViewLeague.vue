@@ -598,6 +598,15 @@
                             <b-button @click="changeLeagueSize($event)">
                                             Update League Size
                                         </b-button>
+                            <h2># of Weeks of Playoffs</h2>
+                            <select v-model="leagueInfo.playoff_length">
+                                <option :selected="leagueInfo.playoff_length == 1? 'true' : 'false'">1</option>
+                                <option :selected="leagueInfo.playoff_length == 2? 'true' : 'false'">2</option>
+                                <option :selected="leagueInfo.playoff_length == 3? 'true' : 'false'">3</option>
+                            </select>
+                            <b-button @click="changePlayoffLength($event)">
+                                            Update Playoffs Length
+                                        </b-button>
                             <div class="form-group">
                                 <h2>Rosters</h2>
                                 <form autocomplete="off" @submit.prevent="updateRoster" method="post">
@@ -2069,6 +2078,19 @@ import moment from 'moment'
                     maxSize: this.leagueInfo.maxSize
                 }).then(response => {
                     //this.$router.push('/dashboard');
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+        },
+        changePlayoffLength() {
+            axios.post('league/updatePlayoffLength', {
+                    leagueId: this.leagueId,
+                    playoff_length: this.leagueInfo.playoff_length
+                }).then(response => {
+                    //this.getLeagueInfo();
                 }).catch(error => {
                     console.log(error);
                     if (error.response.status === 422) {
