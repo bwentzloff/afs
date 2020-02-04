@@ -27,6 +27,7 @@
                     <b-card-title>Pending Transactions</b-card-title>
                     <b-card-text>
                         <template>
+                            <small>Your league's waivers process on {{ leagueInfo.waiver_day }} mornings</small>
                             <table>
                             <tr v-for="waiver in waivers">
                                 <td>Waiver request for {{ waiver.player_name }} (drop {{ waiver.drop_player_name }}) </td>
