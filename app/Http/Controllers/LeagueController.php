@@ -550,6 +550,10 @@ class LeagueController extends Controller
         $teams = array();
         foreach ($teamInfo as $team) {
             $rosterItems = RosterItem::where('team_id',$team->id)->get();
+            foreach ($rosterItems as $key=>$item) {
+                $player = Player::where('id',$item->player_id)->first();
+                $rosterItems[$key]['player_name'] = $player->name;
+            }
             $teams[$team->id] = $rosterItems;
         }
         return response()->json($teams);
