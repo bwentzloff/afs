@@ -1175,12 +1175,13 @@ import moment from 'moment'
             {key: 'actions'}
         ],
         matchupsFields: [
+            {key: 'actions'},
             {key: 'home_name'},
             {key: 'away_name'},
             {key: 'home_score'},
             {key: 'away_score'},
             {key: 'week'},
-            {key: 'actions'}
+            
         ],
         draftBoardFields: [
             {key: 'team_id'},
