@@ -580,6 +580,15 @@ class LeagueController extends Controller
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
 
+    public function updateType(Request $request) {
+        $updatedLeague = League::where('id',$request->leagueId)
+            ->update([
+                'league_type'=>$request->league_type
+            ]);
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+    }
+
     public function updatePlayoffLength(Request $request) {
         $updatedLeague = League::where('id',$request->leagueId)
             ->update([
