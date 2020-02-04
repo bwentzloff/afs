@@ -629,6 +629,24 @@ class LeagueController extends Controller
         $this->createDraftPicks($leagueId);
     }
 
+    function addFreeAgent(Request $request) {
+        $team = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
+
+        $pickup = new RosterItem;
+        $pickup->team_id = $team->id;
+        $pickup->league_id = $request->leagueId;
+        $pickup->player_id = $request->player_id;
+        $pickup->save();
+
+        $drop_player = RosterItem::where('league_id',$request->leagueId)
+            ->where('team_id',$team->id)
+            ->where('player_id',$request->drop_player_id)
+            ->delete();
+
+        $lastUpdate = uniqid();
+        Cache::put('leagueUpdate'.$request->leagueId, $lastUpdate,600);
+    }
+
     function createClaim(Request $request) {
         $team = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
 

@@ -71,6 +71,9 @@ class ScrapeController extends Controller
 
                 }
             }
+            $update = League::where('id',$league->id)->update([
+                'waiver_status'=>1
+            ]);
             $lastUpdate = uniqid();
             Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
         }
