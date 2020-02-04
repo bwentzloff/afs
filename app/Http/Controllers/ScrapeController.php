@@ -9,11 +9,72 @@ use App\Models\User;
 use App\Models\LeagueUser;
 use App\Models\Player;
 use App\Models\DraftPick;
+use App\Models\Waiver;
+use App\Models\RosterItem;
+use App\Models\Trade;
+use Illuminate\Support\Facades\Cache;
 
 include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 
 class ScrapeController extends Controller
 {
+    public function processWaivers($day) {
+        // get leagues that process this day
+        $leagues = League::where('waiver_day',$day)->get();
+
+        foreach($leagues as $league) {
+            // get teams in reverse standing order
+            $teams = LeagueUser::where('league_id',$league->id)->get();
+            //Waiver request for Badet, Jeff (WR) (drop Nelson, Philip (QB
+            // for each team:
+            foreach ($teams as $team) {
+                // get their waivers
+                $waivers = Waiver::where('team_id',$team->id)->get();
+                
+                foreach($waivers as $waiver) {
+                    // add the player to pick up
+                    $newRosterItem = new RosterItem;
+                    $newRosterItem->team_id = $team->id;
+                    $newRosterItem->league_id = $league->id;
+                    $newRosterItem->player_id = $waiver->player_id;
+                    $newRosterItem->save();
+                    // drop the drop_id player
+
+                    $drop_player = RosterItem::where('team_id',$team->id)
+                        ->where('league_id',$league->id)
+                        ->where('player_id',$waiver->drop_player_id)
+                        ->delete();
+
+                    // delete any other waivers in the league with the same player
+                    $deleteWaivers = Waiver::where('league_id',$league->id)
+                        ->where('player_id',$waiver->player_id)
+                        ->delete();
+
+                    // delete any trades with the drop player
+                    $all_trades = Trade::where('league_id',$league->id)
+                        ->get();
+
+                    foreach($all_trades as $trade) {
+                        $foundPlayer = false;
+                        foreach (unserialize($trade->team1_selected) as $player_id) {
+                            if ($player_id == $waiver->drop_player_id) $foundPlayer = true;
+                        }
+                        foreach (unserialize($trade->team2_selected) as $player_id) {
+                            if ($player_id == $waiver->drop_player_id) $foundPlayer = true;
+                        }
+                        if ($foundPlayer) {
+                            $delete = Trade::where('league_id',$league->id)
+                                ->where('id',$trade->id)
+                                ->delete();
+                        }
+                    }
+
+                }
+            }
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
+        }
+    }
     public function calculatePercent() {
         // get number of leagues
         $numOfLeagues = League::where('draft_status',2)
