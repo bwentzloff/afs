@@ -59,6 +59,9 @@ Route::prefix('v1')->group(function () {
     Route::post('league/getTrades', ['uses'=>'LeagueController@getTrades']);
     Route::post('league/cancelTrade', ['uses'=>'LeagueController@cancelTrade']);
     Route::post('league/acceptTrade', ['uses'=>'LeagueController@acceptTrade']);
+
+    Route::post('league/updatePlayerEligibility', ['uses'=>'LeagueController@updatePlayerEligibility']);
+    Route::post('league/getEligibilities', ['uses'=>'LeagueController@getPlayerEligibilities']);
     
     
     
