@@ -1525,7 +1525,12 @@ import moment from 'moment'
                     if (this.nameFilter == '') {
                             return true;
                     } else {
-                        return el.name.toLowerCase().includes(this.nameFilter.toLowerCase());
+                        var addComma = this.nameFilter.toLowerCase().split(" ");
+                        if (addComma.length > 1) {
+                            return el.name.toLowerCase().includes(addComma[0]) && el.name.toLowerCase().includes(addComma[1])
+                        } else {
+                            return el.name.toLowerCase().includes(this.nameFilter.toLowerCase());
+                        }
                     }
                 } else {
                     return false;
