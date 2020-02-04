@@ -598,6 +598,15 @@
                             <b-button @click="changeLeagueSize($event)">
                                             Update League Size
                                         </b-button>
+                            <h2>League Type</h2>
+                            <select v-model="leagueInfo.league_type">
+                                <option :selected="leagueInfo.league_type == 1? 'true' : 'false'" value="1">Head to Head</option>
+                                <option :selected="leagueInfo.league_type == 2? 'true' : 'false'" value="2">Total Points</option>
+                                <option :selected="leagueInfo.league_type == 3? 'true' : 'false'" value="3">Guillotine</option>
+                            </select>
+                            <b-button @click="changeLeagueType($event)">
+                                            Update League Type
+                                        </b-button>
                             <h2># of Weeks of Playoffs</h2>
                             <select v-model="leagueInfo.playoff_length">
                                 <option :selected="leagueInfo.playoff_length == 1? 'true' : 'false'">1</option>
@@ -2076,6 +2085,19 @@ import moment from 'moment'
                 axios.post('league/updateSize', {
                     leagueId: this.leagueId,
                     maxSize: this.leagueInfo.maxSize
+                }).then(response => {
+                    //this.$router.push('/dashboard');
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+        },
+        changeLeagueType() {
+                axios.post('league/updateType', {
+                    leagueId: this.leagueId,
+                    league_type: this.leagueInfo.league_type
                 }).then(response => {
                     //this.$router.push('/dashboard');
                 }).catch(error => {
