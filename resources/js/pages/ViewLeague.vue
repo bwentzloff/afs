@@ -2698,9 +2698,13 @@ import moment from 'moment'
                 this.$data.draftedKs = 0;
                 this.$data.draftedDef = 0;
                 this.$data.draftedBench = 0;
-
-                for (var j = 0; j < this.$data.rosters[this.$data.myteam.id].length; j++) {
-                    this.$data.rosters[this.$data.myteam.id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[this.$data.myteam.id][j].player_id);
+                console.log(this.$data.rosters);
+                var team_id;
+                for (var z = 0; z < this.$data.teams.length; z++) {
+                    team_id = this.$data.teams[z].id
+                    for (var j = 0; j < this.$data.rosters[team_id].length; j++) {
+                        this.$data.rosters[team_id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[team_id][j].player_id);
+                    }
                 }
                 
                 // calculate drafted player totals
