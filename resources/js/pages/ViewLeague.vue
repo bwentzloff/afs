@@ -1652,8 +1652,15 @@ import moment from 'moment'
                 week: this.tempItem.week
             }).then(response => {
                 this.matchup_home_bench = []
-                this.matchup_away_bench = []
+                
                 this.matchup_home_qb_starters = []
+                this.matchup_home_rb_starters = []
+                this.matchup_home_wr_starters = []
+                this.matchup_home_te_starters = []
+                this.matchup_home_flex_starters = []
+                this.matchup_home_superflex_starters = []
+                this.matchup_home_k_starters = []
+                this.matchup_home_def_starters = []
                 for (var i = 0; i < response.data.length; i++) {
                     if (response.data[i].position == "BENCH") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
@@ -1696,6 +1703,16 @@ import moment from 'moment'
                 team_id: item.away_id,
                 week: this.tempItem.week
             }).then(response => {
+                this.matchup_away_bench = []
+                
+                this.matchup_away_qb_starters = []
+                this.matchup_away_rb_starters = []
+                this.matchup_away_wr_starters = []
+                this.matchup_away_te_starters = []
+                this.matchup_away_flex_starters = []
+                this.matchup_away_superflex_starters = []
+                this.matchup_away_k_starters = []
+                this.matchup_away_def_starters = []
                 for (var i = 0; i < response.data.length; i++) {
                     if (response.data[i].position == "BENCH") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
