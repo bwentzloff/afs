@@ -117,6 +117,16 @@
                             <b-button v-b-modal.modal-1>
                             See Draft Board
                         </b-button>
+                        <b-modal id="modal-1" title="Draft Board">
+                            <b-table
+                                    id="draftpicks-table"
+                                    :items="draftPicks"
+                                    :fields="draftBoardFields"
+                                    striped 
+                                    hover
+                                >
+                            </b-table>
+                        </b-modal>
                             <h2>Rosters</h2>
                             <table>
                                 <tr>
