@@ -10,6 +10,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 import CreateLeague from './pages/CreateLeague'
 import AcceptInvite from './pages/AcceptInvite'
 import ViewLeague from './pages/ViewLeague'
+import ResetPassword from './pages/ResetPassword'
 
 // Routes
 const routes = [
@@ -49,6 +50,14 @@ const routes = [
     path: '/reset',
     name: 'reset',
     component: Reset,
+    meta: {
+      auth: false
+    }
+  },
+  {
+    path: '/password/reset/:token',
+    name: 'resetPassword',
+    component: ResetPassword,
     meta: {
       auth: false
     }

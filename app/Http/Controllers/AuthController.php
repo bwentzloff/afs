@@ -13,6 +13,11 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Auth\Events\PasswordReset;
+use Carbon\Carbon;
+
+use Illuminate\Support\Facades\DB;
+
+use App\Mail\ResetEmail;
 
 
 class AuthController extends Controller
@@ -114,6 +119,37 @@ class AuthController extends Controller
         return Auth::guard();
     }
 
+    public function sendResetLinkEmail(Request $request) {
+        $user = DB::table('users')->where('email', '=', $request->email)
+            ->first();
+        //Check if the user exists
+        if (!$user) {
+            return redirect()->back()->withErrors(['email' => trans('User does not exist')]);
+        }
+
+        $token = str_random(60);
+        //Create Password Reset Token
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
+        //Get the token just created above
+        $tokenData = DB::table('password_resets')
+            ->where('email', $request->email)->first();
+
+        $data = [
+            'email' => $request->email,
+            'token' => $tokenData->token
+        ];
+        \Mail::to('brian@web3devs.com')->send(new ResetEmail($data));
+        /*if ($this->sendResetEmail($request->email, $tokenData->token)) {
+            return redirect()->back()->with('status', trans('A reset link has been sent to your email address.'));
+        } else {
+            return redirect()->back()->withErrors(['error' => trans('A Network Error occurred. Please try again.')]);
+        }*/
+    }
+
     /**
      * Send password reset link.
      * @param Request $request
@@ -168,11 +204,17 @@ class AuthController extends Controller
      * @param  string  $password
      * @return void
      */
-    protected function resetPassword($user, $password)
+    protected function resetPassword(Request $request)
     {
-        $user->password = Hash::make($password);
-        $user->save();
-        event(new PasswordReset($user));
+        $tokenData = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->where('token', $request->token)->first();
+        $user = User::where('email',$request->email)->first();
+        if ($tokenData) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+            event(new PasswordReset($user));
+        }
     }
 
     /**

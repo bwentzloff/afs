@@ -9,10 +9,13 @@
               <p v-if="error == 'login_error'">Validation Errors.</p>
               <p v-else>Error, unable to connect with these credentials.</p>
             </div>
-            <div class="alert alert-warning">
+            <div class="alert alert-warning" v-if="!success">
               <p>Enter your email address and you will be sent a link with further instructions to reset your password</p>
             </div>
-            <form autocomplete="off" method="post">
+            <div class="alert" v-if="success">
+              <p>The email has been sent. You should receive it within a few minutes.</p>
+            </div>
+            <form autocomplete="off" method="post" @submit.prevent="emailLink" >
               <div class="form-group">
                 <label for="email">E-mail</label>
                 <input type="email" id="email" class="form-control" placeholder="user@example.com" v-model="email" required>
@@ -50,6 +53,7 @@
             email: this.$data.email
         }).then(response => {
             this.items = response.data;
+            this.success = true;
             console.log(response);
         }).catch(error => {
             console.log(error);
