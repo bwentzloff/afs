@@ -552,7 +552,9 @@ class LeagueController extends Controller
             $rosterItems = RosterItem::where('team_id',$team->id)->get();
             foreach ($rosterItems as $key=>$item) {
                 $player = Player::where('id',$item->player_id)->first();
-                $rosterItems[$key]['player_name'] = $player->name;
+                if ($player) {
+                    $rosterItems[$key]['player_name'] = $player->name;
+                }
             }
             $teams[$team->id] = $rosterItems;
         }
