@@ -13,7 +13,7 @@
               <p>Enter your email address and you will be sent a link with further instructions to reset your password</p>
             </div>
             <div class="alert" v-if="success">
-              <p>The email has been sent. You should receive it within a few minutes.</p>
+              <p>The email has been sent. You should receive it within a few minutes. If you don't see it, make sure to check your spam folder.</p>
             </div>
             <form autocomplete="off" method="post" @submit.prevent="emailLink" >
               <div class="form-group">
