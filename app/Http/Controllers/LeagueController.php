@@ -326,6 +326,13 @@ class LeagueController extends Controller
         $lastUpdate = uniqid();
         Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
+
+    public function deleteLeague(Request $request) {
+        $league = League::where('id',$request->leagueId)->delete();
+        
+        $teams = LeagueUser::where('league_id',$request->leagueId)->delete();
+
+    }
     public function updateDraft(Request $request) {
         $league = League::where('id',$request->input('leagueId'))
             ->update([
