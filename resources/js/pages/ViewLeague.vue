@@ -324,7 +324,6 @@
                                     <div v-if="commishTools">
                                         <small>Change player eligibility</small>
                                         <select v-on:change="updatePlayerEligibility($event, data.item)">
-                                            <option slected="selected">-- choose eligibility --</option>
                                             <option value="QB">QB</option>
                                             <option value="RB">RB</option>
                                             <option value="WR">WR</option>
@@ -1570,18 +1569,20 @@ import moment from 'moment'
 
     methods: {
         updatePlayerEligibility(event, item) {
-            axios.post('league/updatePlayerEligibility', {
-                leagueId: this.leagueId,
-                player_id: item.id,
-                position: event.target.value
-            }).then(response => {
-                this.refreshPlayerList();
-            }).catch(error => {
-                console.log(error);
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors || {};
-                }
-            });
+            if (event.target.value != 0) {
+                axios.post('league/updatePlayerEligibility', {
+                    leagueId: this.leagueId,
+                    player_id: item.id,
+                    position: event.target.value
+                }).then(response => {
+                    this.refreshPlayerList();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
         },
         fixMatchups() {
             axios.post('league/fixMatchups', {
