@@ -823,7 +823,7 @@ class LeagueController extends Controller
                 if (!$player) {
                     // pick a player not in that list
                     $player = Player::whereNotIn('id',$player_ids)
-                        ->whereIn('position',array("QB","WR","RB","TE","K","DEF"))
+                        ->whereIn('position',array("WR","RB","TE","K","DEF"))
                         ->first();
 
                 }
