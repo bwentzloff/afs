@@ -113,6 +113,10 @@
                                                 Update Name
                                             </b-button>
                             </div>
+                            <br /><br />
+                            <b-button v-b-modal.modal-1>
+                            See Draft Board
+                        </b-button>
                             <h2>Rosters</h2>
                             <table>
                                 <tr>
