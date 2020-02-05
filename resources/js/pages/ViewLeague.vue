@@ -430,6 +430,9 @@
                                             v-on:change="commishUpdatePlayerTeam($event, data.item)"
                                         ></b-form-select>
                                         </div>
+                                    <b-button variant="danger" @click="dropPlayer(data.item.id)">
+                                            Drop player
+                                        </b-button>
                                 </template>
                             </b-table>
 
@@ -1601,6 +1604,19 @@ import moment from 'moment'
                     }
                 });
             }
+        },
+        dropPlayer(playerId) {
+            axios.post('league/dropPlayer', {
+                leagueId: this.leagueId,
+                player_id: playerId
+            }).then(response => {
+                this.refreshPlayerList();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
         },
         fixMatchups() {
             axios.post('league/fixMatchups', {
