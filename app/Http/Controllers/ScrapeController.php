@@ -25,7 +25,7 @@ class ScrapeController extends Controller
         $leagues = League::get();
 
         foreach($leagues as $league) {
-            print($league->id."<br /");
+            print($league->id."<br />");
             $teams = LeagueUser::where('league_id',$league->id)->get();
             foreach ($teams as $team) {
             
