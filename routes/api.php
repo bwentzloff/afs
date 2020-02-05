@@ -25,6 +25,7 @@ Route::prefix('v1')->group(function () {
         
         // Below mention routes are available only for the authenticated users.
         Route::middleware('auth:api')->group(function () {
+            Route::post('user/sendEmailLink', 'AuthController@sendEmailLink');
             // Get user info
             Route::get('user', 'AuthController@user');
             // Logout user from application
@@ -78,6 +79,7 @@ Route::prefix('v1')->group(function () {
 
     // Scraping routes
     Route::get('scrape/xfl/players', 'ScrapeController@xflPlayers');
+    Route::get('email/test', 'ScrapeController@testEmail');
     Route::get('league/updateDraftStatus', 'LeagueController@updateDraftStatuses');
     Route::get('league/getLastUpdate/{id}', ['uses'=>'LeagueController@getLastUpdate']);
 
@@ -103,6 +105,7 @@ Route::prefix('v1')->group(function () {
     Route::get('players/xfl', 'PlayerController@xflPlayers');
     Route::get('players/stats', 'ScrapeController@calculatePercent');
     Route::get('players/processWaivers/{day}', 'ScrapeController@processWaivers');
+    Route::get('players/cleanUp', 'ScrapeController@cleanUp');
 
     // Cronjobs
     //Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
