@@ -22,8 +22,19 @@ include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 class ScrapeController extends Controller
 {
     public function cleanUp() {
-        $leagues = League::get();
+        $lastChecked = Cache::get('cleanup');
 
+        if (!$lastChecked) {
+            $lastChecked = 0;
+            Cache::put('cleanup', $lastChecked+1000,6000);
+        }
+
+
+        $leagues = League::
+            skip($lastChecked)
+            ->take(1000)
+            ->get();
+        
         foreach($leagues as $league) {
             print($league->id."<br />");
             $teams = LeagueUser::where('league_id',$league->id)->get();
