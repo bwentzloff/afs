@@ -82,7 +82,9 @@ class ScrapeController extends Controller
     }
     public function processWaivers($day) {
         // get leagues that process this day
-        $leagues = League::where('waiver_day',$day)->get();
+        $leagues = League::where('waiver_day',$day)
+            ->where('waiver_status',0)
+            ->get();
 
         foreach($leagues as $league) {
             // get teams in reverse standing order
