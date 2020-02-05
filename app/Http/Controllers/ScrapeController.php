@@ -26,9 +26,13 @@ class ScrapeController extends Controller
 
         if (!$lastChecked) {
             $lastChecked = 0;
-            Cache::put('cleanup', $lastChecked+1000,6000);
+            
         }
-
+        if ($lastChecked < 50000) {
+            Cache::put('cleanup', $lastChecked+1000,6000);
+        } else {
+            Cache::put('cleanup', 0,6000);
+        }
 
         $leagues = League::
             skip($lastChecked)
