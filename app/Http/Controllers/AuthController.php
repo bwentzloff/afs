@@ -142,7 +142,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'token' => $tokenData->token
         ];
-        \Mail::to('brian@web3devs.com')->send(new ResetEmail($data));
+        \Mail::to($request->email)->send(new ResetEmail($data));
         /*if ($this->sendResetEmail($request->email, $tokenData->token)) {
             return redirect()->back()->with('status', trans('A reset link has been sent to your email address.'));
         } else {
