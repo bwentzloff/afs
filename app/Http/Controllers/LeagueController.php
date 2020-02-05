@@ -698,10 +698,12 @@ class LeagueController extends Controller
         $pickup->player_id = $request->player_id;
         $pickup->save();
 
-        $drop_player = RosterItem::where('league_id',$request->leagueId)
-            ->where('team_id',$team->id)
-            ->where('player_id',$request->drop_player_id)
-            ->delete();
+        if (isset($request->drop_player_id) && $request->drop_player_id) {
+            $drop_player = RosterItem::where('league_id',$request->leagueId)
+                ->where('team_id',$team->id)
+                ->where('player_id',$request->drop_player_id)
+                ->delete();
+        }
 
         $lastUpdate = uniqid();
         Cache::put('leagueUpdate'.$request->leagueId, $lastUpdate,600);
