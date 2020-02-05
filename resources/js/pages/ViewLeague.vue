@@ -1654,7 +1654,27 @@ import moment from 'moment'
         },
         createClaim(event, item) {
             this.currentClaimId = item.id;
-            this.$bvModal.show("waiver-modal");
+
+            var maxTeamSize = this.leagueInfo.qbs + this.leagueInfo.rbs + this.leagueInfo.wrs + this.leagueInfo.tes + this.leagueInfo.flex + this.leagueInfo.superflex + this.leagueInfo.ks + this.leagueInfo.def + this.leagueInfo.bench;
+
+            var myTeamSize = this.rosters[this.myteam.id].length + this.waivers.length
+
+            if (myTeamSize >= maxTeamSize) {
+                this.$bvModal.show("waiver-modal");
+            } else {
+                axios.post('league/createClaim', {
+                    leagueId: this.leagueId,
+                    player_id: this.currentClaimId,
+                    drop_player_id: 0
+                }).then(response => {
+                    this.refreshPlayerList();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
             /**/
         },
         addFreeAgent(event, item) {
