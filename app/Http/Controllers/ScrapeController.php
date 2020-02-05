@@ -12,6 +12,7 @@ use App\Models\DraftPick;
 use App\Models\Waiver;
 use App\Models\RosterItem;
 use App\Models\Trade;
+use App\Models\Lineup;
 use Illuminate\Support\Facades\Cache;
 
 use App\Mail\TestEmail;
@@ -20,6 +21,50 @@ include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 
 class ScrapeController extends Controller
 {
+    public function cleanUp() {
+        $leagues = League::get();
+
+        foreach($leagues as $league) {
+            
+            $teams = LeagueUser::where('league_id',$league->id)->get();
+            foreach ($teams as $team) {
+            
+                $rosterPlayerIds = [];
+                $roster = RosterItem::where('league_id',$league->id)
+                    ->where('team_id',$team->id)
+                    ->get();
+
+                foreach($roster as $player) {
+                    if (in_array($player->player_id, $rosterPlayerIds)) {
+                        // duplicate player
+                        $delete = RosterItem::where('league_id',$league->id)
+                            ->where('id',$player->id)
+                            ->delete();
+                    } else {
+                        $rosterPlayerIds[] = $player->player_id;
+                    }
+                }
+                $lineup = Lineup::where('league_id',$league->id)
+                    ->where('team_id',$team->id)
+                    ->get();
+
+                foreach( $lineup as $item) {
+                    if (!in_array($item->player_id, $rosterPlayerIds)) {
+                        $delete = Lineup::where('id',$item->id)
+                            ->where('league_id',$league->id)
+                            ->delete();
+                    }
+                }
+
+
+            }
+
+
+
+                
+        }
+
+    }
     public function processWaivers($day) {
         // get leagues that process this day
         $leagues = League::where('waiver_day',$day)->get();
