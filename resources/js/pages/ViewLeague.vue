@@ -1659,7 +1659,27 @@ import moment from 'moment'
         },
         addFreeAgent(event, item) {
             this.currentFreeAgentId = item.id;
-            this.$bvModal.show("freeagent-modal");
+
+            var maxTeamSize = this.leagueInfo.qbs + this.leagueInfo.rbs + this.leagueInfo.wrs + this.leagueInfo.tes + this.leagueInfo.flex + this.leagueInfo.superflex + this.leagueInfo.ks + this.leagueInfo.def + this.leagueInfo.bench;
+
+            var myTeamSize = this.rosters[this.myteam.id].length
+
+            if (myTeamSize >= maxTeamSize) {
+                this.$bvModal.show("freeagent-modal");
+            } else {
+                axios.post('league/addFreeAgent', {
+                    leagueId: this.leagueId,
+                    player_id: this.currentFreeAgentId,
+                    
+                }).then(response => {
+                    this.refreshPlayerList();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
             /**/
         },
         selectDropForFreeAgent(event, item) {
