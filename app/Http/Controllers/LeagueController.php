@@ -180,6 +180,8 @@ class LeagueController extends Controller
                 ]);
         }
 
+        
+
         // delete other trades in that league with either of those players in it
         $all_trades = Trade::where('league_id',$request->leagueId)
             ->get();
@@ -195,6 +197,21 @@ class LeagueController extends Controller
                     ->where('id',$trade->id)
                     ->delete();
             }
+        }
+
+        // delete lineups with those players in it
+        $sport = Sport::where('id',8)->first();
+        foreach ($team1_player_ids_to_get as $player_id) {
+            $delete = Lineup::where('week',$sport->current_week)
+                ->where('league_id',$request->leagueId)
+                ->where('player_id',$player_id)
+                ->delete();
+        }
+        foreach ($team2_player_ids_to_get as $player_id) {
+            $delete = Lineup::where('week',$sport->current_week)
+                ->where('league_id',$request->leagueId)
+                ->where('player_id',$player_id)
+                ->delete();
         }
     }
     public function fixMatchups(Request $request) {
