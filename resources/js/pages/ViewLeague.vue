@@ -553,7 +553,7 @@
                         <b-card-text>
                             <h1>Draft Settings</h1>
                             <form autocomplete="off" @submit.prevent="updateDraft" method="post">
-                                <b-alert variant="danger" show>Warning: Updating your draft date and/or time will reset the draft. Any picks already made will be reverted. This cannot be undone.</b-alert>
+                                <b-alert variant="danger" show>Warning: Updating your draft settings will reset the draft. Any picks already made will be reverted. This cannot be undone. I don't recommend changing any settings during your draft.</b-alert>
 
                                 <div class="form-group">
                                     <label for="drafttime">Update Draft Date/Time <small><em>Times shown are in your local timezone. Other members of your league will have the time converted to their local timezone.</em></small></label>
