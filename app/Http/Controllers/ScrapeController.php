@@ -14,6 +14,8 @@ use App\Models\RosterItem;
 use App\Models\Trade;
 use Illuminate\Support\Facades\Cache;
 
+use App\Mail\TestEmail;
+
 include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 
 class ScrapeController extends Controller
@@ -40,10 +42,12 @@ class ScrapeController extends Controller
                     $newRosterItem->save();
                     // drop the drop_id player
 
-                    $drop_player = RosterItem::where('team_id',$team->id)
-                        ->where('league_id',$league->id)
-                        ->where('player_id',$waiver->drop_player_id)
-                        ->delete();
+                    if (isset($waiver->drop_player_id) && $waiver->drop_player_id > 0) {
+                        $drop_player = RosterItem::where('team_id',$team->id)
+                            ->where('league_id',$league->id)
+                            ->where('player_id',$waiver->drop_player_id)
+                            ->delete();
+                    }
 
                     // delete any other waivers in the league with the same player
                     $deleteWaivers = Waiver::where('league_id',$league->id)
@@ -77,6 +81,11 @@ class ScrapeController extends Controller
             $lastUpdate = uniqid();
             Cache::put('leagueUpdate'.$league->id, $lastUpdate,600);
         }
+    }
+    public function testEmail() {
+        $data = ['message' => 'This is a test!'];
+
+        \Mail::to('brian@web3devs.com')->send(new TestEmail($data));
     }
     public function calculatePercent() {
         // get number of leagues
