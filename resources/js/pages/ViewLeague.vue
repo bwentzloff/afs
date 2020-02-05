@@ -297,6 +297,10 @@
                                     <td>{{ rule34 }}</td>
                                 </tr>
                             </table>
+
+                            <b-button @click="deleteLeague()" v-if="commishTools">
+                                    Delete League
+                                </b-button><br /><br />
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Players">
@@ -2101,6 +2105,20 @@ import moment from 'moment'
                 axios.post('league/remove', {
                     leagueId: this.leagueId,
                     team: this.myteam.id
+                }).then(response => {
+                    this.$router.push('/dashboard');
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        deleteLeague() {
+            if(confirm("Are you sure you want to delete this league? This CANNOT be undone.")) {
+                axios.post('league/delete', {
+                    leagueId: this.leagueId,
                 }).then(response => {
                     this.$router.push('/dashboard');
                 }).catch(error => {
