@@ -365,39 +365,42 @@ class LeagueController extends Controller
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
     }
     public function dropPlayer(Request $request) {
+        $team = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
         // remove roster item
         $delete = RosterItem::where('league_id',$request->leagueId)
             ->where('player_id',$request->player_id)
             ->delete();
         // remove from this week's lineups
-        $sport = Sport::where('id',8)->first();
-        $delete = Lineup::where('week',$sport->current_week)
-            ->where('league_id',$request->leagueId)
-            ->where('player_id',$request->player_id)
-            ->delete();
-        // remove any trades associated with him
-        $all_trades = Trade::where('league_id',$request->leagueId)
-            ->get();
+        if ($delete) {
+            $sport = Sport::where('id',8)->first();
+            $delete = Lineup::where('week',$sport->current_week)
+                ->where('league_id',$request->leagueId)
+                ->where('player_id',$request->player_id)
+                ->delete();
+            // remove any trades associated with him
+            $all_trades = Trade::where('league_id',$request->leagueId)
+                ->get();
 
-        foreach($all_trades as $trade) {
-            $foundPlayer = false;
-            foreach (unserialize($trade->team1_selected) as $player_id) {
-                if (in_array($request->player_id, $team1_player_ids_to_get)) $foundPlayer = true;
-                if (in_array($request->player_id, $team2_player_ids_to_get)) $foundPlayer = true;
+            foreach($all_trades as $trade) {
+                $foundPlayer = false;
+                foreach (unserialize($trade->team1_selected) as $player_id) {
+                    if (in_array($request->player_id, $team1_player_ids_to_get)) $foundPlayer = true;
+                    if (in_array($request->player_id, $team2_player_ids_to_get)) $foundPlayer = true;
+                }
+                if ($foundPlayer) {
+                    $delete = Trade::where('league_id',$request->leagueId)
+                        ->where('id',$trade->id)
+                        ->delete();
+                }
             }
-            if ($foundPlayer) {
-                $delete = Trade::where('league_id',$request->leagueId)
-                    ->where('id',$trade->id)
-                    ->delete();
-            }
+            // remove any waivers where he's the drop player
+            $delete = Waiver::where('league_id',$request->leagueId)
+                ->where('drop_player_id',$request->player_id)
+                ->delete();
+
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->leagueId, $lastUpdate,600);
         }
-        // remove any waivers where he's the drop player
-        $delete = Waiver::where('league_id',$request->leagueId)
-            ->where('drop_player_id',$request->player_id)
-            ->delete();
-
-        $lastUpdate = uniqid();
-        Cache::put('leagueUpdate'.$request->leagueId, $lastUpdate,600);
     }
     public function updateRoster(Request $request) {
         $league = League::where('id',$request->input('leagueId'))
