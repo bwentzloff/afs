@@ -367,12 +367,17 @@ class LeagueController extends Controller
     public function dropPlayer(Request $request) {
         $team = LeagueUser::where('league_id',$request->leagueId)->where('user_id',Auth::user()->id)->first();
         // remove roster item
+        $player = RosterItem::where('league_id',$request->leagueId)
+            ->where('player_id',$request->player_id)
+            ->first();
+        
         $delete = RosterItem::where('league_id',$request->leagueId)
             ->where('player_id',$request->player_id)
             ->delete();
         // remove from this week's lineups
-        if ($delete) {
+        if ($player) {
             $sport = Sport::where('id',8)->first();
+
             $delete = Lineup::where('week',$sport->current_week)
                 ->where('league_id',$request->leagueId)
                 ->where('player_id',$request->player_id)
