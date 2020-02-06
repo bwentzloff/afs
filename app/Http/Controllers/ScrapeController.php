@@ -29,14 +29,14 @@ class ScrapeController extends Controller
             
         }
         if ($lastChecked < 50000) {
-            Cache::put('cleanup', $lastChecked+1000,6000);
+            Cache::put('cleanup', $lastChecked+500,6000);
         } else {
             Cache::put('cleanup', 0,6000);
         }
 
         $leagues = League::
             skip($lastChecked)
-            ->take(1000)
+            ->take(500)
             ->get();
         
         foreach($leagues as $league) {
