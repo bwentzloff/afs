@@ -771,7 +771,7 @@ class LeagueController extends Controller
                 ->where('player_id',$request->drop_player_id)
                 ->delete();
             
-            $sport = Sport::where('id',8);
+            $sport = Sport::where('id',8)->first();
             $delete_lineup = Lineup::where('week',$sport->current_week)
                 ->where('league_id',$request->leagueId)
                 ->where('player_id',$request->drop_player_id)
