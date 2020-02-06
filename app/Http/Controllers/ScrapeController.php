@@ -23,12 +23,12 @@ class ScrapeController extends Controller
 {
     public function cleanUp() {
         $lastChecked = Cache::get('cleanup');
-
+        $leagues = League::count();
         if (!$lastChecked) {
             $lastChecked = 0;
             
         }
-        if ($lastChecked < 50000) {
+        if ($lastChecked <= $leagues) {
             Cache::put('cleanup', $lastChecked+500,6000);
         } else {
             Cache::put('cleanup', 0,6000);
