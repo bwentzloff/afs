@@ -894,7 +894,7 @@
                 <template v-slot:cell(actions)="data">
                     <div>
                         <b-button @click="dropPlayer(data.item.player_id)">
-                            Select
+                            Drop
                         </b-button>
                     </div>
                 </template>
@@ -2283,7 +2283,7 @@ import moment from 'moment'
                 leagueId: this.leagueId,
                 newName: this.myteam.name,
             }).then(response => {
-                //
+                this.getLeagueInfo();
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
