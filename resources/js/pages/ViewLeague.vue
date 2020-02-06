@@ -114,12 +114,12 @@
                                             </b-button>
                             </div>
                             <br /><br />
-                            <b-button v-b-modal.modal-1>
+                            <b-button v-b-modal.modal-5>
                             See Draft Board
                         </b-button>
-                        <b-modal id="modal-1" title="Draft Board">
+                        <b-modal id="modal-5" title="Draft Board">
                             <b-table
-                                    id="draftpicks-table"
+                                    id="draftpicks-table-5"
                                     :items="draftPicks"
                                     :fields="draftBoardFields"
                                     striped 
