@@ -762,6 +762,12 @@ class LeagueController extends Controller
                 ->where('team_id',$team->id)
                 ->where('player_id',$request->drop_player_id)
                 ->delete();
+            
+            $sport = Sport::where('id',8);
+            $delete_lineup = Lineup::where('week',$sport->current_week)
+                ->where('league_id',$request->leagueId)
+                ->where('player_id',$request->drop_player_id)
+                ->delete();
         }
 
         $lastUpdate = uniqid();
