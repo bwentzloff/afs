@@ -82,7 +82,7 @@ Route::prefix('v1')->group(function () {
     Route::get('scrape/xfl/players', 'ScrapeController@xflPlayers');
     Route::get('email/test', 'ScrapeController@testEmail');
     Route::get('league/updateDraftStatus', 'LeagueController@updateDraftStatuses');
-    Route::get('league/getLastUpdate/{id}', ['uses'=>'LeagueController@getLastUpdate']);
+    Route::get('league/getLastUpdate/{id}', ['uses'=>'LeagueController@getLastUpdate'])->middleware('auth');
 
     // Get league info
     Route::get('league/info/{id}', ['uses'=>'LeagueController@getLeagueInfo']);
