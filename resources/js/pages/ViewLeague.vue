@@ -430,7 +430,7 @@
                                             v-on:change="commishUpdatePlayerTeam($event, data.item)"
                                         ></b-form-select>
                                         </div>
-                                    <b-button variant="danger" @click="dropPlayer(data.item.id)">
+                                    <b-button variant="danger" @click="dropPlayer(data.item.id)" v-if="myteam.id == data.item.fantasyTeamId">
                                             Drop player
                                         </b-button>
                                 </template>
