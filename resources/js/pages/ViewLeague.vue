@@ -339,7 +339,7 @@
                                 <template v-slot:cell(combinedInfo)="data">
                                     {{ data.item.name }}<br />
                                     {{ data.item.position }} - {{ data.item.team }}
-                                    <div v-if="commishTools && false">
+                                    <div v-if="commishTools">
                                         <small>Change player eligibility {{ data.item.position }}</small>
                                         <select v-on:change="updatePlayerEligibility($event, data.item)" v-model="data.item.position">
                                             <option value="QB">QB</option>
