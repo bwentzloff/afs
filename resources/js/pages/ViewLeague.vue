@@ -880,6 +880,28 @@
             <b-button class="mt-3" block @click="$bvModal.hide('waiver-modal')">Cancel</b-button>
             
         </b-modal>
+        <b-modal id="toomany-modal" hide-footer no-close-on-esc no-close-on-backdrop hide-header-close>
+            <template v-slot:modal-title>
+                You have too many players on your roster. Choose one to drop.
+            </template>
+            <b-table
+                id="waiver-players-table"
+                :items="rosters[myteam.id]"
+                :fields="waiverTableFields"
+                striped 
+                hover
+            >
+                <template v-slot:cell(actions)="data">
+                    <div>
+                        <b-button @click="dropPlayer(data.item.player_id)">
+                            Select
+                        </b-button>
+                    </div>
+                </template>
+            </b-table>
+            
+            
+        </b-modal>
         <b-modal id="trade-modal" hide-footer>
             <template v-slot:modal-title>
                 Trade Proposal
@@ -1606,6 +1628,7 @@ import moment from 'moment'
             }
         },
         dropPlayer(playerId) {
+            this.$bvModal.hide("toomany-modal");
             axios.post('league/dropPlayer', {
                 leagueId: this.leagueId,
                 player_id: playerId
@@ -2788,7 +2811,14 @@ import moment from 'moment'
                 this.$data.draftedKs = 0;
                 this.$data.draftedDef = 0;
                 this.$data.draftedBench = 0;
-                
+
+                var maxTeamSize = this.leagueInfo.qbs + this.leagueInfo.rbs + this.leagueInfo.wrs + this.leagueInfo.tes + this.leagueInfo.flex + this.leagueInfo.superflex + this.leagueInfo.ks + this.leagueInfo.def + this.leagueInfo.bench;
+
+                var myTeamSize = this.rosters[this.myteam.id].length
+
+                if (myTeamSize > maxTeamSize) {
+                    this.$bvModal.show("toomany-modal");
+                }
                 
                 // calculate drafted player totals
                 for (var i = 0; i < this.$data.rosters[this.$data.myteam.id].length; i++) {
