@@ -2582,7 +2582,7 @@ import moment from 'moment'
                     this.errors = error.response.data.errors || {};
                 }*/
                 //setTimeout(() => { this.getLastUpdate(); }, 15000);
-                this.$router.push('/login');
+                //this.$router.push('/login');
             });
             
         },
