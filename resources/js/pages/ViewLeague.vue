@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                We are experiencing extremely high server loads. Please be patient while I try to fix everything.
+                Expect high server loads and site slowdowns Friday night and Saturday morning. Make sure your Draft Queue is set.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
