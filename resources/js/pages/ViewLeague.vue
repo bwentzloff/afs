@@ -2808,7 +2808,7 @@ import moment from 'moment'
                     this.$data.lastUpdate = response.data;
                 }
                 if (this.leagueInfo.draft_status < 2) {
-                    setTimeout(() => { this.getLastUpdate(); }, 10000);
+                    setTimeout(() => { this.getLastUpdate(); }, 2000);
                 } else {
                     setTimeout(() => { this.getLastUpdate(); }, 60000);
                 }
