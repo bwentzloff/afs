@@ -2796,7 +2796,10 @@ import moment from 'moment'
                 this.countdownHours = diffDuration.hours();
                 this.countdownMinutes = diffDuration.minutes();
                 this.countdownSeconds = diffDuration.seconds();
-                if (this.countdownSeconds < 0) this.countdownSeconds = 0;
+                if (this.countdownSeconds < 0) {
+                    this.countdownSeconds = 0;
+                    this.getLeagueInfo();
+                }
                 var that = this;
             }
             setTimeout(() => { this.updateTimer(); }, 1000);
