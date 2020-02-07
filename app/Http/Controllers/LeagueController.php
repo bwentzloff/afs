@@ -832,7 +832,6 @@ class LeagueController extends Controller
         //while (Carbon::now() < $end_time) {    
             $leagues = League::where('draft_status',0)
                 ->where('draft_datetime','<=',Carbon::now())
-                ->take(50)
                 ->get();
             
             foreach($leagues as $league) {
