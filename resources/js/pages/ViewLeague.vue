@@ -1,6 +1,9 @@
 <template>
     <div class="container">
         <div>
+            <b-card bg-variant="danger" text-variant="black">
+                We are experiencing extremely high server loads. Please be patient while I try to fix everything.
+            </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
                     <b-card-title>Your draft is in {{ draftTimeDays }} Days, {{ draftTimeHours }} Hours, {{ draftTimeMinutes }} Minutes, {{ draftTimeSeconds }} Seconds</b-card-title>
