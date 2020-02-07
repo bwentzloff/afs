@@ -9,13 +9,20 @@ use App\Models\User;
 use App\Models\LeagueUser;
 use App\Models\Player;
 use App\Models\PlayerStat;
+use Illuminate\Support\Facades\Cache;
 
 class PlayerController extends Controller
 {
     public function xflPlayers() {
-        $players = Player::where('sport_id',8)->get();
+        $player_list = Cache::get('player_list');
 
-        return response()->json($players);
+        if (!$player_list) {
+            $player_list = Player::where('sport_id',8)->get();
+            Cache::put('player_list', $player_list,600);
+        }
+        
+
+        return response()->json($player_list);
     }
 
     public function getWeeklyStats($week) {
