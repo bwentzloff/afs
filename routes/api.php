@@ -109,6 +109,7 @@ Route::prefix('v1')->group(function () {
     Route::get('players/stats', 'ScrapeController@calculatePercent');
     Route::get('players/processWaivers/{day}', 'ScrapeController@processWaivers');
     Route::get('players/cleanUp', 'ScrapeController@cleanUp');
+    Route::get('players/getWeeklyStats/{week}', 'PlayerController@getWeeklyStats');
 
     // Cronjobs
     //Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
