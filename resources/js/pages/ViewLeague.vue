@@ -2798,7 +2798,7 @@ import moment from 'moment'
                 this.countdownSeconds = diffDuration.seconds();
                 if (this.countdownSeconds < 0) {
                     this.countdownSeconds = 0;
-                    setTimeout(() => { this.getLeagueInfo(); }, 10000);
+                    //setTimeout(() => { this.getLeagueInfo(); }, 10000);
                 }
                 var that = this;
             }
