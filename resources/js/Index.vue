@@ -5,6 +5,7 @@
         </header>
         <div id="content">
             <router-view></router-view>
+            <center><small>AltFantasySports is an open source project. Contribute at <a target="_blank" href="https://github.com/bwentzloff/afs">https://github.com/bwentzloff/afs</a></small></center>
         </div>
     </div>
 </template>
