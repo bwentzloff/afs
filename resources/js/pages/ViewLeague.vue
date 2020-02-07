@@ -2106,27 +2106,43 @@ import moment from 'moment'
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_qb_starters.push(response.data[i])
+                        this.matchup_home_qb_starters.score = 0;
+                        this.matchup_home_qb_starters.statline = [];
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_rb_starters.push(response.data[i])
+                        this.matchup_home_rb_starters.score = 0;
+                        this.matchup_home_rb_starters.statline = [];
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_wr_starters.push(response.data[i])
+                        this.matchup_home_wr_starters.score = 0;
+                        this.matchup_home_wr_starters.statline = [];
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_te_starters.push(response.data[i])
+                        this.matchup_home_te_starters.score = 0;
+                        this.matchup_home_te_starters.statline = [];
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_flex_starters.push(response.data[i])
+                        this.matchup_home_flex_starters.score = 0;
+                        this.matchup_home_flex_starters.statline = [];
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_superflex_starters.push(response.data[i])
+                        this.matchup_home_superflex_starters.score = 0;
+                        this.matchup_home_superflex_starters.statline = [];
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_k_starters.push(response.data[i])
+                        this.matchup_home_k_starters.score = 0;
+                        this.matchup_home_k_starters.statline = [];
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_def_starters.push(response.data[i])
+                        this.matchup_home_def_starters.score = 0;
+                        this.matchup_home_def_starters.statline = [];
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
@@ -2159,27 +2175,43 @@ import moment from 'moment'
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_qb_starters.push(response.data[i])
+                        this.matchup_away_qb_starters.score = 0;
+                        this.matchup_away_qb_starters.statline = [];
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_rb_starters.push(response.data[i])
+                        this.matchup_away_rb_starters.score = 0;
+                        this.matchup_away_rb_starters.statline = [];
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_wr_starters.push(response.data[i])
+                        this.matchup_away_wr_starters.score = 0;
+                        this.matchup_away_wr_starters.statline = [];
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_te_starters.push(response.data[i])
+                        this.matchup_away_te_starters.score = 0;
+                        this.matchup_away_te_starters.statline = [];
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_flex_starters.push(response.data[i])
+                        this.matchup_away_flex_starters.score = 0;
+                        this.matchup_away_flex_starters.statline = [];
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_superflex_starters.push(response.data[i])
+                        this.matchup_away_superflex_starters.score = 0;
+                        this.matchup_away_superflex_starters.statline = [];
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_k_starters.push(response.data[i])
+                        this.matchup_away_k_starters.score = 0;
+                        this.matchup_away_k_starters.statline = [];
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_def_starters.push(response.data[i])
+                        this.matchup_away_def_starters.score = 0;
+                        this.matchup_away_def_starters.statline = [];
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
