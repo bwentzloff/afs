@@ -2619,6 +2619,7 @@ import moment from 'moment'
                 this.refreshPlayerList();
                 //this.$router.push('/dashboard');
             }).catch(error => {
+                this.$data.processing = false;
                 console.log(error);
                 if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
