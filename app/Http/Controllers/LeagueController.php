@@ -901,7 +901,7 @@ class LeagueController extends Controller
 
                 }
                 if (!$player) {
-                    $player_id = 0
+                    $player_id = 0;
                 } else {
                     $player_id = $player->id;
                 }
