@@ -901,7 +901,7 @@ class LeagueController extends Controller
 
                 }
                 
-                if ($draftPick) {
+                if ($draftPick && $player) {
                     $update = DraftPick::where('id',$draftPick->id)
                         ->update([
                             'player_id'=>$player->id
