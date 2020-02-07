@@ -943,9 +943,9 @@
             
             <table class="table b-table table-striped table-hover">
                 <tr>
-                    <td><strong>{{ matchup_home_name }}</strong></td>
+                    <td colspan="2"><strong>{{ matchup_home_name }}</strong></td>
                     <td></td>
-                    <td><strong>{{ matchup_away_name }}</strong></td>
+                    <td colspan="2"><strong>{{ matchup_away_name }}</strong></td>
                 </tr>
                 <tr v-for="(n, index) in qbs">
                     <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].player_name: "empty" }}
@@ -956,9 +956,16 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].score: "0" }}</td>
                     <td><center>QB</center></td>
+                    <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].player_name: "empty" }}
-
+                        
+                        <div v-if="matchup_away_qb_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_qb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_qb_starters[index].player_id)">
                                 Bench
@@ -975,7 +982,9 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].score: "0" }}</td>
                     <td><center>RB</center></td>
+                    <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].player_name: "empty" }}
 
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index]">        
@@ -994,7 +1003,9 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].score: "0" }}</td>
                     <td><center>WR</center></td>
+                    <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].player_name: "empty" }}
 
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index]">        
@@ -1013,7 +1024,9 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].score: "0" }}</td>
                     <td><center>TE</center></td>
+                    <td>{{ matchup_away_te_starters[index]? matchup_away_qb_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].player_name: "empty" }}
 
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index]">        
@@ -1032,7 +1045,9 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].score: "0" }}</td>
                     <td><center>WR/RB/TE</center></td>
+                    <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].player_name: "empty" }}
 
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index]">        
@@ -1051,7 +1066,9 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].score: "0" }}</td>
                     <td><center>QB/WR/RB/TE</center></td>
+                    <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].player_name: "empty" }}
 
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index]">        
@@ -1070,7 +1087,9 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].score: "0" }}</td>
                     <td><center>K</center></td>
+                    <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].player_name: "empty" }}
 
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index]">        
@@ -1089,7 +1108,9 @@
                             </b-button>
                         </div>
                     </td>
+                    <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].score: "0" }}</td>
                     <td><center>DST</center></td>
+                    <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].score: "0" }}</td>
                     <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].player_name: "empty" }}
 
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index]">        
@@ -1521,6 +1542,7 @@ import moment from 'moment'
         matchup_away_def_starters: [],
         tempItem: [],
         currentFreeAgentId: 0,
+        matchup_player_stats: []
       }
     },
     mounted() {
@@ -1528,6 +1550,7 @@ import moment from 'moment'
 
         this.getLeagueInfo();
         this.getLastUpdate();
+        
 
         
     },
@@ -1616,6 +1639,167 @@ import moment from 'moment'
     },
 
     methods: {
+        calculatePlayerScore(stats) {
+            return this.leagueInfo.rule1 * stats.rule1 +
+                this.leagueInfo.rule1 * stats.rule1 +
+                this.leagueInfo.rule2 * stats.rule2 +
+                this.leagueInfo.rule3 * stats.rule3 +
+                this.leagueInfo.rule4 * stats.rule4 +
+                this.leagueInfo.rule5 * stats.rule5 +
+                this.leagueInfo.rule6 * stats.rule6 +
+                this.leagueInfo.rule7 * stats.rule7 +
+                this.leagueInfo.rule8 * stats.rule8 +
+                this.leagueInfo.rule9 * stats.rule9 +
+                this.leagueInfo.rule10 * stats.rule10 +
+                this.leagueInfo.rule11 * stats.rule11 +
+                this.leagueInfo.rule12 * stats.rule12 +
+                this.leagueInfo.rule13 * stats.rule13 +
+                this.leagueInfo.rule14 * stats.rule14 +
+                this.leagueInfo.rule15 * stats.rule15 +
+                this.leagueInfo.rule16 * stats.rule16 +
+                this.leagueInfo.rule17 * stats.rule17 +
+                this.leagueInfo.rule18 * stats.rule18 +
+                this.leagueInfo.rule19 * stats.rule19 +
+                this.leagueInfo.rule20 * stats.rule20 +
+                this.leagueInfo.rule21 * stats.rule21 +
+                this.leagueInfo.rule22 * stats.rule22 +
+                this.leagueInfo.rule23 * stats.rule23 +
+                this.leagueInfo.rule24 * stats.rule24 +
+                this.leagueInfo.rule25 * stats.rule25 +
+                this.leagueInfo.rule26 * stats.rule26 +
+                this.leagueInfo.rule27 * stats.rule27 +
+                this.leagueInfo.rule28 * stats.rule28 +
+                this.leagueInfo.rule29 * stats.rule29 +
+                this.leagueInfo.rule30 * stats.rule30 +
+                this.leagueInfo.rule31 * stats.rule31 +
+                this.leagueInfo.rule32 * stats.rule32 +
+                this.leagueInfo.rule33 * stats.rule33 +
+                this.leagueInfo.rule34 * stats.rule34
+        },
+        getPlayerStatline(stats) {
+            var statline = []
+            if (stats.rule1 && stats.rule1 > 0) {
+                statline.push(stats.rule1 + " rushing TD")
+            }
+            if (stats.rule2 && stats.rule2 > 0) {
+                statline.push(stats.rule2 + " receiving TD")
+            }
+            if (stats.rule3 && stats.rule3 > 0) {
+                statline.push(stats.rule3 + " returning kick/punt for TD")
+            }
+            if (stats.rule4 && stats.rule4 > 0) {
+                statline.push(stats.rule4 + " returning or recovering a fumble for TD")
+            }
+            if (stats.rule5 && stats.rule5 > 0) {
+                statline.push(stats.rule5 + " passing TD")
+            }
+            if (stats.rule6 && stats.rule6 > 0) {
+                statline.push(stats.rule6 + " rushing or receiving 1pt conversion")
+            }
+            if (stats.rule7 && stats.rule7 > 0) {
+                statline.push(stats.rule7 + " rushing or receiving 2pt conversion")
+            }
+            if (stats.rule8 && stats.rule8 > 0) {
+                statline.push(stats.rule8 + " rushing or receiving 3pt conversion")
+            }
+            if (stats.rule9 && stats.rule9 > 0) {
+                statline.push(stats.rule9 + " passing 1pt conversion")
+            }
+            if (stats.rule10 && stats.rule10 > 0) {
+                statline.push(stats.rule10 + " passing 2pt conversion")
+            }
+            if (stats.rule11 && stats.rule11 > 0) {
+                statline.push(stats.rule11 + " passing 3pt conversion")
+            }
+            if (stats.rule12 && stats.rule12 > 0) {
+                statline.push(stats.rule12 + " 10 yards rushing")
+            }
+            if (stats.rule13 && stats.rule13 > 0) {
+                statline.push(stats.rule13 + " 10 yards receiving")
+            }
+            if (stats.rule14 && stats.rule14 > 0) {
+                statline.push(stats.rule14 + " 25 yards passing")
+            }
+            if (stats.rule15 && stats.rule15 > 0) {
+                statline.push(stats.rule15 + " intercepted pass")
+            }
+            if (stats.rule16 && stats.rule16 > 0) {
+                statline.push(stats.rule16 + " fumble")
+            }
+            if (stats.rule17 && stats.rule17 > 0) {
+                statline.push(stats.rule17 + " 50+ yard FG made")
+            }
+            if (stats.rule18 && stats.rule18 > 0) {
+                statline.push(stats.rule18 + " 40-49 yard FG made")
+            }
+            if (stats.rule19 && stats.rule19 > 0) {
+                statline.push(stats.rule19 + " 1-39 yard FG made")
+            }
+            if (stats.rule20 && stats.rule20 > 0) {
+                statline.push(stats.rule20 + " defensive or special teams TD")
+            }
+            if (stats.rule21 && stats.rule21 > 0) {
+                statline.push(stats.rule21 + " interception")
+            }
+            if (stats.rule22 && stats.rule22 > 0) {
+                statline.push(stats.rule22 + " fumble recovery")
+            }
+            if (stats.rule23 && stats.rule23 > 0) {
+                statline.push(stats.rule23 + " blocked punt or field goal")
+            }
+            if (stats.rule24 && stats.rule24 > 0) {
+                statline.push(stats.rule24 + " safety")
+            }
+            if (stats.rule25 && stats.rule25 > 0) {
+                statline.push(stats.rule25 + " sack")
+            }
+            if (stats.rule26 && stats.rule26 > 0) {
+                statline.push(stats.rule26 + " reception")
+            }
+            if (stats.rule27 && stats.rule27 > 0) {
+                statline.push(stats.rule27 + " 0 Points Allowed")
+            }
+            if (stats.rule28 && stats.rule28 > 0) {
+                statline.push(stats.rule28 + " 1-6 Points Allowed")
+            }
+            if (stats.rule29 && stats.rule29 > 0) {
+                statline.push(stats.rule29 + " 7-13 Points Allowed")
+            }
+            if (stats.rule30 && stats.rule30 > 0) {
+                statline.push(stats.rule30 + " 14-20 Points Allowed")
+            }
+            if (stats.rule31 && stats.rule31 > 0) {
+                statline.push(stats.rule31 + " 21-27 Points Allowed")
+            }
+            if (stats.rule32 && stats.rule32 > 0) {
+                statline.push(stats.rule32 + " 28-34 Points Allowed")
+            }
+            if (stats.rule33 && stats.rule33 > 0) {
+                statline.push(stats.rule33 + " 35-41 Points Allowed")
+            }
+            if (stats.rule34 && stats.rule34 > 0) {
+                statline.push(stats.rule34 + " 42+ Points Allowed")
+            }
+            return statline
+        },
+        calculateMatchupScores() {
+            for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
+                this.matchup_away_qb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (lineup.player_id == player_score.player_id) {
+                        this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+        },
+        getWeeklyStats(week) {
+            axios.get('players/getWeeklyStats/'+week).then(response => {
+                this.matchup_player_stats = response.data;
+                this.calculateMatchupScores();
+            });
+        },
+        
         updatePlayerEligibility(event, item) {
             if (event.target.value != 0) {
                 axios.post('league/updatePlayerEligibility', {
@@ -1864,7 +2048,9 @@ import moment from 'moment'
             });
         },
         showMatchup(event, item) {
+            
             this.tempItem = item
+            
             for (var j = 0; j < this.$data.rosters[item.home_id].length; j++) {
                 this.$data.rosters[item.home_id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[item.home_id][j].player_id);
             }
@@ -1943,6 +2129,7 @@ import moment from 'moment'
                         this.matchup_home_def_starters.push(response.data[i])
                     }
                 }
+                this.getWeeklyStats(this.tempItem.week)
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
@@ -1995,6 +2182,7 @@ import moment from 'moment'
                         this.matchup_away_def_starters.push(response.data[i])
                     }
                 }
+                this.getWeeklyStats(this.tempItem.week)
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
