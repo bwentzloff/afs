@@ -950,7 +950,7 @@
                 <tr v-for="(n, index) in qbs">
                     <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_qb_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_qb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_qb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -959,7 +959,7 @@
                     <td><center>QB</center></td>
                     <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_qb_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_qb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_qb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -969,7 +969,7 @@
                 <tr v-for="(n, index) in rbs">
                     <td>{{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_rb_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_rb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_rb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -978,7 +978,7 @@
                     <td><center>RB</center></td>
                     <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_rb_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_rb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -988,7 +988,7 @@
                 <tr v-for="(n, index) in wrs">
                     <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_wr_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_wr_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_wr_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -997,7 +997,7 @@
                     <td><center>WR</center></td>
                     <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_wr_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_wr_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1007,7 +1007,7 @@
                 <tr v-for="(n, index) in tes">
                     <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_te_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_te_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_te_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1016,7 +1016,7 @@
                     <td><center>TE</center></td>
                     <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_te_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_te_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1026,7 +1026,7 @@
                 <tr v-for="(n, index) in flex">
                     <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_flex_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_flex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_flex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1035,7 +1035,7 @@
                     <td><center>WR/RB/TE</center></td>
                     <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_flex_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_flex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1045,7 +1045,7 @@
                 <tr v-for="(n, index) in superflex">
                     <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_superflex_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_superflex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_superflex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1054,7 +1054,7 @@
                     <td><center>QB/WR/RB/TE</center></td>
                     <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_superflex_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_superflex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1064,7 +1064,7 @@
                 <tr v-for="(n, index) in ks">
                     <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_k_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_k_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_k_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1073,7 +1073,7 @@
                     <td><center>K</center></td>
                     <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_k_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_k_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1083,7 +1083,7 @@
                 <tr v-for="(n, index) in def">
                     <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_home_id == myteam.id && matchup_home_def_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_def_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_def_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1092,7 +1092,7 @@
                     <td><center>DST</center></td>
                     <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].player_name: "empty" }}
 
-                        <div v-if="matchup_away_id == myteam.id && matchup_away_def_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_def_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1304,6 +1304,8 @@ import moment from 'moment'
             {key: 'name'},
             {key: 'position'},
             {key: 'team' },
+            {key: 'percent', label: '% Drafted', sortable: true},
+            {key: 'adp', label: 'ADP', sortable: true},
             {key: 'actions'}
         ],
         matchupsFields: [
@@ -1822,9 +1824,10 @@ import moment from 'moment'
 /**/
         },
         startPlayer(event, player_id, position) {
+            console.log(this.getPlayerTeamIdFromId(player_id))
             axios.post('league/startPlayer', {
                 leagueId: this.leagueId,
-                team_id: this.myteam.id,
+                team_id: this.getPlayerTeamIdFromId(player_id),
                 week: this.leagueInfo.current_week,
                 player_id: player_id,
                 position: position
@@ -1844,7 +1847,7 @@ import moment from 'moment'
         benchPlayer(event, player_id) {
             axios.post('league/benchPlayer', {
                 leagueId: this.leagueId,
-                team_id: this.myteam.id,
+                team_id: this.getPlayerTeamIdFromId(player_id),
                 week: this.leagueInfo.current_week,
                 player_id: player_id,
             }).then(response => {
@@ -2364,6 +2367,16 @@ import moment from 'moment'
             for (var i=0; i < this.teams.length; i++) {
                 if (this.teams[i].id == teamId) {
                     return this.teams[i].name;
+                }
+            }
+        },
+        getPlayerTeamIdFromId(player_id) {
+            let keys = Object.keys(this.$data.rosters)
+            for (var teamRoster = 0; teamRoster < keys.length; teamRoster++) {
+                for (var rosterPlayer = 0; rosterPlayer < this.$data.rosters[keys[teamRoster]].length; rosterPlayer++) {
+                    if (this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id == player_id) {
+                        return keys[teamRoster];
+                    }
                 }
             }
         },
@@ -2887,7 +2900,6 @@ import moment from 'moment'
 
         },
         assignTeams() {
-            console.log('assignTeams');
             let keys = Object.keys(this.$data.rosters)
             console.log(this.$data.teams)
             for (var teamRoster = 0; teamRoster < keys.length; teamRoster++) {
