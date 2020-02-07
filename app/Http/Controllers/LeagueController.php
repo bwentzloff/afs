@@ -302,6 +302,10 @@ class LeagueController extends Controller
         $delete = RosterItem::where('league_id',$request->leagueId)
             ->where('player_id',$request->player_id)
             ->delete();
+        $sport = Sport::where('id',8)->first();
+        $delete = Lineup::where('week',$sport->current_week)
+            ->where('player_id',$request->player_id)
+            ->delete();
         // then, add that player to the team
         if ($request->team_id > 0) {
             $newrosteritem = new RosterItem;

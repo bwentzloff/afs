@@ -227,7 +227,7 @@
                             <input type="text" id="rule29" class="form-control" placeholder="" v-model="rule29" required>
                         </div>
                         <div class="form-group">
-                            <label for="rule25">14-20 Points Allowed:</label>
+                            <label for="rule25">14-20 Points Allowed</label>
                             <input type="text" id="rule30" class="form-control" placeholder="" v-model="rule30" required>
                         </div>
                         <div class="form-group">
