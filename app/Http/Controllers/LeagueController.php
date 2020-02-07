@@ -900,23 +900,27 @@ class LeagueController extends Controller
                         ->first();
 
                 }
-                
-                if ($draftPick && $player) {
+                if (!$player) {
+                    $player_id = 0
+                } else {
+                    $player_id = $player->id;
+                }
+                if ($draftPick && $player_id) {
                     $update = DraftPick::where('id',$draftPick->id)
                         ->update([
-                            'player_id'=>$player->id
+                            'player_id'=>$player_id
                         ]);
                         $rosteritem = new RosterItem;
                         $rosteritem->team_id = $draftPick->team_id;
                         $rosteritem->league_id = $league->id;
-                        $rosteritem->player_id = $player->id;
+                        $rosteritem->player_id = $player_id;
                         $rosteritem->save();
                     
                     // delete players from draft queues
                     $leagueusers = LeagueUser::where('league_id',$league->id)->get();
                     foreach($leagueusers as $team) {
                         $delete = DraftQueue::where('leagueuser_id',$team->id)
-                            ->where('player_id',$player->id)
+                            ->where('player_id',$player_id)
                             ->delete();
                     }
                 }
