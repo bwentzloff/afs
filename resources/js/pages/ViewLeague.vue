@@ -2817,7 +2817,7 @@ import moment from 'moment'
                 /*if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
                 }*/
-                setTimeout(() => { this.getLastUpdate(); }, 10000);
+                setTimeout(() => { this.getLastUpdate(); }, 2000);
                 //this.$router.push('/login');
             });
             
