@@ -2572,7 +2572,7 @@ import moment from 'moment'
                     this.$data.lastUpdate = response.data;
                 }
                 if (this.leagueInfo.draft_status < 2) {
-                    setTimeout(() => { this.getLastUpdate(); }, 2000);
+                    setTimeout(() => { this.getLastUpdate(); }, 5000);
                 } else {
                     setTimeout(() => { this.getLastUpdate(); }, 60000);
                 }
@@ -2581,7 +2581,7 @@ import moment from 'moment'
                 /*if (error.response.status === 422) {
                     this.errors = error.response.data.errors || {};
                 }*/
-                setTimeout(() => { this.getLastUpdate(); }, 2000);
+                setTimeout(() => { this.getLastUpdate(); }, 5000);
                 //this.$router.push('/login');
             });
             
