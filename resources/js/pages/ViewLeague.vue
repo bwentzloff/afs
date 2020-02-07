@@ -1121,12 +1121,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="5">
                         <center>Bench</center>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td colspan="2">
                         <ul style="list-style-type: none">
                             <li v-for="(n, index) in matchup_home_bench">
                                 {{ n.player_name }}
@@ -1193,7 +1193,7 @@
                         </ul>
                     </td>
                     <td></td>
-                    <td>
+                    <td colspan="2">
                         <ul style="list-style-type: none">
                             <li v-for="(n, index) in matchup_away_bench">
                                 {{ n.player_name }}
