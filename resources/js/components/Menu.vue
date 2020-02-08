@@ -32,11 +32,6 @@
       
       <ul class="navbar-nav ml-auto" v-if="$auth.check()">
         <li class="nav-item">
-          <a class="nav-link" href="mailto:brian@altfantasysports.com">Contact</a>
-        </li>
-      </ul>
-      <ul class="navbar-nav ml-auto" v-if="$auth.check()">
-        <li class="nav-item">
           <a class="nav-link" href="https://discord.gg/t3mMU6j">Join us on Discord</a>
         </li>
       </ul>
