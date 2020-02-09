@@ -13,6 +13,9 @@ use App\Models\Waiver;
 use App\Models\RosterItem;
 use App\Models\Trade;
 use App\Models\Lineup;
+use App\Models\PlayerStat;
+use App\Models\Sport;
+use App\Models\Matchup;
 use Illuminate\Support\Facades\Cache;
 
 use App\Mail\TestEmail;
@@ -29,6 +32,137 @@ class ScrapeController extends Controller
         print_r($html);die();
 
 
+    }
+    public function calculateScores() {
+        $leagues = League::where('draft_status',2)
+            ->get();
+
+        foreach($leagues as $league) {
+            $sport = Sport::where('id',8)->first();
+            $matchups = Matchup::where('league_id',$league->id)
+                ->where('week',$sport->current_week)
+                ->get();
+
+            foreach($matchups as $matchup) {
+                $home_team = LeagueUser::where('id',$matchup->home_id)
+                    ->where('league_id',$league->id)
+                    ->first();
+                $players = Lineup::where('league_id',$league->id)
+                    ->where('week',$sport->current_week)
+                    ->where('team_id',$home_team->id)
+                    ->where('position', '<>', "BENCH")
+                    ->get();
+                $score = 0;
+                foreach($players as $player) {
+                    $stats = PlayerStat::where('player_id',$player->player_id)
+                        ->where('week',$sport->current_week)
+                        ->first();
+
+                    if ($stats) {
+
+                        $score = $score +
+                            $league->rule1 * $stats->rule1 +
+                            $league->rule2 * $stats->rule2 +
+                            $league->rule3 * $stats->rule3 +
+                            $league->rule4 * $stats->rule4 +
+                            $league->rule5 * $stats->rule5 +
+                            $league->rule6 * $stats->rule6 +
+                            $league->rule7 * $stats->rule7 +
+                            $league->rule8 * $stats->rule8 +
+                            $league->rule9 * $stats->rule9 +
+                            $league->rule10 * $stats->rule10 +
+                            $league->rule11 * $stats->rule11 +
+                            $league->rule12 * $stats->rule12 +
+                            $league->rule13 * $stats->rule13 +
+                            $league->rule14 * $stats->rule14 +
+                            $league->rule15 * $stats->rule15 +
+                            $league->rule16 * $stats->rule16 +
+                            $league->rule17 * $stats->rule17 +
+                            $league->rule18 * $stats->rule18 +
+                            $league->rule19 * $stats->rule19 +
+                            $league->rule20 * $stats->rule20 +
+                            $league->rule21 * $stats->rule21 +
+                            $league->rule22 * $stats->rule22 +
+                            $league->rule23 * $stats->rule23 +
+                            $league->rule24 * $stats->rule24 +
+                            $league->rule25 * $stats->rule25 +
+                            $league->rule26 * $stats->rule26 +
+                            $league->rule27 * $stats->rule27 +
+                            $league->rule28 * $stats->rule28 +
+                            $league->rule29 * $stats->rule29 +
+                            $league->rule30 * $stats->rule30 +
+                            $league->rule31 * $stats->rule31 +
+                            $league->rule32 * $stats->rule32 +
+                            $league->rule33 * $stats->rule33 +
+                            $league->rule34 * $stats->rule34;
+                    }
+                }
+
+                $update = Matchup::where('id',$matchup->id)
+                    ->update([
+                        'home_score'=>$score
+                    ]);
+
+                $away_team = LeagueUser::where('id',$matchup->away_id)
+                    ->where('league_id',$league->id)
+                    ->first();
+                $players = Lineup::where('league_id',$league->id)
+                    ->where('week',$sport->current_week)
+                    ->where('team_id',$away_team->id)
+                    ->where('position', '<>', "BENCH")
+                    ->get();
+                $score = 0;
+                foreach($players as $player) {
+                    $stats = PlayerStat::where('player_id',$player->player_id)
+                        ->where('week',$sport->current_week)
+                        ->first();
+
+                    if ($stats) {
+
+                        $score = $score +
+                            $league->rule1 * $stats->rule1 +
+                            $league->rule2 * $stats->rule2 +
+                            $league->rule3 * $stats->rule3 +
+                            $league->rule4 * $stats->rule4 +
+                            $league->rule5 * $stats->rule5 +
+                            $league->rule6 * $stats->rule6 +
+                            $league->rule7 * $stats->rule7 +
+                            $league->rule8 * $stats->rule8 +
+                            $league->rule9 * $stats->rule9 +
+                            $league->rule10 * $stats->rule10 +
+                            $league->rule11 * $stats->rule11 +
+                            $league->rule12 * $stats->rule12 +
+                            $league->rule13 * $stats->rule13 +
+                            $league->rule14 * $stats->rule14 +
+                            $league->rule15 * $stats->rule15 +
+                            $league->rule16 * $stats->rule16 +
+                            $league->rule17 * $stats->rule17 +
+                            $league->rule18 * $stats->rule18 +
+                            $league->rule19 * $stats->rule19 +
+                            $league->rule20 * $stats->rule20 +
+                            $league->rule21 * $stats->rule21 +
+                            $league->rule22 * $stats->rule22 +
+                            $league->rule23 * $stats->rule23 +
+                            $league->rule24 * $stats->rule24 +
+                            $league->rule25 * $stats->rule25 +
+                            $league->rule26 * $stats->rule26 +
+                            $league->rule27 * $stats->rule27 +
+                            $league->rule28 * $stats->rule28 +
+                            $league->rule29 * $stats->rule29 +
+                            $league->rule30 * $stats->rule30 +
+                            $league->rule31 * $stats->rule31 +
+                            $league->rule32 * $stats->rule32 +
+                            $league->rule33 * $stats->rule33 +
+                            $league->rule34 * $stats->rule34;
+                    }
+                }
+
+                $update = Matchup::where('id',$matchup->id)
+                    ->update([
+                        'away_score'=>$score
+                    ]);
+            }
+        }
     }
     public function cleanUp() {
         $lastChecked = Cache::get('cleanup');
