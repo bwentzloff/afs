@@ -1855,6 +1855,8 @@ import moment from 'moment'
             if (stats.rule34 && stats.rule34 > 0) {
                 statline.push(stats.rule34 + " 42+ Points Allowed")
             }
+            console.log('statline')
+            console.log(statline)
             return statline
         },
         calculateMatchupScores() {
