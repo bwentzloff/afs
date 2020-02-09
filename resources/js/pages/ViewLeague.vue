@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                Expect high server loads and site slowdowns Friday night and Saturday morning. Make sure your Draft Queue is set. Stats for the first day's games will not be real time. After that, we'll have real time scoring the rest of the season.
+                Scores will be published Sunday afternoon.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
