@@ -1787,6 +1787,7 @@ import moment from 'moment'
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
             if (stats.rule12 && stats.rule12 > 0) {
+                console.log('here')
                 statline.push(stats.rule12 + " 10 yards rushing")
             }
             if (stats.rule13 && stats.rule13 > 0) {
