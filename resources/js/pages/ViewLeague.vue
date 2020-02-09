@@ -1788,8 +1788,153 @@ import moment from 'moment'
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
                     if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
                         this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        console.log(this.matchup_away_qb_starters[lineup].score)
                         this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_qb_starters.length; lineup++) {
+                this.matchup_home_qb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_rb_starters.length; lineup++) {
+                this.matchup_away_rb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_rb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_rb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_rb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_rb_starters.length; lineup++) {
+                this.matchup_home_rb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_rb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_rb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_rb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_wr_starters.length; lineup++) {
+                this.matchup_away_wr_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_wr_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_wr_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_wr_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_wr_starters.length; lineup++) {
+                this.matchup_home_wr_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_wr_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_wr_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_wr_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_te_starters.length; lineup++) {
+                this.matchup_away_te_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_te_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_te_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_te_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_te_starters.length; lineup++) {
+                this.matchup_home_te_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_te_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_te_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_te_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+            for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
+                this.matchup_away_qb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_flex_starters.length; lineup++) {
+                this.matchup_home_flex_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_flex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_flex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_flex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+            for (var lineup = 0; lineup < this.matchup_away_superflex_starters.length; lineup++) {
+                this.matchup_away_superflex_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_superflex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_superflex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_superflex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_superflex_starters.length; lineup++) {
+                this.matchup_home_superflex_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_superflex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_superflex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_superflex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+            for (var lineup = 0; lineup < this.matchup_away_k_starters.length; lineup++) {
+                this.matchup_away_k_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_k_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_k_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_k_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_k_starters.length; lineup++) {
+                this.matchup_home_k_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_k_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_k_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_k_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_def_starters.length; lineup++) {
+                this.matchup_away_def_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_def_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_def_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_def_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_def_starters.length; lineup++) {
+                this.matchup_home_def_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_def_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_def_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_def_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
                 }
             }
