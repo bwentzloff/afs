@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                Scores will be audited on Monday. Commissioners can retroactively set lineups.
+                Scores will be audited on Monday. Week 2 will start on Tuesday. Commissioners can retroactively set lineups.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
