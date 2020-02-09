@@ -1753,112 +1753,110 @@ import moment from 'moment'
         },
         getPlayerStatline(stats) {
             var statline = []
-            if (stats.rule1 && stats.rule1 > 0) {
+            if (stats.rule1 && stats.rule1 != 0) {
                 statline.push(stats.rule1 + " rushing TD")
             }
-            if (stats.rule2 && stats.rule2 > 0) {
+            if (stats.rule2 && stats.rule2 != 0) {
                 statline.push(stats.rule2 + " receiving TD")
             }
-            if (stats.rule3 && stats.rule3 > 0) {
+            if (stats.rule3 && stats.rule3 != 0) {
                 statline.push(stats.rule3 + " returning kick/punt for TD")
             }
-            if (stats.rule4 && stats.rule4 > 0) {
+            if (stats.rule4 && stats.rule4 != 0) {
                 statline.push(stats.rule4 + " returning or recovering a fumble for TD")
             }
-            if (stats.rule5 && stats.rule5 > 0) {
+            if (stats.rule5 && stats.rule5 != 0) {
                 statline.push(stats.rule5 + " passing TD")
             }
-            if (stats.rule6 && stats.rule6 > 0) {
+            if (stats.rule6 && stats.rule6 != 0) {
                 statline.push(stats.rule6 + " rushing or receiving 1pt conversion")
             }
-            if (stats.rule7 && stats.rule7 > 0) {
+            if (stats.rule7 && stats.rule7 != 0) {
                 statline.push(stats.rule7 + " rushing or receiving 2pt conversion")
             }
-            if (stats.rule8 && stats.rule8 > 0) {
+            if (stats.rule8 && stats.rule8 != 0) {
                 statline.push(stats.rule8 + " rushing or receiving 3pt conversion")
             }
-            if (stats.rule9 && stats.rule9 > 0) {
+            if (stats.rule9 && stats.rule9 != 0) {
                 statline.push(stats.rule9 + " passing 1pt conversion")
             }
-            if (stats.rule10 && stats.rule10 > 0) {
+            if (stats.rule10 && stats.rule10 != 0) {
                 statline.push(stats.rule10 + " passing 2pt conversion")
             }
-            if (stats.rule11 && stats.rule11 > 0) {
+            if (stats.rule11 && stats.rule11 != 0) {
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
-            if (stats.rule12 && stats.rule12 > 0) {
+            if (stats.rule12 && stats.rule12 != 0) {
                 console.log('here')
                 statline.push(stats.rule12 + " 10 yards rushing")
             }
-            if (stats.rule13 && stats.rule13 > 0) {
+            if (stats.rule13 && stats.rule13 != 0) {
                 statline.push(stats.rule13 + " 10 yards receiving")
             }
-            if (stats.rule14 && stats.rule14 > 0) {
+            if (stats.rule14 && stats.rule14 != 0) {
                 statline.push(stats.rule14 + " 25 yards passing")
             }
-            if (stats.rule15 && stats.rule15 > 0) {
+            if (stats.rule15 && stats.rule15 != 0) {
                 statline.push(stats.rule15 + " intercepted pass")
             }
-            if (stats.rule16 && stats.rule16 > 0) {
+            if (stats.rule16 && stats.rule16 != 0) {
                 statline.push(stats.rule16 + " fumble")
             }
-            if (stats.rule17 && stats.rule17 > 0) {
+            if (stats.rule17 && stats.rule17 != 0) {
                 statline.push(stats.rule17 + " 50+ yard FG made")
             }
-            if (stats.rule18 && stats.rule18 > 0) {
+            if (stats.rule18 && stats.rule18 != 0) {
                 statline.push(stats.rule18 + " 40-49 yard FG made")
             }
-            if (stats.rule19 && stats.rule19 > 0) {
+            if (stats.rule19 && stats.rule19 != 0) {
                 statline.push(stats.rule19 + " 1-39 yard FG made")
             }
-            if (stats.rule20 && stats.rule20 > 0) {
+            if (stats.rule20 && stats.rule20 != 0) {
                 statline.push(stats.rule20 + " defensive or special teams TD")
             }
-            if (stats.rule21 && stats.rule21 > 0) {
+            if (stats.rule21 && stats.rule21 != 0) {
                 statline.push(stats.rule21 + " interception")
             }
-            if (stats.rule22 && stats.rule22 > 0) {
+            if (stats.rule22 && stats.rule22 != 0) {
                 statline.push(stats.rule22 + " fumble recovery")
             }
-            if (stats.rule23 && stats.rule23 > 0) {
+            if (stats.rule23 && stats.rule23 != 0) {
                 statline.push(stats.rule23 + " blocked punt or field goal")
             }
-            if (stats.rule24 && stats.rule24 > 0) {
+            if (stats.rule24 && stats.rule24 != 0) {
                 statline.push(stats.rule24 + " safety")
             }
-            if (stats.rule25 && stats.rule25 > 0) {
+            if (stats.rule25 && stats.rule25 != 0) {
                 statline.push(stats.rule25 + " sack")
             }
-            if (stats.rule26 && stats.rule26 > 0) {
+            if (stats.rule26 && stats.rule26 != 0) {
                 statline.push(stats.rule26 + " reception")
             }
-            if (stats.rule27 && stats.rule27 > 0) {
+            if (stats.rule27 && stats.rule27 != 0) {
                 statline.push(stats.rule27 + " 0 Points Allowed")
             }
-            if (stats.rule28 && stats.rule28 > 0) {
+            if (stats.rule28 && stats.rule28 != 0) {
                 statline.push(stats.rule28 + " 1-6 Points Allowed")
             }
-            if (stats.rule29 && stats.rule29 > 0) {
+            if (stats.rule29 && stats.rule29 != 0) {
                 statline.push(stats.rule29 + " 7-13 Points Allowed")
             }
-            if (stats.rule30 && stats.rule30 > 0) {
+            if (stats.rule30 && stats.rule30 != 0) {
                 statline.push(stats.rule30 + " 14-20 Points Allowed")
             }
-            if (stats.rule31 && stats.rule31 > 0) {
+            if (stats.rule31 && stats.rule31 != 0) {
                 statline.push(stats.rule31 + " 21-27 Points Allowed")
             }
-            if (stats.rule32 && stats.rule32 > 0) {
+            if (stats.rule32 && stats.rule32 != 0) {
                 statline.push(stats.rule32 + " 28-34 Points Allowed")
             }
-            if (stats.rule33 && stats.rule33 > 0) {
+            if (stats.rule33 && stats.rule33 != 0) {
                 statline.push(stats.rule33 + " 35-41 Points Allowed")
             }
-            if (stats.rule34 && stats.rule34 > 0) {
+            if (stats.rule34 && stats.rule34 != 0) {
                 statline.push(stats.rule34 + " 42+ Points Allowed")
             }
-            console.log('statline')
-            console.log(statline)
-            console.log(stats)
+
             return statline
         },
         calculateMatchupScores() {
