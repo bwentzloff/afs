@@ -27,11 +27,14 @@ $factory->defineAs(User::class, 'user', function ($faker) {
     ];
 });
 
-$factory->defineAs(User::class, 'user_admin', function ($faker) use ($factory) {
+$factory->defineAs(User::class, 'user_admin',
+  function ($faker) use ($factory) {
     return array_merge($factory->raw(User::class), ['role' => 1]);
-});
+  }
+);
 
-$factory->defineAs(User::class, 'user_super_admin', function ($faker) use ($factory) {
-    $user = ;
+$factory->defineAs(User::class, 'user_super_admin',
+  function ($faker) use ($factory) {
     return array_merge($factory->raw(User::class), ['role' => -1]);
-});
+  }
+);
