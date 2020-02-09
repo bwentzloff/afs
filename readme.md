@@ -13,7 +13,7 @@ Install Dependencies for Mac OSX
 
 ### Get more recent PHP version (and version manager)
 ```
-brew install php72 node composer
+brew install php72 phpunit node composer
 brew tap wilmoore/formulae
 brew install php-version
 echo '[[ -e ~/.phpbrew/bashrc ]] && source ~/.phpbrew/bashrc' >> ~/.bash_profile
@@ -88,7 +88,12 @@ npm run watch
 Other Items of Note
 -------------------
 
-List all routes
+### Run the test-suite
+```
+phpunit
+```
+
+### List all available routes
 ```
 php artisan route:list
 ```
