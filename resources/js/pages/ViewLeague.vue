@@ -1786,9 +1786,7 @@ import moment from 'moment'
             for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
                 this.matchup_away_qb_starters[lineup].statline = []
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    console.log('here');
                     if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        console.log('here');
                         this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
                         this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
