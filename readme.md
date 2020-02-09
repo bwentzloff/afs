@@ -34,12 +34,6 @@ Application Setup
 composer install
 ```
 
-### Generate secrets
-```
-php artisan key:generate
-php artisan jwt:secret
-```
-
 ### Initialize local database
 ```
 touch database/database.sqlite
@@ -67,6 +61,12 @@ DB_DATABASE=[PATH_TO_APP_ROOT_DIR]/database/database.sqlite
 ```
 php artisan migrate:install
 php artisan migrate
+```
+
+### Generate secrets
+```
+php artisan key:generate
+php artisan jwt:secret
 ```
 
 
