@@ -14,7 +14,7 @@ class Oops extends Migration
     public function up()
     {
         Schema::table('lineups', function (Blueprint $table) {
-            $table->integer('player_id');
+            $table->integer('player_id')->nullable();;
         });
     }
 
