@@ -1857,6 +1857,7 @@ import moment from 'moment'
             }
             console.log('statline')
             console.log(statline)
+            console.log(stats)
             return statline
         },
         calculateMatchupScores() {
