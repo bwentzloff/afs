@@ -21,6 +21,15 @@ include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 
 class ScrapeController extends Controller
 {
+    public function getStats($game) {
+        $page = "https://stats.xfl.com/".$game;
+
+        $html = file_get_html($endpoint);
+
+        print_r($html);die();
+
+
+    }
     public function cleanUp() {
         $lastChecked = Cache::get('cleanup');
         $leagues = League::count();
