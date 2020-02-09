@@ -956,9 +956,9 @@
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].score: "" }}</td>
                     <td><center>QB</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].player_name: "empty" }}
                         
                         <div v-if="matchup_away_qb_starters[index]">
@@ -1786,7 +1786,9 @@ import moment from 'moment'
             for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
                 this.matchup_away_qb_starters[lineup].statline = []
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (lineup.player_id == player_score.player_id) {
+                    console.log('here');
+                    if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        console.log('here');
                         this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
                         this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
