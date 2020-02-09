@@ -950,6 +950,11 @@
                 <tr v-for="(n, index) in qbs">
                     <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_qb_starters[index]">
+                            <div v-for="(n, index) in matchup_home_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_qb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_qb_starters[index].player_id)">
                                 Bench
@@ -975,7 +980,12 @@
                 </tr>
                 <tr v-for="(n, index) in rbs">
                     <td>{{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].player_name: "empty" }}
-
+                        
+                        <div v-if="matchup_home_rb_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_rb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_rb_starters[index].player_id)">
                                 Bench
@@ -987,6 +997,11 @@
                     <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_rb_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_rb_starters[index].player_id)">
                                 Bench
@@ -997,6 +1012,11 @@
                 <tr v-for="(n, index) in wrs">
                     <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_wr_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_wr_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_wr_starters[index].player_id)">
                                 Bench
@@ -1008,6 +1028,11 @@
                     <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_wr_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_wr_starters[index].player_id)">
                                 Bench
@@ -1018,6 +1043,11 @@
                 <tr v-for="(n, index) in tes">
                     <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_te_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_te_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_te_starters[index].player_id)">
                                 Bench
@@ -1029,6 +1059,11 @@
                     <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_te_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_te_starters[index].player_id)">
                                 Bench
@@ -1039,6 +1074,11 @@
                 <tr v-for="(n, index) in flex">
                     <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_flex_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_flex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_flex_starters[index].player_id)">
                                 Bench
@@ -1050,6 +1090,11 @@
                     <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_flex_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_flex_starters[index].player_id)">
                                 Bench
@@ -1060,6 +1105,11 @@
                 <tr v-for="(n, index) in superflex">
                     <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_superflex_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_superflex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_superflex_starters[index].player_id)">
                                 Bench
@@ -1071,6 +1121,11 @@
                     <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_superflex_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_superflex_starters[index].player_id)">
                                 Bench
@@ -1081,6 +1136,11 @@
                 <tr v-for="(n, index) in ks">
                     <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_k_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_k_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_k_starters[index].player_id)">
                                 Bench
@@ -1092,6 +1152,11 @@
                     <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_k_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_k_starters[index].player_id)">
                                 Bench
@@ -1102,6 +1167,11 @@
                 <tr v-for="(n, index) in def">
                     <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_def_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_def_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_def_starters[index].player_id)">
                                 Bench
@@ -1113,6 +1183,11 @@
                     <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_def_starters[index]">
+                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_def_starters[index].player_id)">
                                 Bench
