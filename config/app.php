@@ -161,6 +161,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        // TODO: should not need this on prod
+        Thedevsaddam\LaravelSchema\LaravelSchemaServiceProvider::class,
 
         /*
          * Package Service Providers...

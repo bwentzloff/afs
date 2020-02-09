@@ -42,6 +42,11 @@ php artisan route:list
 
 - optional lamp stack: https://bitnami.com/stack/lamp/installer and install the laravel module during install.
 
+- view the schema
+```
+php artisan schema:show
+```
+
 Testing
 -------
 
