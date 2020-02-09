@@ -41,3 +41,27 @@ php artisan route:list
   - JWT_TTL (token stays valid for x number of minutes then app will try to refresh)
 
 - optional lamp stack: https://bitnami.com/stack/lamp/installer and install the laravel module during install.
+
+Testing
+-------
+
+### Initialize test database
+```
+touch database/test.sqlite
+```
+
+Or create a new empty file called `test.sqlite` in
+`[PATH_TO_APP_ROOT_DIR]/database`.
+
+### Modify .env.test to use test database
+```
+cp .env.test.example .env.test
+APP_ROOT="$(pwd)"
+sed -i '' -e "s;DB_DATABASE=laravel;DB_DATABASE=$APP_ROOT/database/test.sqlite;" .env.test
+```
+
+Or rename `.env.test.example` to `.env.test` and make these changes:
+
+```
+DB_DATABASE=[PATH_TO_APP_ROOT_DIR]/database/test.sqlite
+```
