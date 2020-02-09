@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                Expect high server loads and site slowdowns Friday night and Saturday morning. Make sure your Draft Queue is set. Stats for the first day's games will not be real time. After that, we'll have real time scoring the rest of the season.
+                Scores will be published Sunday afternoon.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
@@ -950,15 +950,20 @@
                 <tr v-for="(n, index) in qbs">
                     <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_qb_starters[index]">
+                            <div v-for="(n, index) in matchup_home_qb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_qb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_qb_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].score: "" }}</td>
                     <td><center>QB</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].player_name: "empty" }}
                         
                         <div v-if="matchup_away_qb_starters[index]">
@@ -975,18 +980,28 @@
                 </tr>
                 <tr v-for="(n, index) in rbs">
                     <td>{{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].player_name: "empty" }}
-
+                        
+                        <div v-if="matchup_home_rb_starters[index]">
+                            <div v-for="(n, index) in matchup_home_rb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_rb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_rb_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].score: "" }}</td>
                     <td><center>RB</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_rb_starters[index]">
+                            <div v-for="(n, index) in matchup_away_rb_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_rb_starters[index].player_id)">
                                 Bench
@@ -997,17 +1012,27 @@
                 <tr v-for="(n, index) in wrs">
                     <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_wr_starters[index]">
+                            <div v-for="(n, index) in matchup_home_wr_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_wr_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_wr_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].score: "" }}</td>
                     <td><center>WR</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_wr_starters[index]">
+                            <div v-for="(n, index) in matchup_away_wr_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_wr_starters[index].player_id)">
                                 Bench
@@ -1018,17 +1043,27 @@
                 <tr v-for="(n, index) in tes">
                     <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_te_starters[index]">
+                            <div v-for="(n, index) in matchup_home_te_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_te_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_te_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].score: "" }}</td>
                     <td><center>TE</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_te_starters[index]">
+                            <div v-for="(n, index) in matchup_away_te_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_te_starters[index].player_id)">
                                 Bench
@@ -1039,17 +1074,27 @@
                 <tr v-for="(n, index) in flex">
                     <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_flex_starters[index]">
+                            <div v-for="(n, index) in matchup_home_flex_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_flex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_flex_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].score: "" }}</td>
                     <td><center>WR/RB/TE</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_flex_starters[index]">
+                            <div v-for="(n, index) in matchup_away_flex_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_flex_starters[index].player_id)">
                                 Bench
@@ -1060,17 +1105,27 @@
                 <tr v-for="(n, index) in superflex">
                     <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_superflex_starters[index]">
+                            <div v-for="(n, index) in matchup_home_superflex_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_superflex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_superflex_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].score: "" }}</td>
                     <td><center>QB/WR/RB/TE</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_superflex_starters[index]">
+                            <div v-for="(n, index) in matchup_away_superflex_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_superflex_starters[index].player_id)">
                                 Bench
@@ -1081,17 +1136,27 @@
                 <tr v-for="(n, index) in ks">
                     <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_k_starters[index]">
+                            <div v-for="(n, index) in matchup_home_k_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_k_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_k_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].score: "" }}</td>
                     <td><center>K</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_k_starters[index]">
+                            <div v-for="(n, index) in matchup_away_k_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_k_starters[index].player_id)">
                                 Bench
@@ -1102,17 +1167,27 @@
                 <tr v-for="(n, index) in def">
                     <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_home_def_starters[index]">
+                            <div v-for="(n, index) in matchup_home_def_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_def_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_home_def_starters[index].player_id)">
                                 Bench
                             </b-button>
                         </div>
                     </td>
-                    <td>0</td>
+                    <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].score: "" }}</td>
                     <td><center>DST</center></td>
-                    <td>0</td>
+                    <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].score: "" }}</td>
                     <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].player_name: "empty" }}
 
+                        <div v-if="matchup_away_def_starters[index]">
+                            <div v-for="(n, index) in matchup_away_def_starters[index].statline">
+                                {{ n }}
+                            </div>
+                        </div>
                         <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index]">        
                             <b-button @click="benchPlayer($event, matchup_away_def_starters[index].player_id)">
                                 Bench
@@ -1678,123 +1753,277 @@ import moment from 'moment'
         },
         getPlayerStatline(stats) {
             var statline = []
-            if (stats.rule1 && stats.rule1 > 0) {
+            if (stats.rule1 && stats.rule1 != 0) {
                 statline.push(stats.rule1 + " rushing TD")
             }
-            if (stats.rule2 && stats.rule2 > 0) {
+            if (stats.rule2 && stats.rule2 != 0) {
                 statline.push(stats.rule2 + " receiving TD")
             }
-            if (stats.rule3 && stats.rule3 > 0) {
+            if (stats.rule3 && stats.rule3 != 0) {
                 statline.push(stats.rule3 + " returning kick/punt for TD")
             }
-            if (stats.rule4 && stats.rule4 > 0) {
+            if (stats.rule4 && stats.rule4 != 0) {
                 statline.push(stats.rule4 + " returning or recovering a fumble for TD")
             }
-            if (stats.rule5 && stats.rule5 > 0) {
+            if (stats.rule5 && stats.rule5 != 0) {
                 statline.push(stats.rule5 + " passing TD")
             }
-            if (stats.rule6 && stats.rule6 > 0) {
+            if (stats.rule6 && stats.rule6 != 0) {
                 statline.push(stats.rule6 + " rushing or receiving 1pt conversion")
             }
-            if (stats.rule7 && stats.rule7 > 0) {
+            if (stats.rule7 && stats.rule7 != 0) {
                 statline.push(stats.rule7 + " rushing or receiving 2pt conversion")
             }
-            if (stats.rule8 && stats.rule8 > 0) {
+            if (stats.rule8 && stats.rule8 != 0) {
                 statline.push(stats.rule8 + " rushing or receiving 3pt conversion")
             }
-            if (stats.rule9 && stats.rule9 > 0) {
+            if (stats.rule9 && stats.rule9 != 0) {
                 statline.push(stats.rule9 + " passing 1pt conversion")
             }
-            if (stats.rule10 && stats.rule10 > 0) {
+            if (stats.rule10 && stats.rule10 != 0) {
                 statline.push(stats.rule10 + " passing 2pt conversion")
             }
-            if (stats.rule11 && stats.rule11 > 0) {
+            if (stats.rule11 && stats.rule11 != 0) {
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
-            if (stats.rule12 && stats.rule12 > 0) {
+            if (stats.rule12 && stats.rule12 != 0) {
+                console.log('here')
                 statline.push(stats.rule12 + " 10 yards rushing")
             }
-            if (stats.rule13 && stats.rule13 > 0) {
+            if (stats.rule13 && stats.rule13 != 0) {
                 statline.push(stats.rule13 + " 10 yards receiving")
             }
-            if (stats.rule14 && stats.rule14 > 0) {
+            if (stats.rule14 && stats.rule14 != 0) {
                 statline.push(stats.rule14 + " 25 yards passing")
             }
-            if (stats.rule15 && stats.rule15 > 0) {
+            if (stats.rule15 && stats.rule15 != 0) {
                 statline.push(stats.rule15 + " intercepted pass")
             }
-            if (stats.rule16 && stats.rule16 > 0) {
+            if (stats.rule16 && stats.rule16 != 0) {
                 statline.push(stats.rule16 + " fumble")
             }
-            if (stats.rule17 && stats.rule17 > 0) {
+            if (stats.rule17 && stats.rule17 != 0) {
                 statline.push(stats.rule17 + " 50+ yard FG made")
             }
-            if (stats.rule18 && stats.rule18 > 0) {
+            if (stats.rule18 && stats.rule18 != 0) {
                 statline.push(stats.rule18 + " 40-49 yard FG made")
             }
-            if (stats.rule19 && stats.rule19 > 0) {
+            if (stats.rule19 && stats.rule19 != 0) {
                 statline.push(stats.rule19 + " 1-39 yard FG made")
             }
-            if (stats.rule20 && stats.rule20 > 0) {
+            if (stats.rule20 && stats.rule20 != 0) {
                 statline.push(stats.rule20 + " defensive or special teams TD")
             }
-            if (stats.rule21 && stats.rule21 > 0) {
+            if (stats.rule21 && stats.rule21 != 0) {
                 statline.push(stats.rule21 + " interception")
             }
-            if (stats.rule22 && stats.rule22 > 0) {
+            if (stats.rule22 && stats.rule22 != 0) {
                 statline.push(stats.rule22 + " fumble recovery")
             }
-            if (stats.rule23 && stats.rule23 > 0) {
+            if (stats.rule23 && stats.rule23 != 0) {
                 statline.push(stats.rule23 + " blocked punt or field goal")
             }
-            if (stats.rule24 && stats.rule24 > 0) {
+            if (stats.rule24 && stats.rule24 != 0) {
                 statline.push(stats.rule24 + " safety")
             }
-            if (stats.rule25 && stats.rule25 > 0) {
+            if (stats.rule25 && stats.rule25 != 0) {
                 statline.push(stats.rule25 + " sack")
             }
-            if (stats.rule26 && stats.rule26 > 0) {
+            if (stats.rule26 && stats.rule26 != 0) {
                 statline.push(stats.rule26 + " reception")
             }
-            if (stats.rule27 && stats.rule27 > 0) {
+            if (stats.rule27 && stats.rule27 != 0) {
                 statline.push(stats.rule27 + " 0 Points Allowed")
             }
-            if (stats.rule28 && stats.rule28 > 0) {
+            if (stats.rule28 && stats.rule28 != 0) {
                 statline.push(stats.rule28 + " 1-6 Points Allowed")
             }
-            if (stats.rule29 && stats.rule29 > 0) {
+            if (stats.rule29 && stats.rule29 != 0) {
                 statline.push(stats.rule29 + " 7-13 Points Allowed")
             }
-            if (stats.rule30 && stats.rule30 > 0) {
+            if (stats.rule30 && stats.rule30 != 0) {
                 statline.push(stats.rule30 + " 14-20 Points Allowed")
             }
-            if (stats.rule31 && stats.rule31 > 0) {
+            if (stats.rule31 && stats.rule31 != 0) {
                 statline.push(stats.rule31 + " 21-27 Points Allowed")
             }
-            if (stats.rule32 && stats.rule32 > 0) {
+            if (stats.rule32 && stats.rule32 != 0) {
                 statline.push(stats.rule32 + " 28-34 Points Allowed")
             }
-            if (stats.rule33 && stats.rule33 > 0) {
+            if (stats.rule33 && stats.rule33 != 0) {
                 statline.push(stats.rule33 + " 35-41 Points Allowed")
             }
-            if (stats.rule34 && stats.rule34 > 0) {
+            if (stats.rule34 && stats.rule34 != 0) {
                 statline.push(stats.rule34 + " 42+ Points Allowed")
             }
+
             return statline
         },
         calculateMatchupScores() {
             for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
+                console.log('matchup player stats')
+                console.log(this.matchup_player_stats)
                 this.matchup_away_qb_starters[lineup].statline = []
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (lineup.player_id == player_score.player_id) {
+                    if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
                         this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
                         this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_qb_starters.length; lineup++) {
+                this.matchup_home_qb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_rb_starters.length; lineup++) {
+                this.matchup_away_rb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_rb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_rb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_rb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_rb_starters.length; lineup++) {
+                this.matchup_home_rb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_rb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_rb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_rb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_wr_starters.length; lineup++) {
+                this.matchup_away_wr_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_wr_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_wr_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_wr_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_wr_starters.length; lineup++) {
+                this.matchup_home_wr_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_wr_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        console.log(' rashad ross')
+                        console.log(this.calculatePlayerScore(this.matchup_player_stats[player_score]))
+                        this.matchup_home_wr_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_wr_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                        console.log(this.matchup_home_wr_starters[lineup].statline)
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_te_starters.length; lineup++) {
+                this.matchup_away_te_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_te_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_te_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_te_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_te_starters.length; lineup++) {
+                this.matchup_home_te_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_te_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_te_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_te_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+            for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
+                this.matchup_away_qb_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_flex_starters.length; lineup++) {
+                this.matchup_home_flex_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_flex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_flex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_flex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+            for (var lineup = 0; lineup < this.matchup_away_superflex_starters.length; lineup++) {
+                this.matchup_away_superflex_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_superflex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_superflex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_superflex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_superflex_starters.length; lineup++) {
+                this.matchup_home_superflex_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_superflex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_superflex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_superflex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+            for (var lineup = 0; lineup < this.matchup_away_k_starters.length; lineup++) {
+                this.matchup_away_k_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_k_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_k_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_k_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_k_starters.length; lineup++) {
+                this.matchup_home_k_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_k_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_k_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_k_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+
+
+            for (var lineup = 0; lineup < this.matchup_away_def_starters.length; lineup++) {
+                this.matchup_away_def_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_away_def_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_def_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_def_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+            }
+            for (var lineup = 0; lineup < this.matchup_home_def_starters.length; lineup++) {
+                this.matchup_home_def_starters[lineup].statline = []
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (this.matchup_home_def_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_home_def_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_home_def_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
                 }
             }
         },
         getWeeklyStats(week) {
             axios.get('players/getWeeklyStats/'+week).then(response => {
+                console.log(response.data)
                 this.matchup_player_stats = response.data;
                 this.calculateMatchupScores();
             });
@@ -2106,43 +2335,27 @@ import moment from 'moment'
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_qb_starters.push(response.data[i])
-                        this.matchup_home_qb_starters.score = 0;
-                        this.matchup_home_qb_starters.statline = [];
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_rb_starters.push(response.data[i])
-                        this.matchup_home_rb_starters.score = 0;
-                        this.matchup_home_rb_starters.statline = [];
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_wr_starters.push(response.data[i])
-                        this.matchup_home_wr_starters.score = 0;
-                        this.matchup_home_wr_starters.statline = [];
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_te_starters.push(response.data[i])
-                        this.matchup_home_te_starters.score = 0;
-                        this.matchup_home_te_starters.statline = [];
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_flex_starters.push(response.data[i])
-                        this.matchup_home_flex_starters.score = 0;
-                        this.matchup_home_flex_starters.statline = [];
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_superflex_starters.push(response.data[i])
-                        this.matchup_home_superflex_starters.score = 0;
-                        this.matchup_home_superflex_starters.statline = [];
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_k_starters.push(response.data[i])
-                        this.matchup_home_k_starters.score = 0;
-                        this.matchup_home_k_starters.statline = [];
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_home_def_starters.push(response.data[i])
-                        this.matchup_home_def_starters.score = 0;
-                        this.matchup_home_def_starters.statline = [];
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
@@ -2175,43 +2388,27 @@ import moment from 'moment'
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_qb_starters.push(response.data[i])
-                        this.matchup_away_qb_starters.score = 0;
-                        this.matchup_away_qb_starters.statline = [];
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_rb_starters.push(response.data[i])
-                        this.matchup_away_rb_starters.score = 0;
-                        this.matchup_away_rb_starters.statline = [];
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_wr_starters.push(response.data[i])
-                        this.matchup_away_wr_starters.score = 0;
-                        this.matchup_away_wr_starters.statline = [];
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_te_starters.push(response.data[i])
-                        this.matchup_away_te_starters.score = 0;
-                        this.matchup_away_te_starters.statline = [];
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_flex_starters.push(response.data[i])
-                        this.matchup_away_flex_starters.score = 0;
-                        this.matchup_away_flex_starters.statline = [];
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_superflex_starters.push(response.data[i])
-                        this.matchup_away_superflex_starters.score = 0;
-                        this.matchup_away_superflex_starters.statline = [];
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_k_starters.push(response.data[i])
-                        this.matchup_away_k_starters.score = 0;
-                        this.matchup_away_k_starters.statline = [];
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         this.matchup_away_def_starters.push(response.data[i])
-                        this.matchup_away_def_starters.score = 0;
-                        this.matchup_away_def_starters.statline = [];
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
