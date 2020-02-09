@@ -982,7 +982,7 @@
                     <td>{{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].player_name: "empty" }}
                         
                         <div v-if="matchup_home_rb_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_home_rb_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -998,7 +998,7 @@
                     <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_away_rb_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_away_rb_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1013,7 +1013,7 @@
                     <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_home_wr_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_home_wr_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1029,7 +1029,7 @@
                     <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_away_wr_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_away_wr_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1044,7 +1044,7 @@
                     <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_home_te_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_home_te_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1060,7 +1060,7 @@
                     <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_away_te_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_away_te_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1075,7 +1075,7 @@
                     <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_home_flex_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_home_flex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1091,7 +1091,7 @@
                     <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_away_flex_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_away_flex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1106,7 +1106,7 @@
                     <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_home_superflex_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_home_superflex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1122,7 +1122,7 @@
                     <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_away_superflex_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_away_superflex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1137,7 +1137,7 @@
                     <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_home_k_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_home_k_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1153,7 +1153,7 @@
                     <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_away_k_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_away_k_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1168,7 +1168,7 @@
                     <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_home_def_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_home_def_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
@@ -1184,7 +1184,7 @@
                     <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].player_name: "empty" }}
 
                         <div v-if="matchup_away_def_starters[index]">
-                            <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
+                            <div v-for="(n, index) in matchup_away_def_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
