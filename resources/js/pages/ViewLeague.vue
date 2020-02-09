@@ -1795,6 +1795,7 @@ import moment from 'moment'
         },
         getWeeklyStats(week) {
             axios.get('players/getWeeklyStats/'+week).then(response => {
+                console.log(response.data)
                 this.matchup_player_stats = response.data;
                 this.calculateMatchupScores();
             });
