@@ -32,6 +32,7 @@ Application Setup
 ### Install Dependencies
 ```
 composer install
+npm install
 ```
 
 ### Initialize local database
