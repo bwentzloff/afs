@@ -955,7 +955,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_qb_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_qb_starters[index] && (!matchup_home_qb_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_qb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -971,7 +971,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_qb_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_qb_starters[index] && (!matchup_away_qb_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_qb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -986,7 +986,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_rb_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_rb_starters[index] && (!matchup_home_rb_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_rb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1002,7 +1002,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index] && (!matchup_away_rb_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_rb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1017,7 +1017,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_wr_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_wr_starters[index] && (!matchup_home_wr_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_wr_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1033,7 +1033,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index] && (!matchup_away_wr_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_wr_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1048,7 +1048,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_te_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_te_starters[index] && (!matchup_home_te_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_te_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1064,7 +1064,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index] && (!matchup_away_te_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_te_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1079,7 +1079,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_flex_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_flex_starters[index] && (!matchup_home_flex_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_flex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1095,7 +1095,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index] && (!matchup_away_flex_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_flex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1110,7 +1110,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_superflex_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_superflex_starters[index] && (!matchup_home_superflex_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_superflex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1126,7 +1126,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index] && (!matchup_away_superflex_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_superflex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1141,7 +1141,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_k_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_k_starters[index] && (!matchup_home_k_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_k_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1157,7 +1157,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index] && (!matchup_away_k_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_k_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1172,7 +1172,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_def_starters[index]">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_def_starters[index] && (!matchup_home_def_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_def_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1188,7 +1188,7 @@
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index]">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index] && (!matchup_away_def_starters[index].locked || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_def_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1207,56 +1207,56 @@
                                 {{ n.player_name }}
                                 
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'QB' && qbs && matchup_home_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'QB' && qbs && matchup_home_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'QB')">
                                             Start at QB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'WR' && wrs && matchup_home_wr_starters.length < wrs && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'WR' && wrs && matchup_home_wr_starters.length < wrs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'WR')">
                                             Start at WR
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'RB' && rbs && matchup_home_rb_starters.length < rbs && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'RB' && rbs && matchup_home_rb_starters.length < rbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'RB')">
                                             Start at RB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'TE' && tes && matchup_home_te_starters.length < tes && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'TE' && tes && matchup_home_te_starters.length < tes && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
                                         <b-button @click="startPlayer($event, n.player_id, 'TE')">
                                             Start at TE
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'K' && ks && matchup_home_k_starters.length < ks && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'K' && ks && matchup_home_k_starters.length < ks && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
                                         <b-button @click="startPlayer($event,n.player_id, 'K')">
                                             Start at K
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'DEF' && def && matchup_home_def_starters.length < def && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'DEF' && def && matchup_home_def_starters.length < def && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
                                         <b-button @click="startPlayer($event, n.player_id, 'DEF')">
                                             Start at DEF
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && (matchup_home_superflex_starters.length < superflex) && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && (matchup_home_superflex_starters.length < superflex) && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'SUPERFLEX')">
                                             Start at Superflex
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && (matchup_home_flex_starters.length < flex) && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && (matchup_home_flex_starters.length < flex) && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'FLEX')">
                                             Start at Flex
                                         </b-button>
@@ -1274,56 +1274,56 @@
                                 {{ n.player_name }}
 
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'QB' && qbs && matchup_away_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'QB' && qbs && matchup_away_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'QB')">
                                             Start at QB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'WR' && wrs && matchup_away_wr_starters.length < wrs && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'WR' && wrs && matchup_away_wr_starters.length < wrs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'WR')">
                                             Start at WR
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'RB' && rbs && matchup_away_rb_starters.length < rbs && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'RB' && rbs && matchup_away_rb_starters.length < rbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'RB')">
                                             Start at RB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'TE' && tes && matchup_away_te_starters.length < tes && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'TE' && tes && matchup_away_te_starters.length < tes && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'TE')">
                                             Start at TE
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'K' && ks && matchup_away_k_starters.length < ks && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'K' && ks && matchup_away_k_starters.length < ks && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'K')">
                                             Start at K
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'DEF' && def && matchup_away_def_starters.length < def && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="n.position == 'DEF' && def && matchup_away_def_starters.length < def && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'DEF')">
                                             Start at DEF
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && matchup_away_superflex_starters.length < superflex && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && matchup_away_superflex_starters.length < superflex && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'SUPERFLEX')">
                                             Start at Superflex
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && matchup_away_flex_starters.length < flex && (leagueInfo.current_week == matchup_week)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && matchup_away_flex_starters.length < flex && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'FLEX')">
                                             Start at Flex
                                         </b-button>

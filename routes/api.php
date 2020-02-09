@@ -85,6 +85,7 @@ Route::prefix('v1')->group(function () {
     Route::get('league/getLastUpdate/{id}', ['uses'=>'LeagueController@getLastUpdate'])->middleware('auth');
     Route::get('players/getStats/{game}', ['uses'=>'ScrapeController@getStats']);
     Route::get('players/calculateScores/', ['uses'=>'ScrapeController@calculateScores']);
+    Route::get('players/lockTeam/{team}', ['uses'=>'ScrapeController@lockTeam']);
 
     // Get league info
     Route::get('league/info/{id}', ['uses'=>'LeagueController@getLeagueInfo']);

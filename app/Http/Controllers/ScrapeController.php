@@ -24,12 +24,21 @@ include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 
 class ScrapeController extends Controller
 {
+    public function lockTeam($team) {
+        $players = Player::where('team',$team)->get();
+        foreach ($players as $player) {
+            $update = Lineup::where('player_id',$player->id)
+                ->update([
+                    'locked'=>1
+                ]);
+        }
+    }
     public function getStats($game) {
         $page = "https://stats.xfl.com/".$game;
 
-        $html = file_get_html($endpoint);
+        $html = file_get_html($page);
 
-        print_r($html);die();
+        print($html);die();
 
 
     }
