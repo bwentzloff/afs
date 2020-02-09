@@ -34,7 +34,21 @@ class ScrapeController extends Controller
 
     }
     public function calculateScores() {
+        $lastChecked = Cache::get('calculateScores');
+        $leagues = League::count();
+        if (!$lastChecked) {
+            $lastChecked = 0;
+            
+        }
+        if ($lastChecked <= $leagues) {
+            Cache::put('calculateScores', $lastChecked+100,6000);
+        } else {
+            Cache::put('calculateScores', 0,6000);
+        }
+        
         $leagues = League::where('draft_status',2)
+            ->skip($lastChecked)
+            ->take(100)
             ->get();
 
         foreach($leagues as $league) {
