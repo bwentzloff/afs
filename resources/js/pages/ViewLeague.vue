@@ -95,11 +95,24 @@
                     <b-tab title="League Home" active>
                         <b-card-text>
                             <h1>{{ leagueName }}</h1>
-                            <form autocomplete="off" @submit.prevent="updateRoster" method="post">
+
+                            <b-table
+                                    id="standings-table"
+                                    :items="teams"
+                                    :fields="standingsFields"
+                                    striped 
+                                    hover
+                                >
+                            </b-table>
+
+
+
+                            <br /><br /><br />
+                            <!--form autocomplete="off" @submit.prevent="updateRoster" method="post">
                                 <b-button @click="leaveLeague()">
                                     Leave League
                                 </b-button><br /><br />
-                            </form>
+                            </form-->
                                                     <b-alert show>To invite teams to your league, send them this link: https://altfantasysports.com/league/invite/{{ inviteCode }}/</b-alert>
 
                             
@@ -1228,21 +1241,21 @@
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'TE' && tes && matchup_home_te_starters.length < tes && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
+                                    <div v-if="n.position == 'TE' && tes && matchup_home_te_starters.length < tes && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)"">
                                         <b-button @click="startPlayer($event, n.player_id, 'TE')">
                                             Start at TE
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'K' && ks && matchup_home_k_starters.length < ks && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
+                                    <div v-if="n.position == 'K' && ks && matchup_home_k_starters.length < ks && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)"">
                                         <b-button @click="startPlayer($event,n.player_id, 'K')">
                                             Start at K
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'DEF' && def && matchup_home_def_starters.length < def && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
+                                    <div v-if="n.position == 'DEF' && def && matchup_home_def_starters.length < def && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)"">
                                         <b-button @click="startPlayer($event, n.player_id, 'DEF')">
                                             Start at DEF
                                         </b-button>
@@ -1411,6 +1424,15 @@ import moment from 'moment'
             {key: 'home_score'},
             {key: 'away_score'},
             {key: 'week'},
+            
+        ],
+        standingsFields: [
+            {key: 'name'},
+            {key: 'wins'},
+            {key: 'losses'},
+            {key: 'ties'},
+            {key: 'pf'},
+            {key: 'pa'}
             
         ],
         lineupsFields: [
@@ -2311,6 +2333,7 @@ import moment from 'moment'
             this.matchup_away_superflex_starters = []
             this.matchup_away_k_starters = []
             this.matchup_away_defense_starters = []
+            
             axios.post('league/getLineup', {
                 leagueId: this.leagueId,
                 team_id: item.home_id,
@@ -2330,31 +2353,35 @@ import moment from 'moment'
                     if (response.data[i].position == "BENCH") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
-                        this.matchup_home_bench.push(response.data[i])
+                        try {
+                            if (response.data[i]) this.matchup_home_bench.push(response.data[i])
+                        } catch(err) {
+                            console.log(err)
+                        }
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_qb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_qb_starters.push(response.data[i])
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_rb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_rb_starters.push(response.data[i])
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_wr_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_wr_starters.push(response.data[i])
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_te_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_te_starters.push(response.data[i])
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_flex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_flex_starters.push(response.data[i])
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_superflex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_superflex_starters.push(response.data[i])
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_k_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_k_starters.push(response.data[i])
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_def_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_def_starters.push(response.data[i])
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
@@ -2383,31 +2410,31 @@ import moment from 'moment'
                     if (response.data[i].position == "BENCH") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
-                        this.matchup_away_bench.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_bench.push(response.data[i])
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_qb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_qb_starters.push(response.data[i])
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_rb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_rb_starters.push(response.data[i])
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_wr_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_wr_starters.push(response.data[i])
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_te_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_te_starters.push(response.data[i])
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_flex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_flex_starters.push(response.data[i])
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_superflex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_superflex_starters.push(response.data[i])
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_k_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_k_starters.push(response.data[i])
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_def_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_def_starters.push(response.data[i])
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
