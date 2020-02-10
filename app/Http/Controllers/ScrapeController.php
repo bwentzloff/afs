@@ -80,7 +80,7 @@ class ScrapeController extends Controller
                     $score = 0;
                     foreach($players as $player) {
                         $stats = PlayerStat::where('player_id',$player->player_id)
-                            ->where('week',$sport->current_week)
+                            ->where('week',$league->week)
                             ->first();
 
                         if ($stats) {
@@ -143,7 +143,7 @@ class ScrapeController extends Controller
                         $score = 0;
                         foreach($players as $player) {
                             $stats = PlayerStat::where('player_id',$player->player_id)
-                                ->where('week',$sport->current_week)
+                                ->where('week',$league->week)
                                 ->first();
 
                             if ($stats) {
