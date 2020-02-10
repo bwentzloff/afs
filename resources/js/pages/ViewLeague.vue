@@ -2505,7 +2505,7 @@ import moment from 'moment'
                         this.matchup_home_def_starters.push(response.data[i])
                     }
                 }
-                this.getWeeklyStats(this.tempItem.week)
+                this.getWeeklyStats(this.matchup_week)
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
