@@ -1716,7 +1716,6 @@ import moment from 'moment'
     methods: {
         calculatePlayerScore(stats) {
             return this.leagueInfo.rule1 * stats.rule1 +
-                this.leagueInfo.rule1 * stats.rule1 +
                 this.leagueInfo.rule2 * stats.rule2 +
                 this.leagueInfo.rule3 * stats.rule3 +
                 this.leagueInfo.rule4 * stats.rule4 +
