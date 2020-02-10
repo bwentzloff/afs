@@ -1204,7 +1204,7 @@
                     <td colspan="2">
                         <ul style="list-style-type: none">
                             <li v-for="(n, index) in matchup_home_bench">
-                                {{ n.player_name }} {{ n.score? Number(n.score).toFixed(2): "0" }}
+                                {{ n.player_name }}
                                 
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
                                     <div v-if="n.position == 'QB' && qbs && matchup_home_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
@@ -1271,7 +1271,7 @@
                     <td colspan="2">
                         <ul style="list-style-type: none">
                             <li v-for="(n, index) in matchup_away_bench">
-                                {{ n.score? Number(n.score).toFixed(2): "0" }} {{ n.player_name }}
+                                {{ n.player_name }}
 
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
                                     <div v-if="n.position == 'QB' && qbs && matchup_away_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
