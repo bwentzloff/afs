@@ -64,7 +64,7 @@ class ScrapeController extends Controller
             print($league->id."<br />");
             $sport = Sport::where('id',8)->first();
             $matchups = Matchup::where('league_id',$league->id)
-                ->where('week',$sport->current_week)
+                ->where('week',$league->week)
                 ->get();
 
             foreach($matchups as $matchup) {
@@ -192,6 +192,89 @@ class ScrapeController extends Controller
                             ]);
                     }
                 }
+            }
+
+            // Advance week
+            if ($league->week < $sport->current_week) {
+                // Transfer over lineups
+                $lineups = Lineup::where('league_id',$league->id)
+                    ->where('week',$league->week)
+                    ->get();
+
+                foreach($lineups as $lineup) {
+                    $update = Lineup::where('league_id',$league->id)
+                        ->where('player_id',$lineup->player_id)
+                        ->where('week',$sport->current_week)
+                        ->update([
+                            'position'=>$lineup->position,
+                            'locked'=>0
+                        ]);
+                }
+
+                // Set final scores
+                
+                foreach($matchups as $matchup) {
+                    if ($matchup->home_id) {
+                        $home_team = LeagueUser::where('league_id',$league->id)
+                            ->where('id',$matchup->home_id)
+                            ->first();
+                        $update = LeagueUser::where('id',$home_team->id)
+                            ->update([
+                                "pf"=>$home_team->pf + $matchup->home_score,
+                                "pa"=>$home_team->pa + $matchup->away_score
+                            ]);
+                    }
+
+                    if ($matchup->away_id) {
+                        $away_team = LeagueUser::where('league_id',$league->id)
+                            ->where('id',$matchup->away_id)
+                            ->first();
+                        $update = LeagueUser::where('id',$away_team->id)
+                            ->update([
+                                "pf"=>$away_team->pf + $matchup->away_score,
+                                "pa"=>$away_team->pa + $matchup->home_score
+                            ]);
+                    }
+
+                    if ($matchup->home_id && $matchup->away_id) {
+                        if ($home_team && $away_team) {
+                            if ($matchup->home_score > $matchup->away_score) {
+                                $update = LeagueUser::where('id',$home_team->id)
+                                    ->update([
+                                        "wins"=>$home_team->wins + 1
+                                    ]);
+                                $update = LeagueUser::where('id',$away_team->id)
+                                    ->update([
+                                        "losses"=>$away_team->losses + 1
+                                    ]);
+                            } else if ($matchup->away_score > $matchup->home_score) {
+                                $update = LeagueUser::where('id',$away_team->id)
+                                    ->update([
+                                        "wins"=>$away_team->wins + 1
+                                    ]);
+                                $update = LeagueUser::where('id',$home_team->id)
+                                    ->update([
+                                        "losses"=>$home_team->losses + 1
+                                    ]);
+                            } else {
+                                $update = LeagueUser::where('id',$home_team->id)
+                                    ->update([
+                                        "ties"=>$home_team->ties + 1
+                                    ]);
+                                $update = LeagueUser::where('id',$away_team->id)
+                                    ->update([
+                                        "ties"=>$away_team->ties + 1
+                                    ]);
+                            }
+                        }
+                    }
+                }
+
+                // Advance leauge week
+                $update = League::where('id',$league->id)
+                    ->update([
+                        'week'=>$sport->current_week
+                    ]);
             }
         }
     }
