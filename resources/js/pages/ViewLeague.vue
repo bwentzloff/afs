@@ -2988,7 +2988,13 @@ import moment from 'moment'
                     if (typeof this.previousStats[1] === 'undefined') {
                         return this.items[i].name + " (" + this.items[i].position + ")"
                     } else {
-                        return this.items[i].name + " (" + this.items[i].position + ")" + " "
+                        var stats = ""
+                        for (var prevStat = 0; prevStat < this.previousStats[1].length; prevStat++) {
+                            if (this.previousStats[1][prevStat].player_id == player_id) {
+                                stats =  "Week 1: "+this.calculatePlayerScore(this.previousStats[1][prevStat])+" pts"
+                            }
+                        }
+                        return this.items[i].name + " (" + this.items[i].position + ") "+stats
                     }
                 }
             }
