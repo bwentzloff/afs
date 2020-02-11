@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                There are currently known issues with displaying total points correctly in Total Points and Guillotine leagues. These will be fixed in the next 24 hours. Also, week 1 scores will be shown on the Players tab and Set Lineup pages. Another known issues is week 1 scores not displaying on the Matchups page. They are all still there and show correctly on the League Home page and Lineup page, they are just not displaying correctly here. That will be fixed today.
+                There are currently known issues with displaying total points correctly in Total Points and Guillotine leagues. These will be fixed in the next 24 hours. Also, week 1 scores will be shown on the Players tab and Set Lineup pages. Another known issue is week 1 scores not displaying on the Matchups page. They are all still there and show correctly on the League Home page and Lineup page, they are just not displaying correctly here. That will be fixed today.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
