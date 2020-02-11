@@ -63,7 +63,7 @@ class ScrapeController extends Controller
         foreach($leagues as $league) {
             print($league->id."<br />");
             $sport = Sport::where('id',8)->first();
-            for ($week = 1; $week < $league->week; $week++) {
+            for ($week = 1; $week <= $league->week; $week++) {
                 $matchups = Matchup::where('league_id',$league->id)
                     ->where('week',$week)
                     ->get();
