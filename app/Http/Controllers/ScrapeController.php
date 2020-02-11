@@ -123,11 +123,11 @@ class ScrapeController extends Controller
                                     $league->rule34 * $stats->rule34;
                             }
                         }
-
                         $update = Matchup::where('id',$matchup->id)
                             ->update([
                                 'home_score'=>$score
                             ]);
+                            
                     }
 
                     if ($matchup->away_id) {

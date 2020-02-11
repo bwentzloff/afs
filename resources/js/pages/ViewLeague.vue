@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                There are currently known issues with displaying total points correctly in Total Points and Guillotine leagues. These will be fixed in the next 24 hours. Also, week 1 scores will be shown on the Players tab and Set Lineup pages. Another known issue is week 1 scores not displaying on the Matchups page. They are all still there and show correctly on the League Home page and Lineup page, they are just not displaying correctly here. That will be fixed today.
+                The rest of the week will be focused on getting live scoring 100% and more Commish Tools to help people change scores, waiver options, and results of previous weeks.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
@@ -513,30 +513,31 @@
                         </b-card-text>
                         
                     </b-tab>
+                    
                     <b-tab title="Lineups" v-if="leagueInfo.league_type > 1">
-                        
                         <b-card-text>
                             <b-table
                                     id="lineups-table"
-                                    :items="lineups"
+                                    :items="matchups"
                                     :fields="lineupsFields"
                                     :sort-by="lineupsSort"
                                     striped 
                                     hover
                                 >
                                 <template v-slot:cell(actions)="data">
-                                    <div v-if="(data.item.id == myteam.id)">
-                                        <b-button variant="success" @click="showLineup($event, data.item)">
+                                    <div v-if="(data.item.home_id == myteam.id) && (leagueInfo.current_week == data.item.week)">
+                                        <b-button variant="success" @click="showLineup($event, data.item, data.item.week)">
                                             Set your lineup
                                         </b-button>
                                     </div>
-                                    <div v-if="(data.item.id != myteam.id)">
-                                        <b-button @click="showLineup($event, data.item)">
+                                    <div v-if="(data.item.home_id != myteam.id) || (leagueInfo.current_week != data.item.week)">
+                                        <b-button @click="showLineup($event, data.item, data.item.week)">
                                             View Matchup
                                         </b-button>
                                     </div>
                                 </template>
                             </b-table>
+                            
                         </b-card-text>
                         
                     </b-tab>
@@ -1437,8 +1438,9 @@ import moment from 'moment'
         ],
         lineupsFields: [
             {key: 'actions'},
-            {key: 'name'},
-            {key: 'score'},
+            {key: 'home_name'},
+            {key: 'home_score', label: 'Score'},
+            {key: 'week'}
             
         ],
         draftBoardFields: [
@@ -1639,7 +1641,8 @@ import moment from 'moment'
         matchup_away_def_starters: [],
         tempItem: [],
         currentFreeAgentId: 0,
-        matchup_player_stats: []
+        matchup_player_stats: [],
+        previousStats: [],
       }
     },
     mounted() {
@@ -1883,9 +1886,14 @@ import moment from 'moment'
         
         getWeeklyStats(week) {
             axios.get('players/getWeeklyStats/'+week).then(response => {
-                console.log(response.data)
                 this.matchup_player_stats = response.data;
                 this.calculateMatchupScores();
+            });
+        },
+        getPreviousStats() {
+            var week = 1
+            axios.get('players/getWeeklyStats/'+week).then(response => {
+                this.previousStats[1] = response.data;
             });
         },
         
@@ -2412,7 +2420,7 @@ import moment from 'moment'
                 if (this.leagueInfo.league_type == 1) {
                     this.showMatchup(event, this.tempItem)
                 } else {
-                    this.showLineup(event, this.tempItem)
+                    this.showLineup(event, this.tempItem, this.matchup_week)
                 }
             }).catch(error => {
                 console.log(error);
@@ -2431,7 +2439,7 @@ import moment from 'moment'
                 if (this.leagueInfo.league_type == 1) {
                     this.showMatchup(event, this.tempItem)
                 } else {
-                    this.showLineup(event, this.tempItem)
+                    this.showLineup(event, this.tempItem,this.matchup_week)
                 }
             }).catch(error => {
                 console.log(error);
@@ -2597,17 +2605,16 @@ import moment from 'moment'
             this.matchup_week = item.week
             console.log(this.rosters)
         },
-        showLineup(event, item) {
-            
+        showLineup(event, item, week) {
             this.tempItem = item
-            this.matchup_home_id = item.id
-            this.matchup_home_name = item.name
-            this.matchup_week = 1
-            for (var j = 0; j < this.$data.rosters[item.id].length; j++) {
-                this.$data.rosters[item.id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[item.id][j].player_id);
+            this.matchup_home_id = item.home_id
+            this.matchup_home_name = item.home_name
+            this.matchup_week = week
+            for (var j = 0; j < this.$data.rosters[item.home_id].length; j++) {
+                this.$data.rosters[item.home_id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[item.home_id][j].player_id);
             }
-            for (var j = 0; j < this.$data.rosters[item.id].length; j++) {
-                this.$data.rosters[item.id][j].position = this.getPlayerPositionFromId(this.$data.rosters[item.id][j].player_id);
+            for (var j = 0; j < this.$data.rosters[item.home_id].length; j++) {
+                this.$data.rosters[item.home_id][j].position = this.getPlayerPositionFromId(this.$data.rosters[item.home_id][j].player_id);
             }
 
             this.matchup_home_bench = []
@@ -2628,10 +2635,11 @@ import moment from 'moment'
             this.matchup_away_superflex_starters = []
             this.matchup_away_k_starters = []
             this.matchup_away_defense_starters = []
+            console.log('here')
             axios.post('league/getLineup', {
                 leagueId: this.leagueId,
-                team_id: item.id,
-                week: 1
+                team_id: item.home_id,
+                week: this.matchup_week
             }).then(response => {
                 this.matchup_home_bench = []
                 
@@ -2977,8 +2985,11 @@ import moment from 'moment'
         getPlayerNameFromId(player_id) {
             for (var i = 0; i < this.items.length; i++) {
                 if (this.items[i].id == player_id) {
-                    
-                    return this.items[i].name + " (" + this.items[i].position + ")"
+                    if (typeof this.previousStats[1] === 'undefined') {
+                        return this.items[i].name + " (" + this.items[i].position + ")"
+                    } else {
+                        return this.items[i].name + " (" + this.items[i].position + ")" + " Week 1: 5 pts"
+                    }
                 }
             }
         },
@@ -3391,6 +3402,7 @@ import moment from 'moment'
                 this.refreshQueueItems();
                 this.refreshWaivers();
                 this.refreshTrades();
+                this.getPreviousStats();
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);

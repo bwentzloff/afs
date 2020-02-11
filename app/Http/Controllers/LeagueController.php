@@ -260,29 +260,50 @@ class LeagueController extends Controller
         $teamids = [];
         $numOfRegularWeeks = 10 - $league->playoff_length;
 
-        foreach($teams as $aTeam) {
-            $teamids[] = $aTeam->id;
-        }
-        $scheduleBuiler = new \ScheduleBuilder($teamids,$numOfRegularWeeks);
-        $schedule = $scheduleBuiler->build();
-
-        foreach($schedule as $week=>$matchups) {
-            foreach($matchups as $matchup) {
-                $newmatchup = new Matchup;
-                if (!$matchup[0]) {
-                    $newmatchup->home_id = 0;
-                } else {
-                    $newmatchup->home_id = $matchup[0];
-                }
-                if (!$matchup[1]) {
+        if ($league->league_type > 1) {
+            for ($week = 1; $week <= 10; $week++) {
+                foreach($teams as $team) {
+                    $newmatchup = new Matchup;
+                    $newmatchup->home_id = $team->id;
                     $newmatchup->away_id = 0;
-                } else {
-                    $newmatchup->away_id = $matchup[1];
+                    $newmatchup->league_id = $leagueId;
+                    $newmatchup->week = $week;
+                    $newmatchup->save();
                 }
-                $newmatchup->league_id = $leagueId;
-                $newmatchup->week = $week;
-                $newmatchup->save();
             }
+        } else {
+            foreach($teams as $aTeam) {
+                $teamids[] = $aTeam->id;
+            }
+            $scheduleBuiler = new \ScheduleBuilder($teamids,$numOfRegularWeeks);
+            $schedule = $scheduleBuiler->build();
+
+            foreach($schedule as $week=>$matchups) {
+                foreach($matchups as $matchup) {
+                    $newmatchup = new Matchup;
+                    if (!$matchup[0]) {
+                        $newmatchup->home_id = 0;
+                    } else {
+                        $newmatchup->home_id = $matchup[0];
+                    }
+                    if (!$matchup[1]) {
+                        $newmatchup->away_id = 0;
+                    } else {
+                        $newmatchup->away_id = $matchup[1];
+                    }
+                    $newmatchup->league_id = $leagueId;
+                    $newmatchup->week = $week;
+                    $newmatchup->save();
+                }
+            }
+        }
+    }
+    public function tempClearMatchups() {
+        $leagues = League::where('league_type','>',1)->get();
+        foreach($leagues as $league) {
+            $delete = Matchup::where('league_id',$league->id)->delete();
+            $league->week = 1;
+            $league->save();
         }
     }
     public function getMatchups(Request $request) {
@@ -716,7 +737,10 @@ class LeagueController extends Controller
     }
 
     public function getTeamInfo($id) {
-        $leagueUsers = LeagueUser::where('league_id',$id)->get();
+        $leagueUsers = LeagueUser::where('league_id',$id)
+            ->orderBy('wins','desc')
+            ->orderBy('pf','desc')
+            ->get();
         return response()->json($leagueUsers);
     }
 
