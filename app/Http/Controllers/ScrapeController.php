@@ -218,22 +218,26 @@ class ScrapeController extends Controller
                         $home_team = LeagueUser::where('league_id',$league->id)
                             ->where('id',$matchup->home_id)
                             ->first();
-                        $update = LeagueUser::where('id',$home_team->id)
-                            ->update([
-                                "pf"=>$home_team->pf + $matchup->home_score,
-                                "pa"=>$home_team->pa + $matchup->away_score
-                            ]);
+                        if ($home_team) {
+                            $update = LeagueUser::where('id',$home_team->id)
+                                ->update([
+                                    "pf"=>$home_team->pf + $matchup->home_score,
+                                    "pa"=>$home_team->pa + $matchup->away_score
+                                ]);
+                        }
                     }
 
                     if ($matchup->away_id) {
                         $away_team = LeagueUser::where('league_id',$league->id)
                             ->where('id',$matchup->away_id)
                             ->first();
-                        $update = LeagueUser::where('id',$away_team->id)
-                            ->update([
-                                "pf"=>$away_team->pf + $matchup->away_score,
-                                "pa"=>$away_team->pa + $matchup->home_score
-                            ]);
+                            if ($away_team) {
+                                $update = LeagueUser::where('id',$away_team->id)
+                                    ->update([
+                                        "pf"=>$away_team->pf + $matchup->away_score,
+                                        "pa"=>$away_team->pa + $matchup->home_score
+                                    ]);
+                            }
                     }
 
                     if ($matchup->home_id && $matchup->away_id) {
