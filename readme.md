@@ -85,21 +85,54 @@ npm run watch
 ```
 
 
-Other Items of Note
--------------------
+Testing
+-------
+
+### Initialize test database
+```
+touch database/test.sqlite
+```
+
+Or create a new empty file called `test.sqlite` in
+`[PATH_TO_APP_ROOT_DIR]/database`.
+
+### Modify .env.test to use test database
+```
+cp .env.test.example .env.test
+APP_ROOT="$(pwd)"
+sed -i '' -e "s;DB_DATABASE=laravel;DB_DATABASE=$APP_ROOT/database/test.sqlite;" .env.test
+```
+
+Or rename `.env.test.example` to `.env.test` and make these changes:
+
+```
+DB_DATABASE=[PATH_TO_APP_ROOT_DIR]/database/test.sqlite
+```
 
 ### Run the test-suite
 ```
 phpunit
 ```
 
+
+Other Items of Note
+-------------------
+
 ### List all available routes
 ```
 php artisan route:list
 ```
 
-- jwt ttl/expire times (jwt.php)
-  - JWT_REFRESH_TTL (number of minutes refresh token is valid for, once invalid the user will have to re-authenticate/login)
-  - JWT_TTL (token stays valid for x number of minutes then app will try to refresh)
+### View the schema
+```
+php artisan schema:show
+```
 
-- optional lamp stack: https://bitnami.com/stack/lamp/installer and install the laravel module during install.
+### JWT ttl/expire times (jwt.php)
+- JWT_REFRESH_TTL (number of minutes refresh token is valid for, once
+  invalid the user will have to re-authenticate/login)
+- JWT_TTL (token stays valid for x number of minutes then app will try
+  to refresh)
+
+- optional lamp stack: https://bitnami.com/stack/lamp/installer and
+  install the laravel module during install.
