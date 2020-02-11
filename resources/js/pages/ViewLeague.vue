@@ -95,7 +95,7 @@
                     <b-tab title="League Home" active>
                         <b-card-text>
                             <h1>{{ leagueName }}</h1>
-
+                            <div v-if="leagueInfo.league_type == 1">
                             <b-table
                                     id="standings-table"
                                     :items="teams"
@@ -104,6 +104,17 @@
                                     hover
                                 >
                             </b-table>
+                            </div>
+                            <div v-if="leagueInfo.league_type > 1">
+                            <b-table
+                                    id="standings-table"
+                                    :items="teams"
+                                    :fields="standingsFieldsTotalPoints"
+                                    striped 
+                                    hover
+                                >
+                            </b-table>
+                            </div>
 
 
 
@@ -1432,6 +1443,12 @@ import moment from 'moment'
             {key: 'wins'},
             {key: 'losses'},
             {key: 'ties'},
+            {key: 'pf'},
+            {key: 'pa'}
+            
+        ],
+        standingsFieldsTotalPoints: [
+            {key: 'name'},
             {key: 'pf'},
             {key: 'pa'}
             
