@@ -2988,7 +2988,7 @@ import moment from 'moment'
                     if (typeof this.previousStats[1] === 'undefined') {
                         return this.items[i].name + " (" + this.items[i].position + ")"
                     } else {
-                        return this.items[i].name + " (" + this.items[i].position + ")" + " Week 1: 5 pts"
+                        return this.items[i].name + " (" + this.items[i].position + ")" + " "
                     }
                 }
             }
