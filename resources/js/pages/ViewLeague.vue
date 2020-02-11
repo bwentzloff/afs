@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                Scores will be audited on Monday. Week 2 will start on Tuesday. Commissioners can retroactively set lineups.
+                There are currently known issues with displaying total points correctly in Total Points and Guillotine leagues. These will be fixed in the next 24 hours. Also, week 1 scores will be shown on the Players tab and Set Lineup pages.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
