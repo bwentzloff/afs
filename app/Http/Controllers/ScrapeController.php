@@ -63,11 +63,12 @@ class ScrapeController extends Controller
         foreach($leagues as $league) {
             print($league->id."<br />");
             $sport = Sport::where('id',8)->first();
+            $total_points_for = array();
             for ($week = 1; $week <= $league->week; $week++) {
                 $matchups = Matchup::where('league_id',$league->id)
                     ->where('week',$week)
                     ->get();
-
+                
                 foreach($matchups as $matchup) {
                     $home_team = LeagueUser::where('id',$matchup->home_id)
                         ->where('league_id',$league->id)
@@ -127,6 +128,13 @@ class ScrapeController extends Controller
                             ->update([
                                 'home_score'=>$score
                             ]);
+                        if ($week < $league->week) {
+                            if (array_key_exists($matchup->home_id,$total_points_for)) {
+                                $total_points_for[$matchup->home_id] = $total_points_for[$matchup->home_id] + $score;
+                            } else {
+                                $total_points_for[$matchup->home_id] = $score;
+                            }
+                        }
                             
                     }
 
@@ -191,8 +199,27 @@ class ScrapeController extends Controller
                                 ->update([
                                     'away_score'=>$score
                                 ]);
+                            if ($week < $league->week) {
+                                if (array_key_exists($matchup->away_id,$total_points_for)) {
+                                    $total_points_for[$matchup->away_id] = $total_points_for[$matchup->away_id] + $score;
+                                } else {
+                                    $total_points_for[$matchup->away_id] = $score;
+                                }
+                            }
                         }
                     }
+                }
+            }
+
+            $teams = LeagueUser::where('league_id',$league->id)->get();
+
+            foreach($teams as $team) {
+                
+                if (array_key_exists($team->id,$total_points_for)) {
+                    $update = LeagueUser::where('id',$team->id)
+                        ->update([
+                            'pf'=>$total_points_for[$team->id]
+                        ]);
                 }
             }
 
