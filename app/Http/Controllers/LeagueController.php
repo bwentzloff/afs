@@ -267,7 +267,7 @@ class LeagueController extends Controller
                 } else if ($matchup->away_score > $matchup->home_score) {
                     // away wins
                     if ($away_team) {
-                        $update = LeagueUser::where('id',$matchup->away_team)
+                        $update = LeagueUser::where('id',$matchup->away_id)
                             ->update([
                                 'wins'=>$away_team->wins + 1,
                                 'pf'=>$away_team->pf + $matchup->away_score,
