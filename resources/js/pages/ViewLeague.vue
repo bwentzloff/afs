@@ -1450,7 +1450,6 @@ import moment from 'moment'
         standingsFieldsTotalPoints: [
             {key: 'name'},
             {key: 'pf'},
-            {key: 'pa'}
             
         ],
         lineupsFields: [
