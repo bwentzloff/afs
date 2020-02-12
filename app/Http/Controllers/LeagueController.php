@@ -26,6 +26,91 @@ include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function getWaivers(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            $waivers = Waiver::where('league_id',$request->leagueId)
+                ->get();
+
+            return response()->json($waivers);
+        }
+    }
+    public function updateWaiverStatus(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            $update = League::where('id',$league->id)
+                ->update([
+                    'waiver_status'=>$request->status
+                ]);
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+        }
+    }
+    public function processWaiver(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            // get waiver
+            $waiver = Waiver::where('id',$request->waiver_id)->first();
+            $team = LeagueUser::where('league_id',$request->leagueId)
+                ->where('id',$waiver->team_id)
+                ->first();
+
+            $newRosterItem = new RosterItem;
+            $newRosterItem->team_id = $team->id;
+            $newRosterItem->league_id = $league->id;
+            $newRosterItem->player_id = $waiver->player_id;
+            $newRosterItem->save();
+            
+            // drop the drop_id player
+            if (isset($waiver->drop_player_id) && $waiver->drop_player_id > 0) {
+                $drop_player = RosterItem::where('team_id',$team->id)
+                    ->where('league_id',$league->id)
+                    ->where('player_id',$waiver->drop_player_id)
+                    ->delete();
+            }
+
+            // remove from this week's lineup
+            $sport = Sport::where('id',8)->first();
+
+            $delete = Lineup::where('league_id',$league->id)
+                ->where('player_id',$waiver->drop_player_id)
+                ->where('week','>=',$sport->current_week)
+                ->delete();
+
+            // delete any other waivers in the league with the same player
+            $deleteWaivers = Waiver::where('league_id',$league->id)
+                ->where('player_id',$waiver->player_id)
+                ->delete();
+
+            // delete any trades with the drop player
+            $all_trades = Trade::where('league_id',$league->id)
+                ->get();
+
+            foreach($all_trades as $trade) {
+                $foundPlayer = false;
+                foreach (unserialize($trade->team1_selected) as $player_id) {
+                    if ($player_id == $waiver->drop_player_id) $foundPlayer = true;
+                }
+                foreach (unserialize($trade->team2_selected) as $player_id) {
+                    if ($player_id == $waiver->drop_player_id) $foundPlayer = true;
+                }
+                if ($foundPlayer) {
+                    $delete = Trade::where('league_id',$league->id)
+                        ->where('id',$trade->id)
+                        ->delete();
+                }
+            }
+
+        }
+    }
+    public function denyWaiver(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            $delete = Waiver::where('id',$request->waiver_id)
+                ->where('league_id',$request->leagueId)
+                ->delete();
+        }
+    }
     public function updatePlayerEligibility(Request $request) {
         $search = Eligibility::where('league_id',$request->leagueId)
             ->where('player_id',$request->player_id)

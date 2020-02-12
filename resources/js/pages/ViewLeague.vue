@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                The rest of the week will be focused on getting live scoring 100% and more Commish Tools to help people change scores, waiver options, and results of previous weeks. I know many people had problems with how the waivers processed this week. I'm looking into it.
+                Commissioners now need to process waivers manually. Commissioners will see a new tab called Process Waivers where they can process waivers, end the waiver period, and re-enable the waiver period after free agency is over.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
@@ -30,7 +30,7 @@
                     <b-card-title>Pending Transactions</b-card-title>
                     <b-card-text>
                         <template>
-                            <small>Your league's waivers process on {{ leagueInfo.waiver_day }} mornings</small>
+                            <!--small>Your league's waivers process on {{ leagueInfo.waiver_day }} mornings</small-->
                             <table>
                             <tr v-for="waiver in waivers">
                                 <td>Waiver request for {{ waiver.player_name }} (drop {{ waiver.drop_player_name }}) </td>
@@ -582,6 +582,32 @@
                                 </template>
                                 </b-table>
 
+                        </b-card-text>
+                    </b-tab>
+                    <b-tab title="Process Waivers" v-if="commishTools">
+                        <b-card-text>
+                            Current waiver period: <select v-model="leagueInfo.waiver_status" v-on:change="updateWaiverStatus">
+                                <option :selected="leagueInfo.waiver_status == 0? 'true' : 'false'" value="0">Waivers</option>
+                                <option :selected="leagueInfo.waiver_status == 1? 'true' : 'false'" value="1">Free Agency</option>
+                            </select>
+                            <b-table
+                                    id="waiver-table"
+                                    :items="leagueWaivers"
+                                    :fields="leagueWaiverFields"
+                                    striped 
+                                    hover
+                                >
+                                <template v-slot:cell(actions)="data">
+                                    <div>
+                                        <b-button variant="success" @click="grantWaiver($event, data.item)">
+                                            Grant
+                                        </b-button>
+                                        <b-button variant="danger" @click="denyWaiver($event, data.item)">
+                                            Deny
+                                        </b-button>
+                                    </div>
+                                </template>
+                            </b-table>
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Commish Tools" v-if="commishTools">
@@ -1481,6 +1507,12 @@ import moment from 'moment'
             {key: 'player_name'},
             {key: 'actions'}
         ],
+        leagueWaiverFields: [
+            {key: 'player_name', label: 'Pickup'},
+            {key: 'drop_player_name', label: 'Drop'},
+            {key: 'team_name', label: 'Team'},
+            {key: 'actions'}
+        ],
         matchups: [],
         inviteCode: '',
         preDraft: false,
@@ -1663,6 +1695,7 @@ import moment from 'moment'
         currentFreeAgentId: 0,
         matchup_player_stats: [],
         previousStats: [],
+        leagueWaivers: [],
       }
     },
     mounted() {
@@ -3355,6 +3388,70 @@ import moment from 'moment'
                 }
             });
         },
+        grantWaiver(event, waiver) {
+            if (this.commishTools) {
+                axios.post('league/processWaiver', {
+                    leagueId: this.$data.leagueId,
+                    waiver_id: waiver.id
+                }).then(response => {
+                    this.getLeagueInfo();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        denyWaiver(event, waiver) {
+            if (this.commishTools) {
+                axios.post('league/denyWaiver', {
+                    leagueId: this.$data.leagueId,
+                    waiver_id: waiver.id
+                }).then(response => {
+                    this.getLeagueInfo();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        updateWaiverStatus() {
+            if (this.commishTools) {
+                axios.post('league/updateWaiverStatus', {
+                    leagueId: this.$data.leagueId,
+                    status: this.leagueInfo.waiver_status
+                }).then(response => {
+                    this.getLeagueInfo();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        getCommishWaivers() {
+            if (this.commishTools) {
+                axios.post('league/getWaivers', {
+                    leagueId: this.$data.leagueId,
+                }).then(response => {
+                    this.leagueWaivers = response.data;
+                    for (var j = 0; j < this.leagueWaivers.length; j++) {
+                        this.leagueWaivers[j].player_name = this.getPlayerNameFromId(this.leagueWaivers[j].player_id);
+                        this.leagueWaivers[j].drop_player_name = this.getPlayerNameFromId(this.leagueWaivers[j].drop_player_id);
+                        this.leagueWaivers[j].team_name = this.getTeamNameFromId(this.leagueWaivers[j].team_id);
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
         refreshWaivers() {
             axios.post('player/getwaivers', {
                 leagueId: this.$data.leagueId,
@@ -3446,6 +3543,7 @@ import moment from 'moment'
                 this.updateDraftBoard()
                 this.refreshQueueItems();
                 this.refreshWaivers();
+                this.getCommishWaivers();
                 this.refreshTrades();
                 this.getPreviousStats();
                 //this.items = response.data;

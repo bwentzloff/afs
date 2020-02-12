@@ -115,6 +115,11 @@ Route::prefix('v1')->group(function () {
     Route::get('players/getWeeklyStats/{week}', 'PlayerController@getWeeklyStats');
     Route::get('league/tempClearMatchups', 'LeagueController@tempClearMatchups');
 
+    // waivers
+    Route::post('league/getWaivers', ['uses'=>'LeagueController@getWaivers']);
+    Route::post('league/processWaiver', ['uses'=>'LeagueController@processWaiver']);
+    Route::post('league/denyWaiver', ['uses'=>'LeagueController@denyWaiver']);
+    Route::post('league/updateWaiverStatus', ['uses'=>'LeagueController@updateWaiverStatus']);
     // Cronjobs
     //Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
 

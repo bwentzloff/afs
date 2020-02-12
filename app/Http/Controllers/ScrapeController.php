@@ -349,6 +349,7 @@ class ScrapeController extends Controller
                         $rosterPlayerIds[] = $player->player_id;
                     }
                 }
+                $sport = Sport::where('id',8)->first();
                 $lineup = Lineup::where('league_id',$league->id)
                     ->where('team_id',$team->id)
                     ->get();
@@ -357,6 +358,7 @@ class ScrapeController extends Controller
                     if (!in_array($item->player_id, $rosterPlayerIds)) {
                         $delete = Lineup::where('id',$item->id)
                             ->where('league_id',$league->id)
+                            ->where('week',$sport->current_week)
                             ->delete();
                     }
                 }
