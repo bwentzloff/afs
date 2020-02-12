@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                The rest of the week will be focused on getting live scoring 100% and more Commish Tools to help people change scores, waiver options, and results of previous weeks.
+                The rest of the week will be focused on getting live scoring 100% and more Commish Tools to help people change scores, waiver options, and results of previous weeks. I know many people had problems with how the waivers processed this week. I'm looking into it.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
