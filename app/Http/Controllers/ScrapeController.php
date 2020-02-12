@@ -352,6 +352,7 @@ class ScrapeController extends Controller
                 $sport = Sport::where('id',8)->first();
                 $lineup = Lineup::where('league_id',$league->id)
                     ->where('team_id',$team->id)
+                    ->where('week',$sport->current_week)
                     ->get();
 
                 foreach( $lineup as $item) {
