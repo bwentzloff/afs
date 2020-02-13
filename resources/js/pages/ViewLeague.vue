@@ -1447,8 +1447,7 @@ import moment from 'moment'
         fields: [
             {key: 'actions'},
             {key: 'combinedInfo'},
-            {key: 'percent', label: '% Drafted', sortable: true},
-            {key: 'adp', label: 'ADP', sortable: true},
+            {key: 'week1_points', label: 'Week 1'},
             {key: 'extrainfo', sortable: true, class:"d-none d-lg-table-cell"},
             
         ],
@@ -1948,6 +1947,9 @@ import moment from 'moment'
             var week = 1
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[1] = response.data;
+                this.items.forEach((item) => {
+                    item.week1_points = this.getPreviousPlayerScoreFromId(item.id)
+                })
             });
         },
         
@@ -3064,7 +3066,9 @@ import moment from 'moment'
                         return ""
                     } else {
                         for (var prevStat = 0; prevStat < this.previousStats[1].length; prevStat++) {
+                            
                             if (this.previousStats[1][prevStat].player_id == player_id) {
+                                
                                 return this.calculatePlayerScore(this.previousStats[1][prevStat])
                             }
                         }
@@ -3088,7 +3092,7 @@ import moment from 'moment'
                     }
                 });
                 this.refreshPlayerList();
-                
+                this.getPreviousStats();
                 this.getMatchups();
 
             if (this.leagueInfo.draft_status == 0) {
@@ -3546,7 +3550,7 @@ import moment from 'moment'
                 this.refreshWaivers();
                 this.getCommishWaivers();
                 this.refreshTrades();
-                this.getPreviousStats();
+                
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);
