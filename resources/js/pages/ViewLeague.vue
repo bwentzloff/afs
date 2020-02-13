@@ -1447,7 +1447,7 @@ import moment from 'moment'
         fields: [
             {key: 'actions'},
             {key: 'combinedInfo'},
-            {key: 'week1_points', label: 'Week 1'},
+            {key: 'week1_points', label: 'Week 1', sortable: true},
             
         ],
         queueFields: [
