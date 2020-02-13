@@ -1785,7 +1785,6 @@ import moment from 'moment'
     },
     filters: {
         useMoment: function (date) {
-            console.log('here');
             return moment.utc(date).fromNow();
         }
     },
@@ -1863,7 +1862,6 @@ import moment from 'moment'
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
             if (stats.rule12 && stats.rule12 != 0) {
-                console.log('here')
                 statline.push(stats.rule12 + " 10 yards rushing")
             }
             if (stats.rule13 && stats.rule13 != 0) {
@@ -2043,7 +2041,6 @@ import moment from 'moment'
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
             if (stats.rule12 && stats.rule12 != 0) {
-                console.log('here')
                 statline.push(stats.rule12 + " 10 yards rushing")
             }
             if (stats.rule13 && stats.rule13 != 0) {
@@ -2704,7 +2701,6 @@ import moment from 'moment'
             this.matchup_away_superflex_starters = []
             this.matchup_away_k_starters = []
             this.matchup_away_defense_starters = []
-            console.log('here')
             axios.post('league/getLineup', {
                 leagueId: this.leagueId,
                 team_id: item.home_id,
