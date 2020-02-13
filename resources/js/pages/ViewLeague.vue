@@ -1792,7 +1792,7 @@ import moment from 'moment'
 
     methods: {
         calculatePlayerScore(stats) {
-            return this.leagueInfo.rule1 * stats.rule1 +
+            return (this.leagueInfo.rule1 * stats.rule1 +
                 this.leagueInfo.rule2 * stats.rule2 +
                 this.leagueInfo.rule3 * stats.rule3 +
                 this.leagueInfo.rule4 * stats.rule4 +
@@ -1825,7 +1825,7 @@ import moment from 'moment'
                 this.leagueInfo.rule31 * stats.rule31 +
                 this.leagueInfo.rule32 * stats.rule32 +
                 this.leagueInfo.rule33 * stats.rule33 +
-                this.leagueInfo.rule34 * stats.rule34
+                this.leagueInfo.rule34 * stats.rule34).toFixed(2)
         },
         getPlayerStatline(stats) {
             var statline = []
