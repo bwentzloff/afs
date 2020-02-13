@@ -1448,7 +1448,6 @@ import moment from 'moment'
             {key: 'actions'},
             {key: 'combinedInfo'},
             {key: 'week1_points', label: 'Week 1'},
-            {key: 'extrainfo', sortable: true, class:"d-none d-lg-table-cell"},
             
         ],
         queueFields: [
@@ -3092,7 +3091,7 @@ import moment from 'moment'
                     }
                 });
                 this.refreshPlayerList();
-                this.getPreviousStats();
+                
                 this.getMatchups();
 
             if (this.leagueInfo.draft_status == 0) {
@@ -3550,6 +3549,7 @@ import moment from 'moment'
                 this.refreshWaivers();
                 this.getCommishWaivers();
                 this.refreshTrades();
+                this.getPreviousStats();
                 
                 //this.items = response.data;
             }).catch(error => {
