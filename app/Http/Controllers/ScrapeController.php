@@ -24,6 +24,43 @@ include(app_path() . '/../vendor/simple-html-dom/simple_html_dom.php');
 
 class ScrapeController extends Controller
 {
+    public function convertTeamName($team_name) {
+        if ($team_name == "SEA") {
+            $team_name = "Seattle";
+        } else if ($team_name == "TB") {
+            $team_name = "Tampa Bay";
+        } else if ($team_name == "NY") {
+            $team_name = "New York";
+        } else if ($team_name == "HOU") {
+            $team_name = "Houston";
+        } else if ($team_name == "STL") {
+            $team_name = "St Louis";
+        } else if ($team_name == "DAL") {
+            $team_name = "Dallas";
+        }
+        return $team_name;
+    }
+    public function setStat($week,$player_name,$team_name,$stat_id,$stat_value) {
+        $player_name_split = explode(".",$player_name);
+        if (count($player_name_split) > 1) {
+            $player_name = $player_name_split[1].", ".$player_name_split[0];
+        }
+
+        $player = Player::where('name', 'LIKE', $this->convertTeamName($player_name).'%')
+            ->where('team',$this->convertTeamName($team_name))->first();
+
+        $current_record = PlayerStat::where('week',$week)->where('player_id',$player->id)->first();
+        if (!$current_record) {
+            $stat = new PlayerStat;
+            $stat->week = $week;
+            $stat->player_id = $player->id;
+            $stat->save();
+            
+        }
+        $res = PlayerStat::where('week',$week)->where('player_id',$player->id)->update([
+            $stat_id=>$stat_value
+        ]);
+    }
     public function lockTeam($team) {
         $players = Player::where('team',$team)->get();
         foreach ($players as $player) {
