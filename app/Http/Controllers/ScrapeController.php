@@ -49,17 +49,19 @@ class ScrapeController extends Controller
         $player = Player::where('name', 'LIKE', $this->convertTeamName($player_name).'%')
             ->where('team',$this->convertTeamName($team_name))->first();
 
-        $current_record = PlayerStat::where('week',$week)->where('player_id',$player->id)->first();
-        if (!$current_record) {
-            $stat = new PlayerStat;
-            $stat->week = $week;
-            $stat->player_id = $player->id;
-            $stat->save();
-            
+        if ($player) {
+            $current_record = PlayerStat::where('week',$week)->where('player_id',$player->id)->first();
+            if (!$current_record) {
+                $stat = new PlayerStat;
+                $stat->week = $week;
+                $stat->player_id = $player->id;
+                $stat->save();
+                
+            }
+            $res = PlayerStat::where('week',$week)->where('player_id',$player->id)->update([
+                $stat_id=>$stat_value
+            ]);
         }
-        $res = PlayerStat::where('week',$week)->where('player_id',$player->id)->update([
-            $stat_id=>$stat_value
-        ]);
     }
     public function lockTeam($team) {
         $players = Player::where('team',$team)->get();
