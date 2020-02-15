@@ -54,7 +54,6 @@ class ScrapeController extends Controller
             $player = Player::where('name', 'LIKE', $this->convertTeamName($player_name).'%')
                 ->where('team',$this->convertTeamName($team_name))->first();
         }
-        print($player);die();
         if ($player) {
             $current_record = PlayerStat::where('week',$week)->where('player_id',$player->id)->first();
             if (!$current_record) {
