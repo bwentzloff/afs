@@ -2,8 +2,7 @@
     <div class="container">
         <div>
             <b-card bg-variant="danger" text-variant="black">
-                Commissioners can now retroactively set week 1 lineups.<br />
-                Commissioners now need to process waivers manually. Commissioners will see a new tab called Process Waivers where they can process waivers, end the waiver period, and re-enable the waiver period after free agency is over.
+                Player stats will be audited on Monday. Week 3 will start on Tuesday.
             </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
