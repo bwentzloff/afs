@@ -25,3 +25,6 @@ package-lock.json
 *.iml
 *.idea
 .DS_Store
+backup0215.csv
+starters0216.csv
+xfl_players.csv

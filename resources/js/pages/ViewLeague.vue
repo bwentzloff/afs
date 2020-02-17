@@ -333,10 +333,6 @@
                     <b-tab title="Players">
                         <b-card-text>
                             <div class="overflow-auto">
-                                <b-form-select v-model="availabilityFilter" size="sm" class="w-25" v-on:change="resetPagination">
-                                    <option value="all">All Players</option>
-                                    <option value="free">Free Agents</option>
-                                </b-form-select>
                                 <b-form-select v-model="positionFilter" size="sm" class="w-25" v-on:change="resetPagination">
                                     <option value="all">All Offensive Players</option>
                                     <option value="QB">Quarterbacks</option>
