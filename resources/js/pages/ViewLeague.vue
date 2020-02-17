@@ -346,6 +346,11 @@
                                     <option value="K">Kickers</option>
                                     <option value="DEF">Defenses</option>
                                 </b-form-select>
+                                <b-form-select v-model="teamFilter" :options="teamNames" size="sm" class="w-25">
+                                    <template v-slot:first>
+                                        <b-form-select-option :value="-1">All Players</b-form-select-option>
+                                    </template>
+                                </b-form-select>
                                 <b-form-input
                                     v-model="nameFilter"
                                         type="search"
@@ -1451,6 +1456,7 @@ import moment from 'moment'
         positionFilter: 'all',
         availabilityFilter: 'all',
         nameFilter: '',
+        teamFilter: -1,
         perPage: 10,
         currentPage: 1,
         items: [],
@@ -1755,6 +1761,14 @@ import moment from 'moment'
       },
       playersFiltered() {
           var filtered = this.items.filter((el) => {
+            if (this.teamFilter != -1) { // we've got a filter set
+                if (el.fantasyTeam != '' && this.teamFilter == 0) { // the filter is "no team", but this player has a team.
+                    return false;
+                }
+                if (this.teamFilter > 0 && el.fantasyTeamId != this.teamFilter) { // we have a team ID selected and want to match it to the player's fantasy team
+                    return false;
+                }
+            }
             if (this.leagueInfo.teamQbs == true && el.position == "QB") {
                 if (el.name == "Dallas" || el.name == "DC" || el.name == "Houston" || el.name == "LA" || el.name == "New York" || el.name == "St Louis" || el.name == "Seattle" || el.name == "Tampa Bay") {
                     //return true;
