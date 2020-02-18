@@ -175,9 +175,6 @@ class LeagueController extends Controller
         $stats = PlayerStat::where('player_id',$player_id)
             ->where('week',$week)
             ->first();
-        Log::debug($league_id);
-        Log::debug($player_id);
-        Log::debug($week);
         $score = 0;
 
         if ($stats) {
