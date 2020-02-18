@@ -17,6 +17,7 @@ use App\Models\PlayerStat;
 use App\Models\Sport;
 use App\Models\Matchup;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 use App\Mail\TestEmail;
 

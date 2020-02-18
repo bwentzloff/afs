@@ -23,6 +23,8 @@ use App\Models\LeagueTransaction;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
 include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
@@ -312,18 +314,20 @@ class LeagueController extends Controller
             foreach($lineup as $player) {
                 $score = $score + $this->calculatePlayerScore($leagueId, $player->player_id, $week);
             }
-            $update_home_team = Matchup::where('league_id',$leagueId)
-                ->where('week',$week)
-                ->where('home_id',$team->id)
-                ->update([
-                    'home_score'=>$score
-                ]);
-            $update_away_team = Matchup::where('league_id',$leagueId)
-                ->where('week',$week)
-                ->where('away_id',$team->id)
-                ->update([
-                    'away_score'=>$score
-                ]);
+            DB::transaction(function () use ($leagueId, $week, $team, $score) {
+                $update_home_team = Matchup::where('league_id',$leagueId)
+                    ->where('week',$week)
+                    ->where('home_id',$team->id)
+                    ->update([
+                        'home_score'=>$score
+                    ]);
+                $update_away_team = Matchup::where('league_id',$leagueId)
+                    ->where('week',$week)
+                    ->where('away_id',$team->id)
+                    ->update([
+                        'away_score'=>$score
+                    ]);
+            }, 5);
         }
         if ($week < $sport->current_week) $this->calculateStandings($leagueId);
 
