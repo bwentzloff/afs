@@ -327,6 +327,61 @@
                                 </b-button><br /><br />
                         </b-card-text>
                     </b-tab>
+                    <b-tab title="Transaction Log">
+                        <b-card-text>
+                            <b-table
+                                    id="transaction-table"
+                                    :items="leagueTransactions"
+                                    :fields="leagueTransactionFields"
+                                    striped 
+                                    hover
+                                >
+                                <template v-slot:cell(type)="data">
+                                    <div v-if="data.item.type == 1">
+                                        Trade
+                                    </div>
+                                    <div v-if="data.item.type == 2">
+                                        Waiver
+                                    </div>
+                                    <div v-if="data.item.type == 3">
+                                        Free Agent
+                                    </div>
+                                </template>
+                                <template v-slot:cell(player_id)="data">
+                                    <div v-if="data.item.player_id > 0">
+                                    {{ getPlayerNameFromId(data.item.player_id) }}
+                                    </div>
+                                </template>
+                                <template v-slot:cell(drop_player_id)="data">
+                                    <div v-if="data.item.drop_player_id > 0">
+                                    {{ getPlayerNameFromId(data.item.drop_player_id) }}
+                                    </div>
+                                </template>
+                                <template v-slot:cell(team1_selected)="data">
+                                    <div v-if="data.item.team1_selected">
+                                        {{ getTeamNameFromId(data.item.team1_id) }} gets 
+                                        
+                                        <div v-for="(n, index) in data.item.team1_selected">
+                                            {{ getPlayerNameFromId(data.item.team1_selected[index]) }}<br />
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </template>
+                                <template v-slot:cell(team2_selected)="data">
+                                    <div v-if="data.item.team2_selected">
+                                        {{ getTeamNameFromId(data.item.team2_id) }} gets 
+                                        
+                                        <div v-for="(n, index) in data.item.team2_selected">
+                                            {{ getPlayerNameFromId(data.item.team2_selected[index]) }}<br />
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </template>
+                            </b-table>
+                        </b-card-text>
+                    </b-tab>
                     <b-tab title="Players">
                         <b-card-text>
                             <div class="overflow-auto">
@@ -1550,6 +1605,14 @@ import moment from 'moment'
             {key: 'updated_at', label: 'Time filed'},
             {key: 'actions'}
         ],
+        leagueTransactionFields: [
+            {key: 'type'},
+            {key: 'player_id', label: 'Added'},
+            {key: 'drop_player_id', label: 'Dropped'},
+            {key: 'team1_selected', label: ''},
+            {key: 'team2_selected', label: ''},
+            {key: 'created_at', label: 'Timestamp'},
+        ],
         matchups: [],
         inviteCode: '',
         preDraft: false,
@@ -1733,6 +1796,7 @@ import moment from 'moment'
         matchup_player_stats: [],
         previousStats: [],
         leagueWaivers: [],
+        leagueTransactions: []
       }
     },
     mounted() {
@@ -3492,6 +3556,19 @@ import moment from 'moment'
                 });
             }
         },
+        getTransactions() {
+            axios.post('league/getTransactions', {
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                this.leagueTransactions = response.data;
+                
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.$data.errors = error.response.data.errors || {};
+                }
+            });
+        },
         getCommishWaivers() {
             if (this.commishTools) {
                 axios.post('league/getWaivers', {
@@ -3603,6 +3680,7 @@ import moment from 'moment'
                 this.refreshQueueItems();
                 this.refreshWaivers();
                 this.getCommishWaivers();
+                this.getTransactions();
                 this.refreshTrades();
                 this.getPreviousStats();
                 

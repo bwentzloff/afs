@@ -19,6 +19,7 @@ use App\Models\Sport;
 use App\Models\Lineup;
 use App\Models\Eligibility;
 use App\Models\PlayerStat;
+use App\Models\LeagueTransaction;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
@@ -46,6 +47,17 @@ class LeagueController extends Controller
             Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
         }
     }
+    public function getTransactions(Request $request) {
+        $transactions = LeagueTransaction::where('league_id',$request->leagueId)
+            ->orderBy('created_at','DESC')
+            ->get();
+
+        foreach ($transactions as $key=>$value) {
+            $transactions[$key]->team1_selected = unserialize($transactions[$key]->team1_selected);
+            $transactions[$key]->team2_selected = unserialize($transactions[$key]->team2_selected);
+        }
+        return response()->json($transactions);
+    }
     public function processWaiver(Request $request) {
         $league = League::where('id',$request->leagueId)->first();
         if ($league->commish_id == Auth::user()->id) {
@@ -68,6 +80,15 @@ class LeagueController extends Controller
                     ->where('player_id',$waiver->drop_player_id)
                     ->delete();
             }
+
+            // create the league transaction
+            $transaction = new LeagueTransaction;
+            $transaction->league_id = $request->leagueId;
+            $transaction->type = 2;
+            $transaction->team1_id = $waiver->team_id;
+            $transaction->player_id = $waiver->player_id;
+            $transaction->drop_player_id = $waiver->drop_player_id;
+            $transaction->save();
 
             // remove from this week's lineup
             $sport = Sport::where('id',8)->first();
@@ -438,6 +459,16 @@ class LeagueController extends Controller
                     'team_id'=>$team2->id
                 ]);
         }
+
+        // Make a record of the transaction
+        $transaction = new LeagueTransaction;
+        $transaction->league_id = $request->leagueId;
+        $transaction->type = 1;
+        $transaction->team1_selected = $trade->team1_selected;
+        $transaction->team2_selected = $trade->team2_selected;
+        $transaction->team1_id = $trade->team1_id;
+        $transaction->team2_id = $trade->team2_id;
+        $transaction->save();
 
         
 
@@ -1053,6 +1084,17 @@ class LeagueController extends Controller
         $pickup->league_id = $request->leagueId;
         $pickup->player_id = $request->player_id;
         $pickup->save();
+
+        // create transaction
+        $transaction = new LeagueTransaction;
+        $transaction->league_id = $request->leagueId;
+        $transaction->type = 3;
+        $transaction->team1_id = $team->id;
+        $transaction->player_id = $request->player_id;
+        if (isset($request->drop_player_id) && $request->drop_player_id) {
+            $transaction->drop_player_id = $request->drop_player_id;
+        }
+        $transaction->save();
 
         if (isset($request->drop_player_id) && $request->drop_player_id) {
             $drop_player = RosterItem::where('league_id',$request->leagueId)

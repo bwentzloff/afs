@@ -104,6 +104,7 @@ Route::prefix('v1')->group(function () {
     Route::post('league/startPlayer', ['uses'=>'LeagueController@startPlayer']);
     Route::post('league/benchPlayer', ['uses'=>'LeagueController@benchPlayer']);
     Route::post('league/dropPlayer', ['uses'=>'LeagueController@dropPlayer']);
+    Route::post('league/getTransactions', ['uses'=>'LeagueController@getTransactions']);
 
     Route::get('stats', ['uses'=>'LeagueController@stats']);
 
