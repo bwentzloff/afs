@@ -101,7 +101,7 @@ class ScrapeController extends Controller
         
         $leagues = League::where('draft_status',2)
             ->skip($lastChecked)
-            ->take(50)
+            ->take(25)
             ->get();
 
         foreach($leagues as $league) {
