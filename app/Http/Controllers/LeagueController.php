@@ -1017,10 +1017,12 @@ class LeagueController extends Controller
 
     public function getLeagueInfo($id) {
         $league = League::where('id',$id)->first();
-        $teams = LeagueUser::where('league_id',$league->id)->get();
-        $sport = Sport::where('id',8)->first();
-        $league->current_week = $sport->current_week;
-        $league->teams = $teams;
+        if ($league) {
+            $teams = LeagueUser::where('league_id',$league->id)->get();
+            $sport = Sport::where('id',8)->first();
+            $league->current_week = $sport->current_week;
+            $league->teams = $teams;
+        }
         return response()->json($league);
     }
 
