@@ -94,7 +94,7 @@ class ScrapeController extends Controller
             
         }
         if ($lastChecked <= $leagues) {
-            Cache::put('calculateScores', $lastChecked+50,6000);
+            Cache::put('calculateScores', $lastChecked+25,6000);
         } else {
             Cache::put('calculateScores', 0,6000);
         }
