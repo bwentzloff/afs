@@ -336,6 +336,11 @@
                                     striped 
                                     hover
                                 >
+                                <template v-slot:cell(team1_id)="data">
+                                    <div v-if="data.item.type == 2 || data.item.type == 3">
+                                        {{ getTeamNameFromId(data.item.team1_id) }}
+                                    </div>
+                                </template>
                                 <template v-slot:cell(type)="data">
                                     <div v-if="data.item.type == 1">
                                         Trade
@@ -1607,6 +1612,7 @@ import moment from 'moment'
         ],
         leagueTransactionFields: [
             {key: 'type'},
+            {key: 'team1_id', label: 'Team'},
             {key: 'player_id', label: 'Added'},
             {key: 'drop_player_id', label: 'Dropped'},
             {key: 'team1_selected', label: ''},
