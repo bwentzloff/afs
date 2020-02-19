@@ -1,9 +1,6 @@
 <template>
     <div class="container">
         <div>
-            <b-card bg-variant="danger" text-variant="black">
-                Scores will be audited on Monday. Week 2 will start on Tuesday. Commissioners can retroactively set lineups.
-            </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
                     <b-card-title>Your draft is in {{ draftTimeDays }} Days, {{ draftTimeHours }} Hours, {{ draftTimeMinutes }} Minutes, {{ draftTimeSeconds }} Seconds</b-card-title>
@@ -30,7 +27,7 @@
                     <b-card-title>Pending Transactions</b-card-title>
                     <b-card-text>
                         <template>
-                            <small>Your league's waivers process on {{ leagueInfo.waiver_day }} mornings</small>
+                            <!--small>Your league's waivers process on {{ leagueInfo.waiver_day }} mornings</small-->
                             <table>
                             <tr v-for="waiver in waivers">
                                 <td>Waiver request for {{ waiver.player_name }} (drop {{ waiver.drop_player_name }}) </td>
@@ -95,11 +92,35 @@
                     <b-tab title="League Home" active>
                         <b-card-text>
                             <h1>{{ leagueName }}</h1>
-                            <form autocomplete="off" @submit.prevent="updateRoster" method="post">
+                            <div v-if="leagueInfo.league_type == 1">
+                            <b-table
+                                    id="standings-table"
+                                    :items="teams"
+                                    :fields="standingsFields"
+                                    striped 
+                                    hover
+                                >
+                            </b-table>
+                            </div>
+                            <div v-if="leagueInfo.league_type > 1">
+                            <b-table
+                                    id="standings-table"
+                                    :items="teams"
+                                    :fields="standingsFieldsTotalPoints"
+                                    striped 
+                                    hover
+                                >
+                            </b-table>
+                            </div>
+
+
+
+                            <br /><br /><br />
+                            <!--form autocomplete="off" @submit.prevent="updateRoster" method="post">
                                 <b-button @click="leaveLeague()">
                                     Leave League
                                 </b-button><br /><br />
-                            </form>
+                            </form-->
                                                     <b-alert show>To invite teams to your league, send them this link: https://altfantasysports.com/league/invite/{{ inviteCode }}/</b-alert>
 
                             
@@ -306,6 +327,61 @@
                                 </b-button><br /><br />
                         </b-card-text>
                     </b-tab>
+                    <b-tab title="Transaction Log">
+                        <b-card-text>
+                            <b-table
+                                    id="transaction-table"
+                                    :items="leagueTransactions"
+                                    :fields="leagueTransactionFields"
+                                    striped 
+                                    hover
+                                >
+                                <template v-slot:cell(type)="data">
+                                    <div v-if="data.item.type == 1">
+                                        Trade
+                                    </div>
+                                    <div v-if="data.item.type == 2">
+                                        Waiver
+                                    </div>
+                                    <div v-if="data.item.type == 3">
+                                        Free Agent
+                                    </div>
+                                </template>
+                                <template v-slot:cell(player_id)="data">
+                                    <div v-if="data.item.player_id > 0">
+                                    {{ getPlayerNameFromId(data.item.player_id) }}
+                                    </div>
+                                </template>
+                                <template v-slot:cell(drop_player_id)="data">
+                                    <div v-if="data.item.drop_player_id > 0">
+                                    {{ getPlayerNameFromId(data.item.drop_player_id) }}
+                                    </div>
+                                </template>
+                                <template v-slot:cell(team1_selected)="data">
+                                    <div v-if="data.item.team1_selected">
+                                        {{ getTeamNameFromId(data.item.team1_id) }} gets 
+                                        
+                                        <div v-for="(n, index) in data.item.team1_selected">
+                                            {{ getPlayerNameFromId(data.item.team1_selected[index]) }}<br />
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </template>
+                                <template v-slot:cell(team2_selected)="data">
+                                    <div v-if="data.item.team2_selected">
+                                        {{ getTeamNameFromId(data.item.team2_id) }} gets 
+                                        
+                                        <div v-for="(n, index) in data.item.team2_selected">
+                                            {{ getPlayerNameFromId(data.item.team2_selected[index]) }}<br />
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </template>
+                            </b-table>
+                        </b-card-text>
+                    </b-tab>
                     <b-tab title="Players">
                         <b-card-text>
                             <div class="overflow-auto">
@@ -317,6 +393,11 @@
                                     <option value="TE">Tight Ends</option>
                                     <option value="K">Kickers</option>
                                     <option value="DEF">Defenses</option>
+                                </b-form-select>
+                                <b-form-select v-model="teamFilter" :options="teamNames" size="sm" class="w-25">
+                                    <template v-slot:first>
+                                        <b-form-select-option :value="-1">All Players</b-form-select-option>
+                                    </template>
                                 </b-form-select>
                                 <b-form-input
                                     v-model="nameFilter"
@@ -500,30 +581,31 @@
                         </b-card-text>
                         
                     </b-tab>
+                    
                     <b-tab title="Lineups" v-if="leagueInfo.league_type > 1">
-                        
                         <b-card-text>
                             <b-table
                                     id="lineups-table"
-                                    :items="lineups"
+                                    :items="matchups"
                                     :fields="lineupsFields"
                                     :sort-by="lineupsSort"
                                     striped 
                                     hover
                                 >
                                 <template v-slot:cell(actions)="data">
-                                    <div v-if="(data.item.id == myteam.id)">
-                                        <b-button variant="success" @click="showLineup($event, data.item)">
+                                    <div v-if="(data.item.home_id == myteam.id) && (leagueInfo.current_week == data.item.week)">
+                                        <b-button variant="success" @click="showLineup($event, data.item, data.item.week)">
                                             Set your lineup
                                         </b-button>
                                     </div>
-                                    <div v-if="(data.item.id != myteam.id)">
-                                        <b-button @click="showLineup($event, data.item)">
+                                    <div v-if="(data.item.home_id != myteam.id) || (leagueInfo.current_week != data.item.week)">
+                                        <b-button @click="showLineup($event, data.item, data.item.week)">
                                             View Matchup
                                         </b-button>
                                     </div>
                                 </template>
                             </b-table>
+                            
                         </b-card-text>
                         
                     </b-tab>
@@ -557,6 +639,32 @@
                                 </template>
                                 </b-table>
 
+                        </b-card-text>
+                    </b-tab>
+                    <b-tab title="Process Waivers" v-if="commishTools">
+                        <b-card-text>
+                            Current waiver period: <select v-model="leagueInfo.waiver_status" v-on:change="updateWaiverStatus">
+                                <option :selected="leagueInfo.waiver_status == 0? 'true' : 'false'" value="0">Waivers</option>
+                                <option :selected="leagueInfo.waiver_status == 1? 'true' : 'false'" value="1">Free Agency</option>
+                            </select>
+                            <b-table
+                                    id="waiver-table"
+                                    :items="leagueWaivers"
+                                    :fields="leagueWaiverFields"
+                                    striped 
+                                    hover
+                                >
+                                <template v-slot:cell(actions)="data">
+                                    <div>
+                                        <b-button variant="success" @click="grantWaiver($event, data.item)">
+                                            Grant
+                                        </b-button>
+                                        <b-button variant="danger" @click="denyWaiver($event, data.item)">
+                                            Deny
+                                        </b-button>
+                                    </div>
+                                </template>
+                            </b-table>
                         </b-card-text>
                     </b-tab>
                     <b-tab title="Commish Tools" v-if="commishTools">
@@ -949,13 +1057,15 @@
                 </tr>
                 <tr v-for="(n, index) in qbs">
                     <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_home_qb_starters[index]? Number(matchup_home_qb_starters[index].week1_score).toFixed(2): "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_qb_starters[index]? Number(matchup_home_qb_starters[index].week2_score).toFixed(2): "0" }}</small>
 
                         <div v-if="matchup_home_qb_starters[index]">
                             <div v-for="(n, index) in matchup_home_qb_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_qb_starters[index] && (!matchup_home_qb_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_qb_starters[index] && (!matchup_home_qb_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_qb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -965,13 +1075,15 @@
                     <td><center>QB</center></td>
                     <td>{{ matchup_away_qb_starters[index]? Number(matchup_away_qb_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].player_name: "empty" }}
-                        
+                        <br /><small>Week 1: {{ matchup_away_qb_starters[index]? Number(matchup_away_qb_starters[index].week1_score).toFixed(2): "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_away_qb_starters[index]? Number(matchup_away_qb_starters[index].week2_score).toFixed(2): "0" }}</small>
+
                         <div v-if="matchup_away_qb_starters[index]">
                             <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_qb_starters[index] && (!matchup_away_qb_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_qb_starters[index] && (!matchup_away_qb_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_qb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -980,13 +1092,15 @@
                 </tr>
                 <tr v-for="(n, index) in rbs">
                     <td>{{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].player_name: "empty" }}
-                        
+                        <br /><small>Week 1: {{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].week2_score: "0" }}</small>
+
                         <div v-if="matchup_home_rb_starters[index]">
                             <div v-for="(n, index) in matchup_home_rb_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_rb_starters[index] && (!matchup_home_rb_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_rb_starters[index] && (!matchup_home_rb_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_rb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -996,13 +1110,15 @@
                     <td><center>RB</center></td>
                     <td>{{ matchup_away_rb_starters[index]? Number(matchup_away_rb_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_away_rb_starters[index]">
                             <div v-for="(n, index) in matchup_away_rb_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index] && (!matchup_away_rb_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_rb_starters[index] && (!matchup_away_rb_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_rb_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1011,13 +1127,15 @@
                 </tr>
                 <tr v-for="(n, index) in wrs">
                     <td>{{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_home_wr_starters[index]">
                             <div v-for="(n, index) in matchup_home_wr_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_wr_starters[index] && (!matchup_home_wr_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_wr_starters[index] && (!matchup_home_wr_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_wr_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1027,13 +1145,15 @@
                     <td><center>WR</center></td>
                     <td>{{ matchup_away_wr_starters[index]? Number(matchup_away_wr_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_away_wr_starters[index]">
                             <div v-for="(n, index) in matchup_away_wr_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index] && (!matchup_away_wr_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_wr_starters[index] && (!matchup_away_wr_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_wr_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1042,13 +1162,15 @@
                 </tr>
                 <tr v-for="(n, index) in tes">
                     <td>{{ matchup_home_te_starters[index]? matchup_home_te_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_home_te_starters[index]? matchup_home_te_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_te_starters[index]? matchup_home_te_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_home_te_starters[index]">
                             <div v-for="(n, index) in matchup_home_te_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_te_starters[index] && (!matchup_home_te_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_te_starters[index] && (!matchup_home_te_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_te_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1058,13 +1180,15 @@
                     <td><center>TE</center></td>
                     <td>{{ matchup_away_te_starters[index]? Number(matchup_away_te_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_te_starters[index]? matchup_away_te_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_away_te_starters[index]? matchup_away_te_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_away_te_starters[index]? matchup_away_te_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_away_te_starters[index]">
                             <div v-for="(n, index) in matchup_away_te_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index] && (!matchup_away_te_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_te_starters[index] && (!matchup_away_te_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_te_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1073,13 +1197,15 @@
                 </tr>
                 <tr v-for="(n, index) in flex">
                     <td>{{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].player_name: "empty" }}
-
+                        <br /><small>Week 1: {{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].week2_score: "0" }}</small>
+ 
                         <div v-if="matchup_home_flex_starters[index]">
                             <div v-for="(n, index) in matchup_home_flex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_flex_starters[index] && (!matchup_home_flex_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_flex_starters[index] && (!matchup_home_flex_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_flex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1089,13 +1215,15 @@
                     <td><center>WR/RB/TE</center></td>
                     <td>{{ matchup_away_flex_starters[index]? Number(matchup_away_flex_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_away_flex_starters[index]">
                             <div v-for="(n, index) in matchup_away_flex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index] && (!matchup_away_flex_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_flex_starters[index] && (!matchup_away_flex_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_flex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1104,13 +1232,15 @@
                 </tr>
                 <tr v-for="(n, index) in superflex">
                     <td>{{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_home_superflex_starters[index]">
                             <div v-for="(n, index) in matchup_home_superflex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_superflex_starters[index] && (!matchup_home_superflex_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_superflex_starters[index] && (!matchup_home_superflex_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_superflex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1120,13 +1250,15 @@
                     <td><center>QB/WR/RB/TE</center></td>
                     <td>{{ matchup_away_superflex_starters[index]? Number(matchup_away_superflex_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_away_superflex_starters[index]">
                             <div v-for="(n, index) in matchup_away_superflex_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index] && (!matchup_away_superflex_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_superflex_starters[index] && (!matchup_away_superflex_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_superflex_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1135,13 +1267,15 @@
                 </tr>
                 <tr v-for="(n, index) in ks">
                     <td>{{ matchup_home_k_starters[index]? matchup_home_k_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_home_k_starters[index]? matchup_home_k_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_k_starters[index]? matchup_home_k_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_home_k_starters[index]">
                             <div v-for="(n, index) in matchup_home_k_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_k_starters[index] && (!matchup_home_k_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_k_starters[index] && (!matchup_home_k_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_k_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1151,13 +1285,15 @@
                     <td><center>K</center></td>
                     <td>{{ matchup_away_k_starters[index]? Number(matchup_away_k_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_k_starters[index]? matchup_away_k_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_away_k_starters[index]? matchup_away_k_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_away_k_starters[index]? matchup_away_k_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_away_k_starters[index]">
                             <div v-for="(n, index) in matchup_away_k_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index] && (!matchup_away_k_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_k_starters[index] && (!matchup_away_k_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_k_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1166,13 +1302,15 @@
                 </tr>
                 <tr v-for="(n, index) in def">
                     <td>{{ matchup_home_def_starters[index]? matchup_home_def_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_home_def_starters[index]? matchup_home_def_starters[index].week1_score: "0" }}</small>
+                        <br /><small>Week 2: {{ matchup_home_def_starters[index]? matchup_home_def_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_home_def_starters[index]">
                             <div v-for="(n, index) in matchup_home_def_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_def_starters[index] && (!matchup_home_def_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_home_id == myteam.id) || commishTools) && matchup_home_def_starters[index] && (!matchup_home_def_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_home_def_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1182,13 +1320,15 @@
                     <td><center>DST</center></td>
                     <td>{{ matchup_away_def_starters[index]? Number(matchup_away_def_starters[index].score).toFixed(2): "" }}</td>
                     <td>{{ matchup_away_def_starters[index]? matchup_away_def_starters[index].player_name: "empty" }}
+                        <br /><small>Week 1: {{ matchup_away_def_starters[index]? matchup_away_def_starters[index].week1_score: "0" }}</small>
+                         <br /><small>Week 2: {{ matchup_away_def_starters[index]? matchup_away_def_starters[index].week2_score: "0" }}</small>
 
                         <div v-if="matchup_away_def_starters[index]">
                             <div v-for="(n, index) in matchup_away_def_starters[index].statline">
                                 {{ n }}
                             </div>
                         </div>
-                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index] && (!matchup_away_def_starters[index].locked || commishTools)">        
+                        <div v-if="((matchup_away_id == myteam.id) || commishTools) && matchup_away_def_starters[index] && (!matchup_away_def_starters[index].locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">        
                             <b-button @click="benchPlayer($event, matchup_away_def_starters[index].player_id)">
                                 Bench
                             </b-button>
@@ -1205,58 +1345,60 @@
                         <ul style="list-style-type: none">
                             <li v-for="(n, index) in matchup_home_bench">
                                 {{ n.player_name }}
-                                
+                                <br /><small>Week 1: {{ n.week1_score }}</small>
+                                <br /><small>Week 2: {{ n.week2_score }}</small>
+
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'QB' && qbs && matchup_home_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'QB' && qbs && matchup_home_qb_starters.length < qbs && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'QB')">
                                             Start at QB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'WR' && wrs && matchup_home_wr_starters.length < wrs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'WR' && wrs && matchup_home_wr_starters.length < wrs && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'WR')">
                                             Start at WR
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'RB' && rbs && matchup_home_rb_starters.length < rbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'RB' && rbs && matchup_home_rb_starters.length < rbs && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'RB')">
                                             Start at RB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'TE' && tes && matchup_home_te_starters.length < tes && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
+                                    <div v-if="n.position == 'TE' && tes && matchup_home_te_starters.length < tes && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'TE')">
                                             Start at TE
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'K' && ks && matchup_home_k_starters.length < ks && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
+                                    <div v-if="n.position == 'K' && ks && matchup_home_k_starters.length < ks && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event,n.player_id, 'K')">
                                             Start at K
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'DEF' && def && matchup_home_def_starters.length < def && (leagueInfo.current_week == matchup_week)" && (!n.locked || commishTools)>
+                                    <div v-if="n.position == 'DEF' && def && matchup_home_def_starters.length < def && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'DEF')">
                                             Start at DEF
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && (matchup_home_superflex_starters.length < superflex) && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && (matchup_home_superflex_starters.length < superflex) && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'SUPERFLEX')">
                                             Start at Superflex
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && (matchup_home_flex_starters.length < flex) && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && (matchup_home_flex_starters.length < flex) && (!n.locked || commishTools) && ((leagueInfo.current_week == matchup_week) || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'FLEX')">
                                             Start at Flex
                                         </b-button>
@@ -1272,58 +1414,61 @@
                         <ul style="list-style-type: none">
                             <li v-for="(n, index) in matchup_away_bench">
                                 {{ n.player_name }}
+                                <br /><small>Week 1: {{ n.week1_score }}</small>
+                                <br /><small>Week 2: {{ n.week2_score }}</small>
+
 
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'QB' && qbs && matchup_away_qb_starters.length < qbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'QB' && qbs && matchup_away_qb_starters.length < qbs && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'QB')">
                                             Start at QB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'WR' && wrs && matchup_away_wr_starters.length < wrs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'WR' && wrs && matchup_away_wr_starters.length < wrs && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'WR')">
                                             Start at WR
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'RB' && rbs && matchup_away_rb_starters.length < rbs && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'RB' && rbs && matchup_away_rb_starters.length < rbs && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'RB')">
                                             Start at RB
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'TE' && tes && matchup_away_te_starters.length < tes && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'TE' && tes && matchup_away_te_starters.length < tes && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'TE')">
                                             Start at TE
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'K' && ks && matchup_away_k_starters.length < ks && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'K' && ks && matchup_away_k_starters.length < ks && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'K')">
                                             Start at K
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="n.position == 'DEF' && def && matchup_away_def_starters.length < def && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="n.position == 'DEF' && def && matchup_away_def_starters.length < def && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'DEF')">
                                             Start at DEF
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && matchup_away_superflex_starters.length < superflex && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE' || n.position == 'QB') && superflex && matchup_away_superflex_starters.length < superflex && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'SUPERFLEX')">
                                             Start at Superflex
                                         </b-button>
                                     </div>
                                 </div>
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
-                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && matchup_away_flex_starters.length < flex && (leagueInfo.current_week == matchup_week) && (!n.locked || commishTools)">
+                                    <div v-if="(n.position == 'RB' || n.position == 'WR' || n.position == 'TE') && flex && matchup_away_flex_starters.length < flex && ((leagueInfo.current_week == matchup_week) || commishTools) && (!n.locked || commishTools)">
                                         <b-button @click="startPlayer($event, n.player_id, 'FLEX')">
                                             Start at Flex
                                         </b-button>
@@ -1357,7 +1502,9 @@ import moment from 'moment'
         leagueId: '',
         leagueInfo: '',
         positionFilter: 'all',
+        availabilityFilter: 'all',
         nameFilter: '',
+        teamFilter: -1,
         perPage: 10,
         currentPage: 1,
         items: [],
@@ -1391,9 +1538,8 @@ import moment from 'moment'
         fields: [
             {key: 'actions'},
             {key: 'combinedInfo'},
-            {key: 'percent', label: '% Drafted', sortable: true},
-            {key: 'adp', label: 'ADP', sortable: true},
-            {key: 'extrainfo', sortable: true, class:"d-none d-lg-table-cell"},
+            {key: 'week1_points', label: 'Week 1', sortable: true},
+            {key: 'week2_points', label: 'Week 2', sortable: true},
             
         ],
         queueFields: [
@@ -1413,10 +1559,25 @@ import moment from 'moment'
             {key: 'week'},
             
         ],
+        standingsFields: [
+            {key: 'name'},
+            {key: 'wins'},
+            {key: 'losses'},
+            {key: 'ties'},
+            {key: 'pf'},
+            {key: 'pa'}
+            
+        ],
+        standingsFieldsTotalPoints: [
+            {key: 'name'},
+            {key: 'pf'},
+            
+        ],
         lineupsFields: [
             {key: 'actions'},
-            {key: 'name'},
-            {key: 'score'},
+            {key: 'home_name'},
+            {key: 'home_score', label: 'Score'},
+            {key: 'week'}
             
         ],
         draftBoardFields: [
@@ -1436,6 +1597,21 @@ import moment from 'moment'
         tradeTableFields: [
             {key: 'player_name'},
             {key: 'actions'}
+        ],
+        leagueWaiverFields: [
+            {key: 'player_name', label: 'Pickup'},
+            {key: 'drop_player_name', label: 'Drop'},
+            {key: 'team_name', label: 'Team'},
+            {key: 'updated_at', label: 'Time filed'},
+            {key: 'actions'}
+        ],
+        leagueTransactionFields: [
+            {key: 'type'},
+            {key: 'player_id', label: 'Added'},
+            {key: 'drop_player_id', label: 'Dropped'},
+            {key: 'team1_selected', label: ''},
+            {key: 'team2_selected', label: ''},
+            {key: 'created_at', label: 'Timestamp'},
         ],
         matchups: [],
         inviteCode: '',
@@ -1617,7 +1793,10 @@ import moment from 'moment'
         matchup_away_def_starters: [],
         tempItem: [],
         currentFreeAgentId: 0,
-        matchup_player_stats: []
+        matchup_player_stats: [],
+        previousStats: [],
+        leagueWaivers: [],
+        leagueTransactions: []
       }
     },
     mounted() {
@@ -1639,6 +1818,14 @@ import moment from 'moment'
       },
       playersFiltered() {
           var filtered = this.items.filter((el) => {
+            if (this.teamFilter != -1) { // we've got a filter set
+                if (el.fantasyTeam != '' && this.teamFilter == 0) { // the filter is "no team", but this player has a team.
+                    return false;
+                }
+                if (this.teamFilter > 0 && el.fantasyTeamId != this.teamFilter) { // we have a team ID selected and want to match it to the player's fantasy team
+                    return false;
+                }
+            }
             if (this.leagueInfo.teamQbs == true && el.position == "QB") {
                 if (el.name == "Dallas" || el.name == "DC" || el.name == "Houston" || el.name == "LA" || el.name == "New York" || el.name == "St Louis" || el.name == "Seattle" || el.name == "Tampa Bay") {
                     //return true;
@@ -1661,6 +1848,12 @@ import moment from 'moment'
             }
             if (this.leagueInfo.teamKs == false && el.position == "K") {
                 if (el.name == "Dallas" || el.name == "DC" || el.name == "Houston" || el.name == "LA" || el.name == "New York" || el.name == "St Louis" || el.name == "Seattle" || el.name == "Tampa Bay") {
+                    return false;
+                }
+            }
+
+            if (this.availabilityFilter == "free") {
+                if (el.fantasyTeam != "") {
                     return false;
                 }
             }
@@ -1708,15 +1901,13 @@ import moment from 'moment'
     },
     filters: {
         useMoment: function (date) {
-            console.log('here');
             return moment.utc(date).fromNow();
         }
     },
 
     methods: {
         calculatePlayerScore(stats) {
-            return this.leagueInfo.rule1 * stats.rule1 +
-                this.leagueInfo.rule1 * stats.rule1 +
+            return (this.leagueInfo.rule1 * stats.rule1 +
                 this.leagueInfo.rule2 * stats.rule2 +
                 this.leagueInfo.rule3 * stats.rule3 +
                 this.leagueInfo.rule4 * stats.rule4 +
@@ -1749,7 +1940,7 @@ import moment from 'moment'
                 this.leagueInfo.rule31 * stats.rule31 +
                 this.leagueInfo.rule32 * stats.rule32 +
                 this.leagueInfo.rule33 * stats.rule33 +
-                this.leagueInfo.rule34 * stats.rule34
+                this.leagueInfo.rule34 * stats.rule34).toFixed(2)
         },
         getPlayerStatline(stats) {
             var statline = []
@@ -1787,7 +1978,192 @@ import moment from 'moment'
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
             if (stats.rule12 && stats.rule12 != 0) {
-                console.log('here')
+                statline.push(stats.rule12 + " 10 yards rushing")
+            }
+            if (stats.rule13 && stats.rule13 != 0) {
+                statline.push(stats.rule13 + " 10 yards receiving")
+            }
+            if (stats.rule14 && stats.rule14 != 0) {
+                statline.push(stats.rule14 + " 25 yards passing")
+            }
+            if (stats.rule15 && stats.rule15 != 0) {
+                statline.push(stats.rule15 + " intercepted pass")
+            }
+            if (stats.rule16 && stats.rule16 != 0) {
+                statline.push(stats.rule16 + " fumble")
+            }
+            if (stats.rule17 && stats.rule17 != 0) {
+                statline.push(stats.rule17 + " 50+ yard FG made")
+            }
+            if (stats.rule18 && stats.rule18 != 0) {
+                statline.push(stats.rule18 + " 40-49 yard FG made")
+            }
+            if (stats.rule19 && stats.rule19 != 0) {
+                statline.push(stats.rule19 + " 1-39 yard FG made")
+            }
+            if (stats.rule20 && stats.rule20 != 0) {
+                statline.push(stats.rule20 + " defensive or special teams TD")
+            }
+            if (stats.rule21 && stats.rule21 != 0) {
+                statline.push(stats.rule21 + " interception")
+            }
+            if (stats.rule22 && stats.rule22 != 0) {
+                statline.push(stats.rule22 + " fumble recovery")
+            }
+            if (stats.rule23 && stats.rule23 != 0) {
+                statline.push(stats.rule23 + " blocked punt or field goal")
+            }
+            if (stats.rule24 && stats.rule24 != 0) {
+                statline.push(stats.rule24 + " safety")
+            }
+            if (stats.rule25 && stats.rule25 != 0) {
+                statline.push(stats.rule25 + " sack")
+            }
+            if (stats.rule26 && stats.rule26 != 0) {
+                statline.push(stats.rule26 + " reception")
+            }
+            if (stats.rule27 && stats.rule27 != 0) {
+                statline.push(stats.rule27 + " 0 Points Allowed")
+            }
+            if (stats.rule28 && stats.rule28 != 0) {
+                statline.push(stats.rule28 + " 1-6 Points Allowed")
+            }
+            if (stats.rule29 && stats.rule29 != 0) {
+                statline.push(stats.rule29 + " 7-13 Points Allowed")
+            }
+            if (stats.rule30 && stats.rule30 != 0) {
+                statline.push(stats.rule30 + " 14-20 Points Allowed")
+            }
+            if (stats.rule31 && stats.rule31 != 0) {
+                statline.push(stats.rule31 + " 21-27 Points Allowed")
+            }
+            if (stats.rule32 && stats.rule32 != 0) {
+                statline.push(stats.rule32 + " 28-34 Points Allowed")
+            }
+            if (stats.rule33 && stats.rule33 != 0) {
+                statline.push(stats.rule33 + " 35-41 Points Allowed")
+            }
+            if (stats.rule34 && stats.rule34 != 0) {
+                statline.push(stats.rule34 + " 42+ Points Allowed")
+            }
+
+            return statline
+        },
+        
+        getWeeklyStats(week) {
+            axios.get('players/getWeeklyStats/'+week).then(response => {
+                this.matchup_player_stats = response.data;
+                this.calculateMatchupScores();
+            });
+        },
+        getPreviousStats() {
+            var week = 1
+            axios.get('players/getWeeklyStats/'+week).then(response => {
+                this.previousStats[1] = response.data;
+                this.items.forEach((item) => {
+                    item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1)
+                })
+            });
+            week = 2
+            axios.get('players/getWeeklyStats/'+week).then(response => {
+                this.previousStats[2] = response.data;
+                this.items.forEach((item) => {
+                    item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2)
+                })
+            });
+        },
+        
+        updatePlayerEligibility(event, item) {
+            if (event.target.value != 0) {
+                axios.post('league/updatePlayerEligibility', {
+                    leagueId: this.leagueId,
+                    player_id: item.id,
+                    position: event.target.value
+                }).then(response => {
+                    this.refreshPlayerList();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        dropPlayer(playerId) {
+            this.$bvModal.hide("toomany-modal");
+            axios.post('league/dropPlayer', {
+                leagueId: this.leagueId,
+                player_id: playerId
+            }).then(response => {
+                this.refreshPlayerList();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        fixMatchups() {
+            axios.post('league/fixMatchups', {
+                leagueId: this.leagueId,
+            }).then(response => {
+                this.getMatchups();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        cancelTrade(tradeId) {
+            axios.post('league/cancelTrade', {
+                trade_id: tradeId,
+                leagueId: this.leagueId,
+            }).then(response => {
+                this.refreshTrades();
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        getPlayerStatline(stats) {
+            var statline = []
+            if (stats.rule1 && stats.rule1 != 0) {
+                statline.push(stats.rule1 + " rushing TD")
+            }
+            if (stats.rule2 && stats.rule2 != 0) {
+                statline.push(stats.rule2 + " receiving TD")
+            }
+            if (stats.rule3 && stats.rule3 != 0) {
+                statline.push(stats.rule3 + " returning kick/punt for TD")
+            }
+            if (stats.rule4 && stats.rule4 != 0) {
+                statline.push(stats.rule4 + " returning or recovering a fumble for TD")
+            }
+            if (stats.rule5 && stats.rule5 != 0) {
+                statline.push(stats.rule5 + " passing TD")
+            }
+            if (stats.rule6 && stats.rule6 != 0) {
+                statline.push(stats.rule6 + " rushing or receiving 1pt conversion")
+            }
+            if (stats.rule7 && stats.rule7 != 0) {
+                statline.push(stats.rule7 + " rushing or receiving 2pt conversion")
+            }
+            if (stats.rule8 && stats.rule8 != 0) {
+                statline.push(stats.rule8 + " rushing or receiving 3pt conversion")
+            }
+            if (stats.rule9 && stats.rule9 != 0) {
+                statline.push(stats.rule9 + " passing 1pt conversion")
+            }
+            if (stats.rule10 && stats.rule10 != 0) {
+                statline.push(stats.rule10 + " passing 2pt conversion")
+            }
+            if (stats.rule11 && stats.rule11 != 0) {
+                statline.push(stats.rule11 + " passing 3pt conversion")
+            }
+            if (stats.rule12 && stats.rule12 != 0) {
                 statline.push(stats.rule12 + " 10 yards rushing")
             }
             if (stats.rule13 && stats.rule13 != 0) {
@@ -1861,8 +2237,6 @@ import moment from 'moment'
         },
         calculateMatchupScores() {
             for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
-                console.log('matchup player stats')
-                console.log(this.matchup_player_stats)
                 this.matchup_away_qb_starters[lineup].statline = []
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
                     if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
@@ -1915,11 +2289,8 @@ import moment from 'moment'
                 this.matchup_home_wr_starters[lineup].statline = []
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
                     if (this.matchup_home_wr_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        console.log(' rashad ross')
-                        console.log(this.calculatePlayerScore(this.matchup_player_stats[player_score]))
                         this.matchup_home_wr_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
                         this.matchup_home_wr_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                        console.log(this.matchup_home_wr_starters[lineup].statline)
                     }
                 }
             }
@@ -1944,12 +2315,12 @@ import moment from 'moment'
                 }
             }
 
-            for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
-                this.matchup_away_qb_starters[lineup].statline = []
+            for (var lineup = 0; lineup < this.matchup_away_flex_starters.length; lineup++) {
+                this.matchup_away_flex_starters[lineup].statline = []
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    if (this.matchup_away_flex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        this.matchup_away_flex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        this.matchup_away_flex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
                 }
             }
@@ -2021,30 +2392,7 @@ import moment from 'moment'
                 }
             }
         },
-        getWeeklyStats(week) {
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                console.log(response.data)
-                this.matchup_player_stats = response.data;
-                this.calculateMatchupScores();
-            });
-        },
         
-        updatePlayerEligibility(event, item) {
-            if (event.target.value != 0) {
-                axios.post('league/updatePlayerEligibility', {
-                    leagueId: this.leagueId,
-                    player_id: item.id,
-                    position: event.target.value
-                }).then(response => {
-                    this.refreshPlayerList();
-                }).catch(error => {
-                    console.log(error);
-                    if (error.response.status === 422) {
-                        this.errors = error.response.data.errors || {};
-                    }
-                });
-            }
-        },
         dropPlayer(playerId) {
             this.$bvModal.hide("toomany-modal");
             axios.post('league/dropPlayer', {
@@ -2237,18 +2585,22 @@ import moment from 'moment'
 /**/
         },
         startPlayer(event, player_id, position) {
-            console.log(this.getPlayerTeamIdFromId(player_id))
             axios.post('league/startPlayer', {
                 leagueId: this.leagueId,
                 team_id: this.getPlayerTeamIdFromId(player_id),
-                week: this.leagueInfo.current_week,
+                week: this.tempItem.week,
                 player_id: player_id,
                 position: position
             }).then(response => {
+                if (this.tempItem.week < this.leagueInfo.current_week) {
+                    this.getLeagueInfo();
+                } else {
+                    this.getMatchups();
+                }
                 if (this.leagueInfo.league_type == 1) {
                     this.showMatchup(event, this.tempItem)
                 } else {
-                    this.showLineup(event, this.tempItem)
+                    this.showLineup(event, this.tempItem, this.matchup_week)
                 }
             }).catch(error => {
                 console.log(error);
@@ -2261,13 +2613,18 @@ import moment from 'moment'
             axios.post('league/benchPlayer', {
                 leagueId: this.leagueId,
                 team_id: this.getPlayerTeamIdFromId(player_id),
-                week: this.leagueInfo.current_week,
+                week: this.tempItem.week,
                 player_id: player_id,
             }).then(response => {
+                if (this.tempItem.week < this.leagueInfo.current_week) {
+                    this.getLeagueInfo();
+                } else {
+                    this.getMatchups();
+                }
                 if (this.leagueInfo.league_type == 1) {
                     this.showMatchup(event, this.tempItem)
                 } else {
-                    this.showLineup(event, this.tempItem)
+                    this.showLineup(event, this.tempItem,this.matchup_week)
                 }
             }).catch(error => {
                 console.log(error);
@@ -2312,11 +2669,14 @@ import moment from 'moment'
             this.matchup_away_superflex_starters = []
             this.matchup_away_k_starters = []
             this.matchup_away_defense_starters = []
+            
             axios.post('league/getLineup', {
                 leagueId: this.leagueId,
                 team_id: item.home_id,
                 week: this.tempItem.week
             }).then(response => {
+                console.log('get lineup');
+                console.log(response.data)
                 this.matchup_home_bench = []
                 
                 this.matchup_home_qb_starters = []
@@ -2331,31 +2691,35 @@ import moment from 'moment'
                     if (response.data[i].position == "BENCH") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
-                        this.matchup_home_bench.push(response.data[i])
+                        try {
+                            if (response.data[i]) this.matchup_home_bench.push(response.data[i])
+                        } catch(err) {
+                            console.log(err)
+                        }
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_qb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_qb_starters.push(response.data[i])
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_rb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_rb_starters.push(response.data[i])
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_wr_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_wr_starters.push(response.data[i])
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_te_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_te_starters.push(response.data[i])
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_flex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_flex_starters.push(response.data[i])
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_superflex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_superflex_starters.push(response.data[i])
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_k_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_k_starters.push(response.data[i])
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_home_def_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_home_def_starters.push(response.data[i])
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
@@ -2370,6 +2734,8 @@ import moment from 'moment'
                 team_id: item.away_id,
                 week: this.tempItem.week
             }).then(response => {
+                console.log('get lineup');
+                console.log(response.data)
                 this.matchup_away_bench = []
                 
                 this.matchup_away_qb_starters = []
@@ -2384,31 +2750,31 @@ import moment from 'moment'
                     if (response.data[i].position == "BENCH") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
                         response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
-                        this.matchup_away_bench.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_bench.push(response.data[i])
                     } else if (response.data[i].position == "QB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_qb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_qb_starters.push(response.data[i])
                     } else if (response.data[i].position == "RB") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_rb_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_rb_starters.push(response.data[i])
                     } else if (response.data[i].position == "WR") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_wr_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_wr_starters.push(response.data[i])
                     } else if (response.data[i].position == "TE") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_te_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_te_starters.push(response.data[i])
                     } else if (response.data[i].position == "FLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_flex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_flex_starters.push(response.data[i])
                     } else if (response.data[i].position == "SUPERFLEX") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_superflex_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_superflex_starters.push(response.data[i])
                     } else if (response.data[i].position == "K") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_k_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_k_starters.push(response.data[i])
                     } else if (response.data[i].position == "DEF") {
                         response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        this.matchup_away_def_starters.push(response.data[i])
+                        if (response.data[i]) this.matchup_away_def_starters.push(response.data[i])
                     }
                 }
                 this.getWeeklyStats(this.tempItem.week)
@@ -2428,17 +2794,16 @@ import moment from 'moment'
             this.matchup_week = item.week
             console.log(this.rosters)
         },
-        showLineup(event, item) {
-            
+        showLineup(event, item, week) {
             this.tempItem = item
-            this.matchup_home_id = item.id
-            this.matchup_home_name = item.name
-            this.matchup_week = 1
-            for (var j = 0; j < this.$data.rosters[item.id].length; j++) {
-                this.$data.rosters[item.id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[item.id][j].player_id);
+            this.matchup_home_id = item.home_id
+            this.matchup_home_name = item.home_name
+            this.matchup_week = week
+            for (var j = 0; j < this.$data.rosters[item.home_id].length; j++) {
+                this.$data.rosters[item.home_id][j].player_name = this.getPlayerNameFromId(this.$data.rosters[item.home_id][j].player_id);
             }
-            for (var j = 0; j < this.$data.rosters[item.id].length; j++) {
-                this.$data.rosters[item.id][j].position = this.getPlayerPositionFromId(this.$data.rosters[item.id][j].player_id);
+            for (var j = 0; j < this.$data.rosters[item.home_id].length; j++) {
+                this.$data.rosters[item.home_id][j].position = this.getPlayerPositionFromId(this.$data.rosters[item.home_id][j].player_id);
             }
 
             this.matchup_home_bench = []
@@ -2461,8 +2826,8 @@ import moment from 'moment'
             this.matchup_away_defense_starters = []
             axios.post('league/getLineup', {
                 leagueId: this.leagueId,
-                team_id: item.id,
-                week: 1
+                team_id: item.home_id,
+                week: this.matchup_week
             }).then(response => {
                 this.matchup_home_bench = []
                 
@@ -2505,6 +2870,7 @@ import moment from 'moment'
                         this.matchup_home_def_starters.push(response.data[i])
                     }
                 }
+                this.getWeeklyStats(this.matchup_week)
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
@@ -2807,8 +3173,24 @@ import moment from 'moment'
         getPlayerNameFromId(player_id) {
             for (var i = 0; i < this.items.length; i++) {
                 if (this.items[i].id == player_id) {
-                    
                     return this.items[i].name + " (" + this.items[i].position + ")"
+                }
+            }
+        },
+        getPreviousPlayerScoreFromId(player_id, week) {
+            for (var i = 0; i < this.items.length; i++) {
+                if (this.items[i].id == player_id) {
+                    if (typeof this.previousStats[1] === 'undefined') {
+                        return ""
+                    } else {
+                        for (var prevStat = 0; prevStat < this.previousStats[week].length; prevStat++) {
+                            
+                            if (this.previousStats[week][prevStat].player_id == player_id) {
+                                
+                                return this.calculatePlayerScore(this.previousStats[week][prevStat])
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -3023,7 +3405,6 @@ import moment from 'moment'
             
         },
         addToQueue(event, player) {
-            console.log(player)
             axios.post('player/queue', {
                 player_id: player.id,
                 leagueId: this.$data.leagueId,
@@ -3130,6 +3511,83 @@ import moment from 'moment'
                 }
             });
         },
+        grantWaiver(event, waiver) {
+            if (this.commishTools) {
+                axios.post('league/processWaiver', {
+                    leagueId: this.$data.leagueId,
+                    waiver_id: waiver.id
+                }).then(response => {
+                    this.getLeagueInfo();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        denyWaiver(event, waiver) {
+            if (this.commishTools) {
+                axios.post('league/denyWaiver', {
+                    leagueId: this.$data.leagueId,
+                    waiver_id: waiver.id
+                }).then(response => {
+                    this.getLeagueInfo();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        updateWaiverStatus() {
+            if (this.commishTools) {
+                axios.post('league/updateWaiverStatus', {
+                    leagueId: this.$data.leagueId,
+                    status: this.leagueInfo.waiver_status
+                }).then(response => {
+                    this.getLeagueInfo();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
+        getTransactions() {
+            axios.post('league/getTransactions', {
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                this.leagueTransactions = response.data;
+                
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.$data.errors = error.response.data.errors || {};
+                }
+            });
+        },
+        getCommishWaivers() {
+            if (this.commishTools) {
+                axios.post('league/getWaivers', {
+                    leagueId: this.$data.leagueId,
+                }).then(response => {
+                    this.leagueWaivers = response.data;
+                    for (var j = 0; j < this.leagueWaivers.length; j++) {
+                        this.leagueWaivers[j].player_name = this.getPlayerNameFromId(this.leagueWaivers[j].player_id);
+                        this.leagueWaivers[j].drop_player_name = this.getPlayerNameFromId(this.leagueWaivers[j].drop_player_id);
+                        this.leagueWaivers[j].team_name = this.getTeamNameFromId(this.leagueWaivers[j].team_id);
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
+        },
         refreshWaivers() {
             axios.post('player/getwaivers', {
                 leagueId: this.$data.leagueId,
@@ -3221,7 +3679,11 @@ import moment from 'moment'
                 this.updateDraftBoard()
                 this.refreshQueueItems();
                 this.refreshWaivers();
+                this.getCommishWaivers();
+                this.getTransactions();
                 this.refreshTrades();
+                this.getPreviousStats();
+                
                 //this.items = response.data;
             }).catch(error => {
                 console.log(error);

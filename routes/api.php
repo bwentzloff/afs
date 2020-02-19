@@ -104,6 +104,7 @@ Route::prefix('v1')->group(function () {
     Route::post('league/startPlayer', ['uses'=>'LeagueController@startPlayer']);
     Route::post('league/benchPlayer', ['uses'=>'LeagueController@benchPlayer']);
     Route::post('league/dropPlayer', ['uses'=>'LeagueController@dropPlayer']);
+    Route::post('league/getTransactions', ['uses'=>'LeagueController@getTransactions']);
 
     Route::get('stats', ['uses'=>'LeagueController@stats']);
 
@@ -113,7 +114,15 @@ Route::prefix('v1')->group(function () {
     Route::get('players/processWaivers/{day}', 'ScrapeController@processWaivers');
     Route::get('players/cleanUp', 'ScrapeController@cleanUp');
     Route::get('players/getWeeklyStats/{week}', 'PlayerController@getWeeklyStats');
+    Route::get('league/tempClearMatchups', 'LeagueController@tempClearMatchups');
 
+    Route::get('players/setStat/{week}/{player_name}/{team_name}/{stat_id}/{stat_value}', 'ScrapeController@setStat');
+
+    // waivers
+    Route::post('league/getWaivers', ['uses'=>'LeagueController@getWaivers']);
+    Route::post('league/processWaiver', ['uses'=>'LeagueController@processWaiver']);
+    Route::post('league/denyWaiver', ['uses'=>'LeagueController@denyWaiver']);
+    Route::post('league/updateWaiverStatus', ['uses'=>'LeagueController@updateWaiverStatus']);
     // Cronjobs
     //Route::get('cron/drafts/updateStatuses', 'DraftController@updateStatuses');
 

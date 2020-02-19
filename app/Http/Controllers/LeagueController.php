@@ -18,13 +18,122 @@ use App\Models\Trade;
 use App\Models\Sport;
 use App\Models\Lineup;
 use App\Models\Eligibility;
+use App\Models\PlayerStat;
+use App\Models\LeagueTransaction;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
 include(app_path() . '/../vendor/round-robin/round-robin/src/round-robin.php');
 
 class LeagueController extends Controller
 {
+    public function getWaivers(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            $waivers = Waiver::where('league_id',$request->leagueId)
+                ->get();
+
+            return response()->json($waivers);
+        }
+    }
+    public function updateWaiverStatus(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            $update = League::where('id',$league->id)
+                ->update([
+                    'waiver_status'=>$request->status
+                ]);
+            $lastUpdate = uniqid();
+            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+        }
+    }
+    public function getTransactions(Request $request) {
+        $transactions = LeagueTransaction::where('league_id',$request->leagueId)
+            ->orderBy('created_at','DESC')
+            ->get();
+
+        foreach ($transactions as $key=>$value) {
+            $transactions[$key]->team1_selected = unserialize($transactions[$key]->team1_selected);
+            $transactions[$key]->team2_selected = unserialize($transactions[$key]->team2_selected);
+        }
+        return response()->json($transactions);
+    }
+    public function processWaiver(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            // get waiver
+            $waiver = Waiver::where('id',$request->waiver_id)->first();
+            $team = LeagueUser::where('league_id',$request->leagueId)
+                ->where('id',$waiver->team_id)
+                ->first();
+
+            $newRosterItem = new RosterItem;
+            $newRosterItem->team_id = $team->id;
+            $newRosterItem->league_id = $league->id;
+            $newRosterItem->player_id = $waiver->player_id;
+            $newRosterItem->save();
+            
+            // drop the drop_id player
+            if (isset($waiver->drop_player_id) && $waiver->drop_player_id > 0) {
+                $drop_player = RosterItem::where('team_id',$team->id)
+                    ->where('league_id',$league->id)
+                    ->where('player_id',$waiver->drop_player_id)
+                    ->delete();
+            }
+
+            // create the league transaction
+            $transaction = new LeagueTransaction;
+            $transaction->league_id = $request->leagueId;
+            $transaction->type = 2;
+            $transaction->team1_id = $waiver->team_id;
+            $transaction->player_id = $waiver->player_id;
+            $transaction->drop_player_id = $waiver->drop_player_id;
+            $transaction->save();
+
+            // remove from this week's lineup
+            $sport = Sport::where('id',8)->first();
+
+            $delete = Lineup::where('league_id',$league->id)
+                ->where('player_id',$waiver->drop_player_id)
+                ->where('week','>=',$sport->current_week)
+                ->delete();
+
+            // delete any other waivers in the league with the same player
+            $deleteWaivers = Waiver::where('league_id',$league->id)
+                ->where('player_id',$waiver->player_id)
+                ->delete();
+
+            // delete any trades with the drop player
+            $all_trades = Trade::where('league_id',$league->id)
+                ->get();
+
+            foreach($all_trades as $trade) {
+                $foundPlayer = false;
+                foreach (unserialize($trade->team1_selected) as $player_id) {
+                    if ($player_id == $waiver->drop_player_id) $foundPlayer = true;
+                }
+                foreach (unserialize($trade->team2_selected) as $player_id) {
+                    if ($player_id == $waiver->drop_player_id) $foundPlayer = true;
+                }
+                if ($foundPlayer) {
+                    $delete = Trade::where('league_id',$league->id)
+                        ->where('id',$trade->id)
+                        ->delete();
+                }
+            }
+
+        }
+    }
+    public function denyWaiver(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
+        if ($league->commish_id == Auth::user()->id) {
+            $delete = Waiver::where('id',$request->waiver_id)
+                ->where('league_id',$request->leagueId)
+                ->delete();
+        }
+    }
     public function updatePlayerEligibility(Request $request) {
         $search = Eligibility::where('league_id',$request->leagueId)
             ->where('player_id',$request->player_id)
@@ -62,6 +171,53 @@ class LeagueController extends Controller
     }
     public function getuserid() {
         return response()->json(Auth::user()->id);
+    }
+    public function calculatePlayerScore($league_id, $player_id, $week) {
+        $league = League::where('id',$league_id)->first();
+        $stats = PlayerStat::where('player_id',$player_id)
+            ->where('week',$week)
+            ->first();
+        $score = 0;
+
+        if ($stats) {
+
+            $score = $score +
+                $league->rule1 * $stats->rule1 +
+                $league->rule2 * $stats->rule2 +
+                $league->rule3 * $stats->rule3 +
+                $league->rule4 * $stats->rule4 +
+                $league->rule5 * $stats->rule5 +
+                $league->rule6 * $stats->rule6 +
+                $league->rule7 * $stats->rule7 +
+                $league->rule8 * $stats->rule8 +
+                $league->rule9 * $stats->rule9 +
+                $league->rule10 * $stats->rule10 +
+                $league->rule11 * $stats->rule11 +
+                $league->rule12 * $stats->rule12 +
+                $league->rule13 * $stats->rule13 +
+                $league->rule14 * $stats->rule14 +
+                $league->rule15 * $stats->rule15 +
+                $league->rule16 * $stats->rule16 +
+                $league->rule17 * $stats->rule17 +
+                $league->rule18 * $stats->rule18 +
+                $league->rule19 * $stats->rule19 +
+                $league->rule20 * $stats->rule20 +
+                $league->rule21 * $stats->rule21 +
+                $league->rule22 * $stats->rule22 +
+                $league->rule23 * $stats->rule23 +
+                $league->rule24 * $stats->rule24 +
+                $league->rule25 * $stats->rule25 +
+                $league->rule26 * $stats->rule26 +
+                $league->rule27 * $stats->rule27 +
+                $league->rule28 * $stats->rule28 +
+                $league->rule29 * $stats->rule29 +
+                $league->rule30 * $stats->rule30 +
+                $league->rule31 * $stats->rule31 +
+                $league->rule32 * $stats->rule32 +
+                $league->rule33 * $stats->rule33 +
+                $league->rule34 * $stats->rule34;
+        }
+        return $score;
     }
     public function getLineup(Request $request) {
         $players = Lineup::where('league_id',$request->leagueId)
@@ -112,8 +268,17 @@ class LeagueController extends Controller
                 ->where('week', $request->week)
                 ->get();
         }
+        // get week 1 score for each player
+        for ($i = 0; $i < $players->count(); $i++) {
+            $players[$i]->week1_score = $this->calculatePlayerScore($request->leagueId, $players[$i]->player_id, 1);
+        }
+        // get week 2 score for each player
+        for ($i = 0; $i < $players->count(); $i++) {
+            $players[$i]->week2_score = $this->calculatePlayerScore($request->leagueId, $players[$i]->player_id, 2);
+        }
         return $players;
     }
+    
     public function startPlayer(Request $request) {
         $update = Lineup::where('league_id',$request->leagueId)
             ->where('team_id',$request->team_id)
@@ -122,6 +287,7 @@ class LeagueController extends Controller
             ->update([
                 'position'=>$request->position
             ]);
+        $this->calculateTeamScore($request->leagueId,$request->week);
 
     }
     public function benchPlayer(Request $request) {
@@ -132,7 +298,122 @@ class LeagueController extends Controller
             ->update([
                 'position'=>"BENCH"
             ]);
+        $this->calculateTeamScore($request->leagueId,$request->week);
 
+    }
+    public function calculateTeamScore($leagueId,$week) {
+        $teams = LeagueUser::where('league_id',$leagueId)->get();
+        $sport = Sport::where('id',8)->first();
+
+        foreach ($teams as $team) {
+            $lineup = Lineup::where('team_id',$team->id)
+                ->where('position','<>','BENCH')
+                ->where('week', $week)
+                ->get();
+            $score = 0;
+            foreach($lineup as $player) {
+                $score = $score + $this->calculatePlayerScore($leagueId, $player->player_id, $week);
+            }
+            DB::transaction(function () use ($leagueId, $week, $team, $score) {
+                $update_home_team = Matchup::where('league_id',$leagueId)
+                    ->where('week',$week)
+                    ->where('home_id',$team->id)
+                    ->update([
+                        'home_score'=>$score
+                    ]);
+                $update_away_team = Matchup::where('league_id',$leagueId)
+                    ->where('week',$week)
+                    ->where('away_id',$team->id)
+                    ->update([
+                        'away_score'=>$score
+                    ]);
+            }, 5);
+        }
+        if ($week < $sport->current_week) $this->calculateStandings($leagueId);
+
+    }
+    public function calculateStandings($leagueId) {
+        $league = League::where('id',$leagueId)->first();
+
+        $teams = LeagueUser::where('league_id',$league->id)->get();
+        foreach ($teams as $team) {
+            $update = LeagueUser::where('id',$team->id)
+                ->update([
+                    'wins'=>0,
+                    'losses'=>0,
+                    'ties'=>0,
+                    'pf'=>0,
+                    'pa'=>0
+                ]);
+        }
+        for ($week = 1; $week < $league->week; $week++) {
+            $matchups = Matchup::where('league_id',$league->id)
+                ->where('week',$week)
+                ->get();
+
+            foreach ($matchups as $matchup) {
+                $home_team = "";
+                $away_team = "";
+                if ($matchup->home_id) $home_team = LeagueUser::where('id',$matchup->home_id)->first();
+                if ($matchup->away_id) $away_team = LeagueUser::where('id',$matchup->away_id)->first();
+                
+                if ($matchup->home_score > $matchup->away_score) {
+                    // home wins
+                    if ($home_team) {
+                        $update = LeagueUser::where('id',$matchup->home_id)
+                            ->update([
+                                'wins'=>$home_team->wins + 1,
+                                'pf'=>$home_team->pf + $matchup->home_score,
+                                'pa'=>$home_team->pa + $matchup->away_score
+                            ]);
+                    }
+                    if ($away_team) {
+                        $update = LeagueUser::where('id',$matchup->away_id)
+                            ->update([
+                                'losses'=>$away_team->losses + 1,
+                                'pf'=>$away_team->pf + $matchup->away_score,
+                                'pa'=>$away_team->pa + $matchup->home_score
+                            ]);
+                    }
+                } else if ($matchup->away_score > $matchup->home_score) {
+                    // away wins
+                    if ($away_team) {
+                        $update = LeagueUser::where('id',$matchup->away_id)
+                            ->update([
+                                'wins'=>$away_team->wins + 1,
+                                'pf'=>$away_team->pf + $matchup->away_score,
+                                'pa'=>$away_team->pa + $matchup->home_score
+                            ]);
+                    }
+                    if ($home_team) {
+                        $update = LeagueUser::where('id',$matchup->home_id)
+                            ->update([
+                                'losses'=>$home_team->losses + 1,
+                                'pf'=>$home_team->pf + $matchup->home_score,
+                                'pa'=>$home_team->pa + $matchup->away_score
+                            ]);
+                    }
+                } else if ($matchup->away_score == $matchup->home_score) {
+                    // tie
+                    if ($home_team) {
+                        $update = LeagueUser::where('id',$matchup->home_id)
+                            ->update([
+                                'ties'=>$home_team->ties + 1,
+                                'pf'=>$home_team->pf + $matchup->home_score,
+                                'pa'=>$home_team->pa + $matchup->away_score
+                            ]);
+                    }
+                    if ($away_team) {
+                        $update = LeagueUser::where('id',$matchup->away_id)
+                            ->update([
+                                'ties'=>$away_team->ties + 1,
+                                'pf'=>$away_team->pf + $matchup->away_score,
+                                'pa'=>$away_team->pa + $matchup->home_score
+                            ]);
+                    }
+                }
+            }
+        }
     }
     public function createTrade(Request $request) {
         $trade = new Trade;
@@ -179,6 +460,16 @@ class LeagueController extends Controller
                     'team_id'=>$team2->id
                 ]);
         }
+
+        // Make a record of the transaction
+        $transaction = new LeagueTransaction;
+        $transaction->league_id = $request->leagueId;
+        $transaction->type = 1;
+        $transaction->team1_selected = $trade->team1_selected;
+        $transaction->team2_selected = $trade->team2_selected;
+        $transaction->team1_id = $trade->team1_id;
+        $transaction->team2_id = $trade->team2_id;
+        $transaction->save();
 
         
 
@@ -260,29 +551,50 @@ class LeagueController extends Controller
         $teamids = [];
         $numOfRegularWeeks = 10 - $league->playoff_length;
 
-        foreach($teams as $aTeam) {
-            $teamids[] = $aTeam->id;
-        }
-        $scheduleBuiler = new \ScheduleBuilder($teamids,$numOfRegularWeeks);
-        $schedule = $scheduleBuiler->build();
-
-        foreach($schedule as $week=>$matchups) {
-            foreach($matchups as $matchup) {
-                $newmatchup = new Matchup;
-                if (!$matchup[0]) {
-                    $newmatchup->home_id = 0;
-                } else {
-                    $newmatchup->home_id = $matchup[0];
-                }
-                if (!$matchup[1]) {
+        if ($league->league_type > 1) {
+            for ($week = 1; $week <= 10; $week++) {
+                foreach($teams as $team) {
+                    $newmatchup = new Matchup;
+                    $newmatchup->home_id = $team->id;
                     $newmatchup->away_id = 0;
-                } else {
-                    $newmatchup->away_id = $matchup[1];
+                    $newmatchup->league_id = $leagueId;
+                    $newmatchup->week = $week;
+                    $newmatchup->save();
                 }
-                $newmatchup->league_id = $leagueId;
-                $newmatchup->week = $week;
-                $newmatchup->save();
             }
+        } else {
+            foreach($teams as $aTeam) {
+                $teamids[] = $aTeam->id;
+            }
+            $scheduleBuiler = new \ScheduleBuilder($teamids,$numOfRegularWeeks);
+            $schedule = $scheduleBuiler->build();
+
+            foreach($schedule as $week=>$matchups) {
+                foreach($matchups as $matchup) {
+                    $newmatchup = new Matchup;
+                    if (!$matchup[0]) {
+                        $newmatchup->home_id = 0;
+                    } else {
+                        $newmatchup->home_id = $matchup[0];
+                    }
+                    if (!$matchup[1]) {
+                        $newmatchup->away_id = 0;
+                    } else {
+                        $newmatchup->away_id = $matchup[1];
+                    }
+                    $newmatchup->league_id = $leagueId;
+                    $newmatchup->week = $week;
+                    $newmatchup->save();
+                }
+            }
+        }
+    }
+    public function tempClearMatchups() {
+        $leagues = League::where('league_type','>',1)->get();
+        foreach($leagues as $league) {
+            $delete = Matchup::where('league_id',$league->id)->delete();
+            $league->week = 1;
+            $league->save();
         }
     }
     public function getMatchups(Request $request) {
@@ -344,6 +656,7 @@ class LeagueController extends Controller
 
 
         $this->setDraftOrder($request->input('leagueId'));
+        $league = League::where('id',$request->input('leagueId'))->first();
         if ($league->draft_status < 1) $matchups = Matchup::where('league_id',$request->input('leagueId'))->delete();
         $lastUpdate = uniqid();
         Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
@@ -708,15 +1021,20 @@ class LeagueController extends Controller
 
     public function getLeagueInfo($id) {
         $league = League::where('id',$id)->first();
-        $teams = LeagueUser::where('league_id',$league->id)->get();
-        $sport = Sport::where('id',8)->first();
-        $league->current_week = $sport->current_week;
-        $league->teams = $teams;
+        if ($league) {
+            $teams = LeagueUser::where('league_id',$league->id)->get();
+            $sport = Sport::where('id',8)->first();
+            $league->current_week = $sport->current_week;
+            $league->teams = $teams;
+        }
         return response()->json($league);
     }
 
     public function getTeamInfo($id) {
-        $leagueUsers = LeagueUser::where('league_id',$id)->get();
+        $leagueUsers = LeagueUser::where('league_id',$id)
+            ->orderBy('wins','desc')
+            ->orderBy('pf','desc')
+            ->get();
         return response()->json($leagueUsers);
     }
 
@@ -769,6 +1087,17 @@ class LeagueController extends Controller
         $pickup->league_id = $request->leagueId;
         $pickup->player_id = $request->player_id;
         $pickup->save();
+
+        // create transaction
+        $transaction = new LeagueTransaction;
+        $transaction->league_id = $request->leagueId;
+        $transaction->type = 3;
+        $transaction->team1_id = $team->id;
+        $transaction->player_id = $request->player_id;
+        if (isset($request->drop_player_id) && $request->drop_player_id) {
+            $transaction->drop_player_id = $request->drop_player_id;
+        }
+        $transaction->save();
 
         if (isset($request->drop_player_id) && $request->drop_player_id) {
             $drop_player = RosterItem::where('league_id',$request->leagueId)
