@@ -31,7 +31,7 @@ class ResetEmail extends Mailable
         $address = 'brian@altfantasysports.com';
         $subject = 'Your password reset link';
         $name = 'Brian from AltFantasySports';
-        
+
         return $this->view('emails.reset')
                     ->from($address, $name)
                     ->replyTo($address, $name)
