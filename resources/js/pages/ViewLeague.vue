@@ -592,6 +592,12 @@
                     
                     <b-tab title="Lineups" v-if="leagueInfo.league_type > 1">
                         <b-card-text>
+                            <b-alert show v-if="commishTools">
+                                If your matchups look weird or some team didn't get added to the matchups or something like that, click this button to refresh your matchup list. Keep in mind this will erase any customizations you've made.
+                                <b-button variant="danger" @click="fixMatchups()">
+                                            Fix matchups
+                                        </b-button>
+                            </b-alert>
                             <b-table
                                     id="lineups-table"
                                     :items="matchups"
