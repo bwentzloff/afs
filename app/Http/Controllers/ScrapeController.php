@@ -109,7 +109,19 @@ class ScrapeController extends Controller
             print($league->id."<br />");
             $sport = Sport::where('id',8)->first();
             $total_points_for = array();
-            for ($week = 1; $week <= $league->week; $week++) {
+            $teams = LeagueUser::where('league_id',$league->id)->get();
+
+            foreach ($teams as $team) {
+                $update = LeagueUser::where('id',$team->id)
+                                    ->update([
+                                        "pf"=>0,
+                                        "pa"=>0,
+                                        "wins"=>0,
+                                        "losses"=>0,
+                                        "ties"=>0
+                                    ]);
+            }
+            for ($week = 1; $week < $league->week; $week++) {
                 $matchups = Matchup::where('league_id',$league->id)
                     ->where('week',$week)
                     ->get();
@@ -254,39 +266,10 @@ class ScrapeController extends Controller
                         }
                     }
                 }
-            }
-
-            $teams = LeagueUser::where('league_id',$league->id)->get();
-
-            foreach($teams as $team) {
                 
-                if (array_key_exists($team->id,$total_points_for)) {
-                    $update = LeagueUser::where('id',$team->id)
-                        ->update([
-                            'pf'=>$total_points_for[$team->id]
-                        ]);
-                }
-            }
 
-            // Advance week
-            if ($league->week < $sport->current_week) {
-                // Transfer over lineups
-                $lineups = Lineup::where('league_id',$league->id)
-                    ->where('week',$league->week)
-                    ->get();
-
-                foreach($lineups as $lineup) {
-                    $update = Lineup::where('league_id',$league->id)
-                        ->where('player_id',$lineup->player_id)
-                        ->where('week',$sport->current_week)
-                        ->update([
-                            'position'=>$lineup->position,
-                            'locked'=>0
-                        ]);
-                }
-
-                // Set final scores
                 
+                print ("week ".$week."<br />");
                 foreach($matchups as $matchup) {
                     if ($matchup->home_id) {
                         $home_team = LeagueUser::where('league_id',$league->id)
@@ -347,6 +330,38 @@ class ScrapeController extends Controller
                         }
                     }
                 }
+            }
+            
+            foreach($teams as $team) {
+                    
+                if (array_key_exists($team->id,$total_points_for)) {
+                    $update = LeagueUser::where('id',$team->id)
+                        ->update([
+                            'pf'=>$total_points_for[$team->id]
+                        ]);
+                }
+            }
+
+            // Advance week
+            if ($league->week < $sport->current_week) {
+                // Transfer over lineups
+                $lineups = Lineup::where('league_id',$league->id)
+                    ->where('week',$league->week)
+                    ->get();
+
+                foreach($lineups as $lineup) {
+                    $update = Lineup::where('league_id',$league->id)
+                        ->where('player_id',$lineup->player_id)
+                        ->where('week',$sport->current_week)
+                        ->update([
+                            'position'=>$lineup->position,
+                            'locked'=>0
+                        ]);
+                }
+
+                // Set final scores
+                
+                
 
                 // Advance leauge week
                 $update = League::where('id',$league->id)
