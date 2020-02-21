@@ -269,7 +269,6 @@ class ScrapeController extends Controller
                 
 
                 
-                print ("week ".$week."<br />");
                 foreach($matchups as $matchup) {
                     if ($matchup->home_id) {
                         $home_team = LeagueUser::where('league_id',$league->id)
