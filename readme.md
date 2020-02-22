@@ -70,6 +70,13 @@ php artisan key:generate
 php artisan jwt:secret
 ```
 
+### Load necessary data
+Either load the sample database file found in this repo, or run the following sql:
+```
+INSERT INTO `sports` (`id`, `created_at`, `updated_at`, `current_week`, `name`) VALUES
+(8, NULL, NULL, 1, 'XFL');
+```
+
 
 Running the Application
 -----------------------
