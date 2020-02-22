@@ -70,9 +70,11 @@ class ScrapeController extends Controller
         }
     }
     public function lockTeam($team) {
+        $sport = Sport::where('id',8)->first();
         $players = Player::where('team',$team)->get();
         foreach ($players as $player) {
             $update = Lineup::where('player_id',$player->id)
+                ->where('week',$sport->current_week)
                 ->update([
                     'locked'=>1
                 ]);
