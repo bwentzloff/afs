@@ -534,7 +534,7 @@
                         
                         <b-card-text>
                             <b-alert show v-if="commishTools">
-                                If your matchups look weird or some team didn't get added to the matchups or something like that, click this button to refresh your matchup list. Keep in mind this will erase any customizations you've made.
+                                If your matchups look weird or some team didn't get added to the matchups or something like that, click this button to refresh your matchup list. Keep in mind this will erase any customizations you've made. THIS WILL RESET ALL OF YOUR MATCHUPS, EVEN WEEKS THAT HAVE ALREADY GONE BY. YOU CANNOT UNDO THIS.
                                 <b-button variant="danger" @click="fixMatchups()">
                                             Fix matchups
                                         </b-button>
