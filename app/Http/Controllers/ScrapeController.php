@@ -123,7 +123,7 @@ class ScrapeController extends Controller
                                         "ties"=>0
                                     ]);
             }
-            for ($week = 1; $week < $league->week; $week++) {
+            for ($week = 1; $week <= $league->week; $week++) {
                 $matchups = Matchup::where('league_id',$league->id)
                     ->where('week',$week)
                     ->get();
