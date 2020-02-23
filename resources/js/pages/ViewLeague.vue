@@ -1082,7 +1082,7 @@
                         <th>40-49</th>
                         <th>50+</th>
                     </template>
-                    <template v-if="playerCardItem.position == 'DST'">
+                    <template v-if="playerCardItem.position == 'DEF'">
                         <th>TD</th>
                         <th>Interceptions</th>
                         <th>Fumbles Recovered</th>
