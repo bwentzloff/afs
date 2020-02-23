@@ -2153,16 +2153,18 @@ import moment from 'moment'
             });
         },
         fixMatchups() {
-            axios.post('league/fixMatchups', {
-                leagueId: this.leagueId,
-            }).then(response => {
-                this.getMatchups();
-            }).catch(error => {
-                console.log(error);
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors || {};
-                }
-            });
+            if(confirm("Are you sure you want to reset the matchups? This can't be undone.")) {
+                axios.post('league/fixMatchups', {
+                    leagueId: this.leagueId,
+                }).then(response => {
+                    this.getMatchups();
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.errors = error.response.data.errors || {};
+                    }
+                });
+            }
         },
         cancelTrade(tradeId) {
             axios.post('league/cancelTrade', {
@@ -2449,18 +2451,6 @@ import moment from 'moment'
                 player_id: playerId
             }).then(response => {
                 this.refreshPlayerList();
-            }).catch(error => {
-                console.log(error);
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors || {};
-                }
-            });
-        },
-        fixMatchups() {
-            axios.post('league/fixMatchups', {
-                leagueId: this.leagueId,
-            }).then(response => {
-                this.getMatchups();
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
