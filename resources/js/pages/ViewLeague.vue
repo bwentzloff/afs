@@ -429,7 +429,7 @@
                                     hover
                                 >
                                 <template v-slot:cell(combinedInfo)="data">
-                                    {{ data.item.name }}<br />
+                                    <b-link @click="showPlayerCard(data.item)">{{ data.item.name }}</b-link><br />
                                     {{ data.item.position }} - {{ data.item.team }}
                                     <div v-if="commishTools && !hideCommishTools">
                                         <small>Change player eligibility {{ data.item.position }}</small>
@@ -512,7 +512,7 @@
                                     hover
                                 >
                                 <template v-slot:cell(combinedInfo)="data">
-                                    {{ data.item.name }}<br />
+                                    <b-link @click="showPlayerCard(data.item)">{{ data.item.name }}</b-link><br />
                                     {{ data.item.position }} - {{ data.item.team }}
                                 </template>
                             <template v-slot:cell(actions)="data">
@@ -1057,7 +1057,70 @@
             <b-button class="mt-3" block @click="finalizeTrade()">Propose Trade</b-button>
             
         </b-modal>
-
+        <b-modal id="player-card-modal" size="xl" hide-footer>
+            <template v-slot:modal-title>
+                {{playerCardItem.name}}</br>
+                {{playerCardItem.position}} - {{playerCardItem.team}}
+            </template>
+            <table class="table b-table table-striped table-hover">
+                <tr>
+                    <th>Week</th>
+                    <th>Points</th>
+                    <template v-if="playerCardItem.position != 'K' && playerCardItem.position != 'DST'">
+                        <th>Passing Yards</th>
+                        <th>Passing TD</th>
+                        <th>Interceptions</th>
+                        <th>Receptions</th>
+                        <th>Rec Yards</th>
+                        <th>Rec TD</th>
+                        <th>Rush Yards</th>
+                        <th>Rush TD</th>
+                        <th>Fumbles</th>
+                    </template>
+                    <template v-if="playerCardItem.position == 'K'">
+                        <th>1-39</th>
+                        <th>40-49</th>
+                        <th>50+</th>
+                    </template>
+                    <template v-if="playerCardItem.position == 'DST'">
+                        <th>TD</th>
+                        <th>Interceptions</th>
+                        <th>Fumbles Recovered</th>
+                        <th>Blocked Punt/Field Goal</th>
+                        <th>Safety</th>
+                        <th>Sack</th>
+                    </template>
+                </tr>
+                <tr v-for="week in playerCardItem.weeks.slice(1)">
+                    <td>{{week.weeknum}}</td>
+                    <td>{{ week.points }}</td>
+                    <template v-if="playerCardItem.position != 'K' && playerCardItem.position != 'DST'">
+                        <td>{{ week.passingYards }}</td>
+                        <td>{{ week.passingTD }}</td>
+                        <td>{{ week.interceptions }}</td>
+                        <td>{{ week.receptions }}</td>
+                        <td>{{ week.recyards }}</td>
+                        <td>{{ week.recTD }}</td>
+                        <td>{{ week.rushyards}}</td>
+                        <td>{{ week.rushTD }}</td>
+                        <td>{{ week.fumbles }}</td>
+                    </template>
+                    <template v-if="playerCardItem.position == 'K'">
+                        <td>{{ week.shortkick}}</td>
+                        <td>{{ week.medkick }}</td>
+                        <td>{{ week.longkick }}</td>
+                    </template>
+                    <template v-if="playerCardItem.position == 'DST'">
+                        <td>{{ week.dstTD }}</td>
+                        <td>{{ week.dstint }}</td>
+                        <td>{{ week.fumblesrec }}</td>
+                        <td>{{ week.blockedkick }}</td>
+                        <td>{{ week.safety }}</td>
+                        <td>{{ week.sack }}</td>
+                    </template>
+                </tr>
+            </table>
+        </b-modal>
         <b-modal id="matchup-modal" hide-footer>
             <template v-slot:modal-title>
                 {{ matchup_home_name }} vs. {{ matchup_away_name }}
@@ -1845,7 +1908,13 @@ import moment from 'moment'
         leagueWaivers: [],
         leagueTransactions: [],
         hideCommishTools: false,
-        processingAction: false
+        processingAction: false,
+        playerCardItem: {
+            name: "",
+            position: "",
+            team: "",
+            weeks: []
+        }
       }
     },
     mounted() {
@@ -2677,6 +2746,44 @@ import moment from 'moment'
                     this.errors = error.response.data.errors || {};
                 }
             });
+        },
+        showPlayerCard(item) {
+            this.playerCardItem.name  = item.name;
+            this.playerCardItem.position = item.position;
+            this.playerCardItem.team = item.team;
+            this.playerCardItem.weeks = [];
+            for(var i = 1; i < this.previousStats.length; i++) {
+                for (var prevStat = 0; prevStat < this.previousStats[i].length; prevStat++) {
+                    if (this.previousStats[i][prevStat].player_id == item.id) {
+                        var stats = this.previousStats[i][prevStat];
+                        var score = this.calculatePlayerScore(stats);
+                        var week = {
+                            weeknum: i,
+                            points: score,
+                            passingYards: stats.rule14 * 25, // stored in the DB as computed value
+                            passingTD: stats.rule5,
+                            interceptions: stats.rule21,
+                            receptions: stats.rule26,
+                            recyards: stats.rule13 * 10, // stored in the DB as computed value
+                            recTD: stats.rule2, 
+                            rushyards: stats.rule12 * 10, // stored in the DB as computed value
+                            rushTD: stats.rule1,
+                            fumbles: stats.rule16,
+                            shortkick: stats.rule19,
+                            medkick: stats.rule18,
+                            longkick: stats.rule17,
+                            dstTD: stats.rule20,
+                            dstint: stats.rule15,
+                            fumblesrec: stats.rule22,
+                            safety: stats.rule24,
+                            sack: stats.rule25
+                        };
+                        this.playerCardItem.weeks[i] = week;
+                    }
+                }
+                
+            }
+            this.$bvModal.show("player-card-modal");
         },
         showMatchup(event, item) {
             
