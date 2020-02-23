@@ -1066,7 +1066,7 @@
                 <tr>
                     <th>Week</th>
                     <th>Points</th>
-                    <template v-if="playerCardItem.position != 'K' && playerCardItem.position != 'DST'">
+                    <template v-if="playerCardItem.position != 'K' && playerCardItem.position != 'DEF'">
                         <th>Passing Yards</th>
                         <th>Passing TD</th>
                         <th>Interceptions</th>
@@ -1094,7 +1094,7 @@
                 <tr v-for="week in playerCardItem.weeks.slice(1)">
                     <td>{{week.weeknum}}</td>
                     <td>{{ week.points }}</td>
-                    <template v-if="playerCardItem.position != 'K' && playerCardItem.position != 'DST'">
+                    <template v-if="playerCardItem.position != 'K' && playerCardItem.position != 'DEF'">
                         <td>{{ week.passingYards }}</td>
                         <td>{{ week.passingTD }}</td>
                         <td>{{ week.interceptions }}</td>
@@ -1110,7 +1110,7 @@
                         <td>{{ week.medkick }}</td>
                         <td>{{ week.longkick }}</td>
                     </template>
-                    <template v-if="playerCardItem.position == 'DST'">
+                    <template v-if="playerCardItem.position == 'DEF'">
                         <td>{{ week.dstTD }}</td>
                         <td>{{ week.dstint }}</td>
                         <td>{{ week.fumblesrec }}</td>
