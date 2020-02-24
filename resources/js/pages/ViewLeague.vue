@@ -1,6 +1,12 @@
 <template>
     <div class="container">
         <div>
+            <b-card bg-variant="danger" text-variant="white">
+                <b-card-body>
+                    <b-card-text>Live week 3 stats are not official. They will be audited on Monday and week 4 will start on Tuesday.</b-card-text>
+                
+                </b-card-body>
+            </b-card>
             <b-card bg-variant="dark" text-variant="white" v-if="preDraft">
                 <b-card-body>
                     <b-card-title>Your draft is in {{ draftTimeDays }} Days, {{ draftTimeHours }} Hours, {{ draftTimeMinutes }} Minutes, {{ draftTimeSeconds }} Seconds</b-card-title>
