@@ -97,14 +97,14 @@ class ScrapeController extends Controller
             
         }
         if ($lastChecked <= $leagues) {
-            Cache::put('calculateScores', $lastChecked+25,6000);
+            Cache::put('calculateScores', $lastChecked+15,6000);
         } else {
             Cache::put('calculateScores', 0,6000);
         }
         
         $leagues = League::where('draft_status',2)
             ->skip($lastChecked)
-            ->take(25)
+            ->take(15)
             ->get();
 
         foreach($leagues as $league) {
@@ -352,13 +352,16 @@ class ScrapeController extends Controller
                     ->get();
 
                 foreach($lineups as $lineup) {
-                    $update = Lineup::where('league_id',$league->id)
-                        ->where('player_id',$lineup->player_id)
-                        ->where('week',$sport->current_week)
-                        ->update([
-                            'position'=>$lineup->position,
-                            'locked'=>0
-                        ]);
+                    DB::transaction(function () use ($league, $lineup, $sport) {
+                    
+                        $update = Lineup::where('league_id',$league->id)
+                            ->where('player_id',$lineup->player_id)
+                            ->where('week',$sport->current_week)
+                            ->update([
+                                'position'=>$lineup->position,
+                                'locked'=>0
+                            ]);
+                    }, 5);
                 }
 
                 // Set final scores
