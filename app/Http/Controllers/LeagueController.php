@@ -220,6 +220,7 @@ class LeagueController extends Controller
         return $score;
     }
     public function getLineup(Request $request) {
+        $league = League::where('id',$request->leagueId)->first();
         $players = Lineup::where('league_id',$request->leagueId)
             ->where('team_id',$request->team_id)
             ->where('week', $request->week)
@@ -267,6 +268,38 @@ class LeagueController extends Controller
                 ->where('team_id',$request->team_id)
                 ->where('week', $request->week)
                 ->get();
+            
+            if ($request->week == $league->week) {
+                $starting_players = 0;
+                foreach($players as $player) {
+                    if ($player->position != "BENCH") {
+                        $starting_players = $starting_players + 1;
+                    }
+                }
+                if ($starting_players == 0) {
+                    // pull in starting lineup from previous week
+                    $old_lineup = Lineup::where('league_id',$request->leagueId)
+                        ->where('team_id',$request->team_id)
+                        ->where('week',$request->week - 1)
+                        ->where('position','<>','BENCH')
+                        ->get();
+
+                    foreach ($old_lineup as $transfer) {
+                        $update = Lineup::where('league_id',$request->leagueId)
+                            ->where('team_id',$request->team_id)
+                            ->where('week', $request->week)
+                            ->where('player_id', $transfer->player_id)
+                            ->update([
+                                'position'=>$transfer->position
+                            ]);
+                    }
+                    $players = Lineup::where('league_id',$request->leagueId)
+                        ->where('team_id',$request->team_id)
+                        ->where('week', $request->week)
+                        ->get();
+                }
+            }
+
         }
         // get week 1 score for each player
         for ($i = 0; $i < $players->count(); $i++) {

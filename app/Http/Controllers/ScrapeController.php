@@ -346,25 +346,7 @@ class ScrapeController extends Controller
 
             // Advance week
             if ($league->week < $sport->current_week) {
-                // Transfer over lineups
-                $lineups = Lineup::where('league_id',$league->id)
-                    ->where('week',$league->week)
-                    ->get();
-
-                foreach($lineups as $lineup) {
-                    DB::transaction(function () use ($league, $lineup, $sport) {
-                    
-                        $update = Lineup::where('league_id',$league->id)
-                            ->where('player_id',$lineup->player_id)
-                            ->where('week',$sport->current_week)
-                            ->update([
-                                'position'=>$lineup->position,
-                                'locked'=>0
-                            ]);
-                    }, 5);
-                }
-
-                // Set final scores
+                
                 
                 
 
