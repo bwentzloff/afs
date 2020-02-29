@@ -217,7 +217,7 @@ class LeagueController extends Controller
                 $league->rule33 * $stats->rule33 +
                 $league->rule34 * $stats->rule34;
         }
-        return $score;
+        return round($score,2);
     }
     public function getLineup(Request $request) {
         $league = League::where('id',$request->leagueId)->first();
