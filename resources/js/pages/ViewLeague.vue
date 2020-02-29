@@ -1091,7 +1091,7 @@
                         <th>Sack</th>
                     </template>
                 </tr>
-                <tr v-for="week in playerCardItem.weeks.slice(1)">
+                <tr v-for="week in playerCardItem.weeks">
                     <td>{{week.weeknum}}</td>
                     <td>{{ week.points }}</td>
                     <template v-if="playerCardItem.position != 'K' && playerCardItem.position != 'DEF'">
@@ -2779,35 +2779,56 @@ import moment from 'moment'
             this.playerCardItem.team = item.team;
             this.playerCardItem.weeks = [];
             for(var i = 1; i < this.previousStats.length; i++) {
-                for (var prevStat = 0; prevStat < this.previousStats[i].length; prevStat++) {
-                    if (this.previousStats[i][prevStat].player_id == item.id) {
-                        var stats = this.previousStats[i][prevStat];
-                        var score = this.calculatePlayerScore(stats);
-                        var week = {
-                            weeknum: i,
-                            points: score,
-                            passingYards: stats.rule14 * 25, // stored in the DB as computed value
-                            passingTD: stats.rule5,
-                            interceptions: stats.rule21,
-                            receptions: stats.rule26,
-                            recyards: stats.rule13 * 10, // stored in the DB as computed value
-                            recTD: stats.rule2, 
-                            rushyards: stats.rule12 * 10, // stored in the DB as computed value
-                            rushTD: stats.rule1,
-                            fumbles: stats.rule16,
-                            shortkick: stats.rule19,
-                            medkick: stats.rule18,
-                            longkick: stats.rule17,
-                            dstTD: stats.rule20,
-                            dstint: stats.rule15,
-                            fumblesrec: stats.rule22,
-                            safety: stats.rule24,
-                            sack: stats.rule25
-                        };
-                        this.playerCardItem.weeks[i] = week;
-                    }
+                var stats = this.previousStats[i].filter(player => player.player_id == item.id)[0];
+                if(stats !== undefined && stats != null) {
+                    var score = this.calculatePlayerScore(stats);
+                    var week = {
+                        weeknum: i,
+                        points: score,
+                        passingYards: stats.rule14 * 25, // stored in the DB as computed value
+                        passingTD: stats.rule5,
+                        interceptions: stats.rule21,
+                        receptions: stats.rule26,
+                        recyards: stats.rule13 * 10, // stored in the DB as computed value
+                        recTD: stats.rule2, 
+                        rushyards: stats.rule12 * 10, // stored in the DB as computed value
+                        rushTD: stats.rule1,
+                        fumbles: stats.rule16,
+                        shortkick: stats.rule19,
+                        medkick: stats.rule18,
+                        longkick: stats.rule17,
+                        dstTD: stats.rule20,
+                        dstint: stats.rule15,
+                        fumblesrec: stats.rule22,
+                        safety: stats.rule24,
+                        sack: stats.rule25
+                    };
+                    this.playerCardItem.weeks.push(week);
                 }
-                
+                else {
+                    var week = {
+                        weeknum: i,
+                        points: 0,
+                        passingYards: 0,
+                        passingTD: 0,
+                        interceptions: 0,
+                        receptions: 0,
+                        recyards: 0,
+                        recTD: 0,
+                        rushyards: 0,
+                        rushTD: 0,
+                        fumbles: 0,
+                        shortkick: 0,
+                        medkick: 0,
+                        longkick: 0,
+                        dstTD: 0,
+                        dstint: 0,
+                        fumblesrec: 0,
+                        safety: 0,
+                        sack: 0
+                    };
+                    this.playerCardItem.weeks.push(week);
+                }
             }
             this.$bvModal.show("player-card-modal");
         },
