@@ -87,8 +87,8 @@
                     </b-card-text>
                 </b-card-body>
             </b-card>
-            <div  v-if="commishTools">
-            <b-form-checkbox v-model="hideCommishTools" size="sm">Hide Commish Tools</b-form-checkbox>
+            <div  v-if="isCommish">
+                <b-form-checkbox v-model="commishTools" size="sm">Show Commish Tools</b-form-checkbox>
             </div>
             <b-card no-body>
                 <b-tabs card fill>
@@ -431,7 +431,7 @@
                                 <template v-slot:cell(combinedInfo)="data">
                                     <b-link @click="showPlayerCard(data.item)">{{ data.item.name }}</b-link><br />
                                     {{ data.item.position }} - {{ data.item.team }}
-                                    <div v-if="commishTools && !hideCommishTools">
+                                    <div v-if="commishTools">
                                         <small>Change player eligibility {{ data.item.position }}</small>
                                         <select v-on:change="updatePlayerEligibility($event, data.item)" v-model="data.item.position">
                                             <option value="QB">QB</option>
@@ -477,7 +477,7 @@
                                         <em>Waiver claim created</em>
                                     </div>
                                     
-                                    <div v-if="(commishTools && !hideCommishTools) && leagueInfo.draft_status == 2">
+                                    <div v-if="(commishTools) && leagueInfo.draft_status == 2">
                                         Commish Tools -- Assign Team:
                                         <b-form-select v-model="data.item.fantasyTeamId" :options="teamNames"
                                             v-on:change="commishUpdatePlayerTeam($event, data.item)"
@@ -554,7 +554,7 @@
                                         Bye
                                     </div>
                                     <div>{{ data.item.home_name }}</div>
-                                    <div v-if="commishTools && !hideCommishTools">
+                                    <div v-if="commishTools">
                                         <small>Change home team to:</small>
                                         <b-form-select  :options="teamNames"
                                             v-on:change="updateMatchup($event, data.item, 'home')"
@@ -566,7 +566,7 @@
                                         Bye
                                     </div>
                                     <div>{{ data.item.away_name }}</div>
-                                    <div v-if="commishTools && !hideCommishTools">
+                                    <div v-if="commishTools">
                                         <small>Change away team to:</small>
                                         <b-form-select  :options="teamNames"
                                             v-on:change="updateMatchup($event, data.item, 'away')"
@@ -1926,7 +1926,7 @@ import moment from 'moment'
         previousStats: [],
         leagueWaivers: [],
         leagueTransactions: [],
-        hideCommishTools: false,
+        isCommish: false,
         processingAction: false,
         playerCardItem: {
             name: "",
@@ -3523,7 +3523,7 @@ import moment from 'moment'
                 axios.get('league/myuserid/').then(response => {
 
                     if (response.data == this.leagueInfo.commish_id) {
-                        this.commishTools = true;
+                        this.isCommish = true;
                     }
 
 
@@ -3541,7 +3541,7 @@ import moment from 'moment'
                     console.log(response.data);
 
                     if (this.myteam.user_id == this.leagueInfo.commish_id) {
-                        this.commishTools = true;
+                        this.isCommish = true;
                     }
 
 
