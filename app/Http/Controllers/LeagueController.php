@@ -289,6 +289,7 @@ class LeagueController extends Controller
                             ->where('team_id',$request->team_id)
                             ->where('week', $request->week)
                             ->where('player_id', $transfer->player_id)
+                            ->where('locked',0)
                             ->update([
                                 'position'=>$transfer->position
                             ]);

@@ -89,6 +89,64 @@ class ScrapeController extends Controller
 
 
     }
+    public function transferLineups() {
+        $lastChecked = Cache::get('transferLineups');
+        $teams = League::count();
+        if (!$lastChecked) {
+            $lastChecked = 0;
+            
+        }
+        if ($lastChecked <= $teams) {
+            Cache::put('transferLineups', $lastChecked+5,6000);
+        } else {
+            Cache::put('transferLineups', 0,6000);
+        }
+
+        $teams = LeagueUser::skip($lastChecked)
+            ->take(5)
+            ->get();
+
+        foreach($teams as $team) {
+            print($team->id."<br />");
+            $league = League::where('id',$team->league_id)->first();
+            if ($league) {
+                if ($league->draft_status > 1) {
+                    $players = Lineup::where('league_id',$league->id)
+                        ->where('team_id',$team->id)
+                        ->where('week', $league->week)
+                        ->get();
+                
+                    $starting_players = 0;
+                    foreach($players as $player) {
+                        if ($player->position != "BENCH") {
+                            $starting_players = $starting_players + 1;
+                        }
+                    }
+                    if ($starting_players == 0) {
+                        // pull in starting lineup from previous week
+                        $old_lineup = Lineup::where('league_id',$league->id)
+                            ->where('team_id',$team->id)
+                            ->where('week',$league->week - 1)
+                            ->where('position','<>','BENCH')
+                            ->get();
+
+                        foreach ($old_lineup as $transfer) {
+                            $update = Lineup::where('league_id',$league->id)
+                                ->where('team_id',$team->id)
+                                ->where('week',$league->week)
+                                ->where('player_id', $transfer->player_id)
+                                ->where('locked',0)
+                                ->update([
+                                    'position'=>$transfer->position
+                                ]);
+                        }
+                    }
+                }
+
+            }
+            
+        }
+    }
     public function calculateScores() {
         $lastChecked = Cache::get('calculateScores');
         $leagues = League::count();
