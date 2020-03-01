@@ -71,10 +71,9 @@ php artisan jwt:secret
 ```
 
 ### Load necessary data
-Either load the sample database file found in this repo, or run the following sql:
+The sample data that can be seeded creates 4 users of the site: user1@afs.com,user2@afs.com,user3@afs.com, and user4@afs.com, all with the password of 'password'
 ```
-INSERT INTO `sports` (`id`, `created_at`, `updated_at`, `current_week`, `name`) VALUES
-(8, NULL, NULL, 1, 'XFL');
+php artisan db:seed
 ```
 
 
