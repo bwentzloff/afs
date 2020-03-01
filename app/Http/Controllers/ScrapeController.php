@@ -239,6 +239,7 @@ class ScrapeController extends Controller
                                     $league->rule32 * $stats->rule32 +
                                     $league->rule33 * $stats->rule33 +
                                     $league->rule34 * $stats->rule34;
+                                $score = round($score,2);
                             }
                         }
                         $update = Matchup::where('id',$matchup->id)
@@ -309,6 +310,7 @@ class ScrapeController extends Controller
                                         $league->rule32 * $stats->rule32 +
                                         $league->rule33 * $stats->rule33 +
                                         $league->rule34 * $stats->rule34;
+                                    $score = round($score,2);
                                 }
                             }
 
