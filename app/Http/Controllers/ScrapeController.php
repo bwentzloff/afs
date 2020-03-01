@@ -155,14 +155,14 @@ class ScrapeController extends Controller
             
         }
         if ($lastChecked <= $leagues) {
-            Cache::put('calculateScores', $lastChecked+5,6000);
+            Cache::put('calculateScores', $lastChecked+25,6000);
         } else {
             Cache::put('calculateScores', 0,6000);
         }
         
         $leagues = League::where('draft_status',2)
             ->skip($lastChecked)
-            ->take(5)
+            ->take(25)
             ->get();
 
         foreach($leagues as $league) {
