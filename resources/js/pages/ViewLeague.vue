@@ -2115,13 +2115,13 @@ import moment from 'moment'
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
             if (stats.rule12 && stats.rule12 != 0) {
-                statline.push(stats.rule12 + " 10 yards rushing")
+                statline.push((stats.rule12*10) + " yards rushing")
             }
             if (stats.rule13 && stats.rule13 != 0) {
-                statline.push(stats.rule13 + " 10 yards receiving")
+                statline.push((stats.rule13*10) + " yards receiving")
             }
             if (stats.rule14 && stats.rule14 != 0) {
-                statline.push(stats.rule14 + " 25 yards passing")
+                statline.push((stats.rule14*25) + " yards passing")
             }
             if (stats.rule15 && stats.rule15 != 0) {
                 statline.push(stats.rule15 + " intercepted pass")
