@@ -655,7 +655,7 @@
 
                         </b-card-text>
                     </b-tab>
-                    <b-tab title="Process Waivers" v-if="commishTools">
+                    <b-tab title="Process Waivers" v-if="isCommish">
                         <b-card-text>
                             Current waiver period: <select v-model="leagueInfo.waiver_status" v-on:change="updateWaiverStatus">
                                 <option :selected="leagueInfo.waiver_status == 0? 'true' : 'false'" value="0">Waivers</option>
