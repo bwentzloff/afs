@@ -2403,7 +2403,7 @@ import moment from 'moment'
                 total += players[lineup].score;
 
             }
-            return Number(total).toFixed(2);
+            return Number(total);
         },
         calculateMatchupScores() {
             this.matchup_home_total = 0;
