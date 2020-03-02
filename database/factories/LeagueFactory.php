@@ -27,11 +27,11 @@ $factory->defineAs(League::class, 'league', function ($faker) {
         'superflex' => 0,
         'waiver_status' => 0,
         'week' => 1,
+        'draftpick_time' => 0, # zero time for testing auto-draft
+        'draft_nextpick' => '2020-01-01 00:00:00',
         //'draft_status',
         //'league_type',
         //'waiver_day',
-        //'draft_nextpick',
-        //'draftpick_time',
         //'draft_current_drafter' => TODO,
         //'rule1',
         //'rule2',
