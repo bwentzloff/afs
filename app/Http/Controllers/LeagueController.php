@@ -313,6 +313,9 @@ class LeagueController extends Controller
         for ($i = 0; $i < $players->count(); $i++) {
             $players[$i]->week3_score = $this->calculatePlayerScore($request->leagueId, $players[$i]->player_id, 3);
         }
+        for ($i = 0; $i < $players->count(); $i++) {
+            $players[$i]->week4_score = $this->calculatePlayerScore($request->leagueId, $players[$i]->player_id, 4);
+        }
         return $players;
     }
     
@@ -763,25 +766,28 @@ class LeagueController extends Controller
         }
     }
     public function updateRoster(Request $request) {
-        $league = League::where('id',$request->input('leagueId'))
-            ->update([
-                'qbs'=>$request->input('qbs'),
-                'rbs'=>$request->input('rbs'),
-                'wrs'=>$request->input('wrs'),
-                'tes'=>$request->input('tes'),
-                'flex'=>$request->input('flex'),
-                'superflex'=>$request->input('superflex'),
-                'ks'=>$request->input('ks'),
-                'def'=>$request->input('def'),
-                'bench'=>$request->input('bench'),
-                'teamQbs'=>$request->input('teamQbs'),
-                'teamKs'=>$request->input('teamKs')
-            ]);
-        
-            $this->createDraftPicks($request->input('leagueId'));
+        $league = League::where('id',$request->input('leagueId'))->first();
+        if ($league->commish_id == Auth::user()->id) {
+            $league = League::where('id',$request->input('leagueId'))
+                ->update([
+                    'qbs'=>$request->input('qbs'),
+                    'rbs'=>$request->input('rbs'),
+                    'wrs'=>$request->input('wrs'),
+                    'tes'=>$request->input('tes'),
+                    'flex'=>$request->input('flex'),
+                    'superflex'=>$request->input('superflex'),
+                    'ks'=>$request->input('ks'),
+                    'def'=>$request->input('def'),
+                    'bench'=>$request->input('bench'),
+                    'teamQbs'=>$request->input('teamQbs'),
+                    'teamKs'=>$request->input('teamKs')
+                ]);
             
-            $lastUpdate = uniqid();
-            Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+                $this->createDraftPicks($request->input('leagueId'));
+                
+                $lastUpdate = uniqid();
+                Cache::put('leagueUpdate'.$request->input('leagueId'), $lastUpdate,600);
+        }
     }
     public function updateSettings(Request $request) {
         $league = League::where('id',$request->input('leagueId'))

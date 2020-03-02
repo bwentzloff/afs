@@ -1143,6 +1143,7 @@
                         <br /><small>Week 1: {{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_home_qb_starters[index]">
                             <div v-for="(n, index) in matchup_home_qb_starters[index].statline">
@@ -1163,7 +1164,7 @@
                         <br /><small>Week 1: {{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].week3_score: "0" }}</small>
-
+                        <br /><small>Week 4: {{ matchup_away_qb_starters[index]? matchup_away_qb_starters[index].week4_score: "0" }}</small>
                         <div v-if="matchup_away_qb_starters[index]">
                             <div v-for="(n, index) in matchup_away_qb_starters[index].statline">
                                 {{ n }}
@@ -1182,7 +1183,7 @@
                         <br /><small>Week 1: {{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].week3_score: "0" }}</small>
-
+                        <br /><small>Week 4: {{ matchup_home_rb_starters[index]? matchup_home_rb_starters[index].week4_score: "0" }}</small>
                         <div v-if="matchup_home_rb_starters[index]">
                             <div v-for="(n, index) in matchup_home_rb_starters[index].statline">
                                 {{ n }}
@@ -1202,6 +1203,7 @@
                         <br /><small>Week 1: {{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_away_rb_starters[index]? matchup_away_rb_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_away_rb_starters[index]">
                             <div v-for="(n, index) in matchup_away_rb_starters[index].statline">
@@ -1221,6 +1223,7 @@
                         <br /><small>Week 1: {{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_home_wr_starters[index]? matchup_home_wr_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_home_wr_starters[index]">
                             <div v-for="(n, index) in matchup_home_wr_starters[index].statline">
@@ -1241,6 +1244,7 @@
                         <br /><small>Week 1: {{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_away_wr_starters[index]? matchup_away_wr_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_away_wr_starters[index]">
                             <div v-for="(n, index) in matchup_away_wr_starters[index].statline">
@@ -1260,6 +1264,7 @@
                         <br /><small>Week 1: {{ matchup_home_te_starters[index]? matchup_home_te_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_te_starters[index]? matchup_home_te_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_home_te_starters[index]? matchup_home_te_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_home_te_starters[index]? matchup_home_te_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_home_te_starters[index]">
                             <div v-for="(n, index) in matchup_home_te_starters[index].statline">
@@ -1280,6 +1285,7 @@
                         <br /><small>Week 1: {{ matchup_away_te_starters[index]? matchup_away_te_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_away_te_starters[index]? matchup_away_te_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_away_te_starters[index]? matchup_away_te_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_away_te_starters[index]? matchup_away_te_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_away_te_starters[index]">
                             <div v-for="(n, index) in matchup_away_te_starters[index].statline">
@@ -1299,6 +1305,7 @@
                         <br /><small>Week 1: {{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].week2_score: "0" }}</small>
                          <br /><small>Week 3: {{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].week3_score: "0" }}</small>
+                         <br /><small>Week 4: {{ matchup_home_flex_starters[index]? matchup_home_flex_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_home_flex_starters[index]">
                             <div v-for="(n, index) in matchup_home_flex_starters[index].statline">
@@ -1319,6 +1326,7 @@
                         <br /><small>Week 1: {{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_away_flex_starters[index]? matchup_away_flex_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_away_flex_starters[index]">
                             <div v-for="(n, index) in matchup_away_flex_starters[index].statline">
@@ -1338,6 +1346,7 @@
                         <br /><small>Week 1: {{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_home_superflex_starters[index]? matchup_home_superflex_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_home_superflex_starters[index]">
                             <div v-for="(n, index) in matchup_home_superflex_starters[index].statline">
@@ -1358,6 +1367,7 @@
                         <br /><small>Week 1: {{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_away_superflex_starters[index]? matchup_away_superflex_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_away_superflex_starters[index]">
                             <div v-for="(n, index) in matchup_away_superflex_starters[index].statline">
@@ -1377,6 +1387,7 @@
                         <br /><small>Week 1: {{ matchup_home_k_starters[index]? matchup_home_k_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_k_starters[index]? matchup_home_k_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_home_k_starters[index]? matchup_home_k_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_home_k_starters[index]? matchup_home_k_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_home_k_starters[index]">
                             <div v-for="(n, index) in matchup_home_k_starters[index].statline">
@@ -1397,6 +1408,7 @@
                         <br /><small>Week 1: {{ matchup_away_k_starters[index]? matchup_away_k_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_away_k_starters[index]? matchup_away_k_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_away_k_starters[index]? matchup_away_k_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_away_k_starters[index]? matchup_away_k_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_away_k_starters[index]">
                             <div v-for="(n, index) in matchup_away_k_starters[index].statline">
@@ -1416,6 +1428,7 @@
                         <br /><small>Week 1: {{ matchup_home_def_starters[index]? matchup_home_def_starters[index].week1_score: "0" }}</small>
                         <br /><small>Week 2: {{ matchup_home_def_starters[index]? matchup_home_def_starters[index].week2_score: "0" }}</small>
                         <br /><small>Week 3: {{ matchup_home_def_starters[index]? matchup_home_def_starters[index].week3_score: "0" }}</small>
+                        <br /><small>Week 4: {{ matchup_home_def_starters[index]? matchup_home_def_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_home_def_starters[index]">
                             <div v-for="(n, index) in matchup_home_def_starters[index].statline">
@@ -1436,6 +1449,7 @@
                         <br /><small>Week 1: {{ matchup_away_def_starters[index]? matchup_away_def_starters[index].week1_score: "0" }}</small>
                          <br /><small>Week 2: {{ matchup_away_def_starters[index]? matchup_away_def_starters[index].week2_score: "0" }}</small>
                          <br /><small>Week 3: {{ matchup_away_def_starters[index]? matchup_away_def_starters[index].week3_score: "0" }}</small>
+                         <br /><small>Week 4: {{ matchup_away_def_starters[index]? matchup_away_def_starters[index].week4_score: "0" }}</small>
 
                         <div v-if="matchup_away_def_starters[index]">
                             <div v-for="(n, index) in matchup_away_def_starters[index].statline">
@@ -1463,6 +1477,8 @@
                                 <br /><small>Week 1: {{ n.week1_score }}</small>
                                 <br /><small>Week 2: {{ n.week2_score }}</small>
                                 <br /><small>Week 3: {{ n.week3_score }}</small>
+                                <br /><small>Week 4: {{ n.week4_score }}</small>
+
 
                                 <div v-if="(matchup_home_id == myteam.id) || commishTools">
                                     <div v-if="n.position == 'QB' && qbs && matchup_home_qb_starters.length < qbs && (!n.locked || commishTools) && ((leagueInfo.week == matchup_week) || commishTools)">
@@ -1541,6 +1557,7 @@
                                 <br /><small>Week 1: {{ n.week1_score }}</small>
                                 <br /><small>Week 2: {{ n.week2_score }}</small>
                                 <br /><small>Week 3: {{ n.week3_score }}</small>
+                                <br /><small>Week 4: {{ n.week4_score }}</small>
 
 
                                 <div v-if="(matchup_away_id == myteam.id) || commishTools">
@@ -1674,6 +1691,7 @@ import moment from 'moment'
             {key: 'week1_points', label: 'Week 1', sortable: true},
             {key: 'week2_points', label: 'Week 2', sortable: true},
             {key: 'week3_points', label: 'Week 3', sortable: true},
+            {key: 'week4_points', label: 'Week 4', sortable: true},
             
         ],
         queueFields: [
@@ -2221,6 +2239,13 @@ import moment from 'moment'
                 this.previousStats[3] = response.data;
                 this.items.forEach((item) => {
                     item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3)
+                })
+            });
+            week = 4
+            axios.get('players/getWeeklyStats/'+week).then(response => {
+                this.previousStats[4] = response.data;
+                this.items.forEach((item) => {
+                    item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4)
                 })
             });
         },
