@@ -2294,12 +2294,10 @@ import moment from 'moment'
                         players[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
                 }
-                if (!players[lineup].score.isNaN()) {
-                    total += players[lineup].score;
-                }
+                total += players[lineup].score;
 
             }
-            return Number(total).toFixed(2);
+            return Number(total);
         },
         calculateMatchupScores() {
             this.matchup_home_total = 0;
