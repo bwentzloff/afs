@@ -2290,12 +2290,12 @@ import moment from 'moment'
 
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
                     if (players[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        players[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        players[lineup].score = parseFloat(this.calculatePlayerScore(this.matchup_player_stats[player_score]))
                         players[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
                 }
                 if (!isNaN(players[lineup].score)) {
-                    total += players[lineup].score;
+                    total += parseFloat(players[lineup].score);
                 }
 
             }
