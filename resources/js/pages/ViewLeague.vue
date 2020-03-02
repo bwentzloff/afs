@@ -2294,7 +2294,9 @@ import moment from 'moment'
                         players[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
                     }
                 }
-                total += players[lineup].score;
+                if (!isNaN(players[lineup].score)) {
+                    total += players[lineup].score;
+                }
 
             }
             return Number(total);
