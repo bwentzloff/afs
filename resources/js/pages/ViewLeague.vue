@@ -1133,9 +1133,9 @@
                     <td colspan="2"><strong>{{ matchup_away_name }}</strong></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><strong>{{ matchup_home_total }}</strong></td>
+                    <td colspan="2"><strong>{{ matchup_home_total.toFixed(2) }}</strong></td>
                     <td></td>
-                    <td colspan="2"><strong>{{ matchup_away_total }}</strong></td>
+                    <td colspan="2"><strong>{{ matchup_away_total.toFixed(2) }}</strong></td>
                 </tr>
                 
                 <tr v-for="(n, index) in qbs">
