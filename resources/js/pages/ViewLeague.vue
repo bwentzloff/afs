@@ -2123,13 +2123,13 @@ import moment from 'moment'
                 statline.push(stats.rule11 + " passing 3pt conversion")
             }
             if (stats.rule12 && stats.rule12 != 0) {
-                statline.push((stats.rule12*10) + " yards rushing")
+                statline.push(+((stats.rule12*10).toFixed(2)) + " yards rushing")
             }
             if (stats.rule13 && stats.rule13 != 0) {
-                statline.push((stats.rule13*10) + " yards receiving")
+                statline.push(+((stats.rule13*10).toFixed(2)) + " yards receiving")
             }
             if (stats.rule14 && stats.rule14 != 0) {
-                statline.push((stats.rule14*25) + " yards passing")
+                statline.push(+((stats.rule14*25).toFixed(2)) + " yards passing")
             }
             if (stats.rule15 && stats.rule15 != 0) {
                 statline.push(stats.rule15 + " intercepted pass")
@@ -2393,6 +2393,7 @@ import moment from 'moment'
             var total = 0;
             for (var lineup = 0; lineup < players.length; lineup++) {
                 players[lineup].statline = []
+
                 for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
                     if (players[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
                         players[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
