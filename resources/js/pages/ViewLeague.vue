@@ -1132,6 +1132,12 @@
                     <td></td>
                     <td colspan="2"><strong>{{ matchup_away_name }}</strong></td>
                 </tr>
+                <tr>
+                    <td colspan="2"><strong>{{ matchup_home_total }}</strong></td>
+                    <td></td>
+                    <td colspan="2"><strong>{{ matchup_away_total }}</strong></td>
+                </tr>
+                
                 <tr v-for="(n, index) in qbs">
                     <td>{{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].player_name: "empty" }}
                         <br /><small>Week 1: {{ matchup_home_qb_starters[index]? matchup_home_qb_starters[index].week1_score: "0" }}</small>
@@ -1912,6 +1918,7 @@ import moment from 'moment'
         matchup_home_superflex_starters: [],
         matchup_home_k_starters: [],
         matchup_home_def_starters: [],
+        matchup_home_total: 0,
         matchup_away_qb_starters: [],
         matchup_away_rb_starters: [],
         matchup_away_wr_starters: [],
@@ -1920,6 +1927,7 @@ import moment from 'moment'
         matchup_away_superflex_starters: [],
         matchup_away_k_starters: [],
         matchup_away_def_starters: [],
+        matchup_away_total: 0,
         tempItem: [],
         currentFreeAgentId: 0,
         matchup_player_stats: [],
@@ -2274,162 +2282,149 @@ import moment from 'moment'
                 }
             });
         },
+        getPlayerStatline(stats) {
+            var statline = []
+            if (stats.rule1 && stats.rule1 != 0) {
+                statline.push(stats.rule1 + " rushing TD")
+            }
+            if (stats.rule2 && stats.rule2 != 0) {
+                statline.push(stats.rule2 + " receiving TD")
+            }
+            if (stats.rule3 && stats.rule3 != 0) {
+                statline.push(stats.rule3 + " returning kick/punt for TD")
+            }
+            if (stats.rule4 && stats.rule4 != 0) {
+                statline.push(stats.rule4 + " returning or recovering a fumble for TD")
+            }
+            if (stats.rule5 && stats.rule5 != 0) {
+                statline.push(stats.rule5 + " passing TD")
+            }
+            if (stats.rule6 && stats.rule6 != 0) {
+                statline.push(stats.rule6 + " rushing or receiving 1pt conversion")
+            }
+            if (stats.rule7 && stats.rule7 != 0) {
+                statline.push(stats.rule7 + " rushing or receiving 2pt conversion")
+            }
+            if (stats.rule8 && stats.rule8 != 0) {
+                statline.push(stats.rule8 + " rushing or receiving 3pt conversion")
+            }
+            if (stats.rule9 && stats.rule9 != 0) {
+                statline.push(stats.rule9 + " passing 1pt conversion")
+            }
+            if (stats.rule10 && stats.rule10 != 0) {
+                statline.push(stats.rule10 + " passing 2pt conversion")
+            }
+            if (stats.rule11 && stats.rule11 != 0) {
+                statline.push(stats.rule11 + " passing 3pt conversion")
+            }
+            if (stats.rule12 && stats.rule12 != 0) {
+                statline.push((stats.rule12*10) + " yards rushing")
+            }
+            if (stats.rule13 && stats.rule13 != 0) {
+                statline.push((stats.rule13*10) + " yards receiving")
+            }
+            if (stats.rule14 && stats.rule14 != 0) {
+                statline.push((stats.rule14*25) + " yards passing")
+            }
+            if (stats.rule15 && stats.rule15 != 0) {
+                statline.push(stats.rule15 + " intercepted pass")
+            }
+            if (stats.rule16 && stats.rule16 != 0) {
+                statline.push(stats.rule16 + " fumble")
+            }
+            if (stats.rule17 && stats.rule17 != 0) {
+                statline.push(stats.rule17 + " 50+ yard FG made")
+            }
+            if (stats.rule18 && stats.rule18 != 0) {
+                statline.push(stats.rule18 + " 40-49 yard FG made")
+            }
+            if (stats.rule19 && stats.rule19 != 0) {
+                statline.push(stats.rule19 + " 1-39 yard FG made")
+            }
+            if (stats.rule20 && stats.rule20 != 0) {
+                statline.push(stats.rule20 + " defensive or special teams TD")
+            }
+            if (stats.rule21 && stats.rule21 != 0) {
+                statline.push(stats.rule21 + " interception")
+            }
+            if (stats.rule22 && stats.rule22 != 0) {
+                statline.push(stats.rule22 + " fumble recovery")
+            }
+            if (stats.rule23 && stats.rule23 != 0) {
+                statline.push(stats.rule23 + " blocked punt or field goal")
+            }
+            if (stats.rule24 && stats.rule24 != 0) {
+                statline.push(stats.rule24 + " safety")
+            }
+            if (stats.rule25 && stats.rule25 != 0) {
+                statline.push(stats.rule25 + " sack")
+            }
+            if (stats.rule26 && stats.rule26 != 0) {
+                statline.push(stats.rule26 + " reception")
+            }
+            if (stats.rule27 && stats.rule27 != 0) {
+                statline.push(stats.rule27 + " 0 Points Allowed")
+            }
+            if (stats.rule28 && stats.rule28 != 0) {
+                statline.push(stats.rule28 + " 1-6 Points Allowed")
+            }
+            if (stats.rule29 && stats.rule29 != 0) {
+                statline.push(stats.rule29 + " 7-13 Points Allowed")
+            }
+            if (stats.rule30 && stats.rule30 != 0) {
+                statline.push(stats.rule30 + " 14-20 Points Allowed")
+            }
+            if (stats.rule31 && stats.rule31 != 0) {
+                statline.push(stats.rule31 + " 21-27 Points Allowed")
+            }
+            if (stats.rule32 && stats.rule32 != 0) {
+                statline.push(stats.rule32 + " 28-34 Points Allowed")
+            }
+            if (stats.rule33 && stats.rule33 != 0) {
+                statline.push(stats.rule33 + " 35-41 Points Allowed")
+            }
+            if (stats.rule34 && stats.rule34 != 0) {
+                statline.push(stats.rule34 + " 42+ Points Allowed")
+            }
+
+            return statline
+        },
+        calculateMatchupScoreForPosition(players) {
+            var total = 0;
+            for (var lineup = 0; lineup < players.length; lineup++) {
+                players[lineup].statline = []
+
+                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
+                    if (players[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
+                        players[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
+                        players[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
+                    }
+                }
+                total += players[lineup].score;
+
+            }
+            return total;
+        },
         calculateMatchupScores() {
-            for (var lineup = 0; lineup < this.matchup_away_qb_starters.length; lineup++) {
-                this.matchup_away_qb_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_qb_starters.length; lineup++) {
-                this.matchup_home_qb_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_qb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_qb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_qb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
+            this.matchup_home_total = 0;
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_qb_starters);
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_rb_starters);
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_wr_starters);
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_te_starters);
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_flex_starters);
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_superflex_starters);
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_k_starters);
+            this.matchup_home_total += this.calculateMatchupScoreForPosition(this.matchup_home_def_starters);
 
-
-            for (var lineup = 0; lineup < this.matchup_away_rb_starters.length; lineup++) {
-                this.matchup_away_rb_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_rb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_rb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_rb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_rb_starters.length; lineup++) {
-                this.matchup_home_rb_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_rb_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_rb_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_rb_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-
-
-            for (var lineup = 0; lineup < this.matchup_away_wr_starters.length; lineup++) {
-                this.matchup_away_wr_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_wr_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_wr_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_wr_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_wr_starters.length; lineup++) {
-                this.matchup_home_wr_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_wr_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_wr_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_wr_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-
-
-            for (var lineup = 0; lineup < this.matchup_away_te_starters.length; lineup++) {
-                this.matchup_away_te_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_te_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_te_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_te_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_te_starters.length; lineup++) {
-                this.matchup_home_te_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_te_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_te_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_te_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-
-            for (var lineup = 0; lineup < this.matchup_away_flex_starters.length; lineup++) {
-                this.matchup_away_flex_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_flex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_flex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_flex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_flex_starters.length; lineup++) {
-                this.matchup_home_flex_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_flex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_flex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_flex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-
-            for (var lineup = 0; lineup < this.matchup_away_superflex_starters.length; lineup++) {
-                this.matchup_away_superflex_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_superflex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_superflex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_superflex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_superflex_starters.length; lineup++) {
-                this.matchup_home_superflex_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_superflex_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_superflex_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_superflex_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-
-            for (var lineup = 0; lineup < this.matchup_away_k_starters.length; lineup++) {
-                this.matchup_away_k_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_k_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_k_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_k_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_k_starters.length; lineup++) {
-                this.matchup_home_k_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_k_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_k_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_k_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-
-
-            for (var lineup = 0; lineup < this.matchup_away_def_starters.length; lineup++) {
-                this.matchup_away_def_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_away_def_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_away_def_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_away_def_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
-            for (var lineup = 0; lineup < this.matchup_home_def_starters.length; lineup++) {
-                this.matchup_home_def_starters[lineup].statline = []
-                for (var player_score = 0; player_score < this.matchup_player_stats.length; player_score++) {
-                    if (this.matchup_home_def_starters[lineup].player_id == this.matchup_player_stats[player_score].player_id) {
-                        this.matchup_home_def_starters[lineup].score = this.calculatePlayerScore(this.matchup_player_stats[player_score])
-                        this.matchup_home_def_starters[lineup].statline = this.getPlayerStatline(this.matchup_player_stats[player_score])
-                    }
-                }
-            }
+            this.matchup_away_total = 0;
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_qb_starters);
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_rb_starters);
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_wr_starters);
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_te_starters);
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_flex_starters);
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_superflex_starters);
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_k_starters);
+            this.matchup_away_total += this.calculateMatchupScoreForPosition(this.matchup_away_def_starters);
         },
         
         dropPlayer(playerId) {
@@ -2761,122 +2756,127 @@ import moment from 'moment'
             this.matchup_away_superflex_starters = []
             this.matchup_away_k_starters = []
             this.matchup_away_defense_starters = []
+            var that = this;
             
-            axios.post('league/getLineup', {
-                leagueId: this.leagueId,
-                team_id: item.home_id,
-                week: this.tempItem.week
-            }).then(response => {
-                console.log('get lineup');
-                console.log(response.data)
-                this.matchup_home_bench = []
-                
-                this.matchup_home_qb_starters = []
-                this.matchup_home_rb_starters = []
-                this.matchup_home_wr_starters = []
-                this.matchup_home_te_starters = []
-                this.matchup_home_flex_starters = []
-                this.matchup_home_superflex_starters = []
-                this.matchup_home_k_starters = []
-                this.matchup_home_def_starters = []
-                for (var i = 0; i < response.data.length; i++) {
-                    if (response.data[i].position == "BENCH") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
-                        try {
-                            if (response.data[i]) this.matchup_home_bench.push(response.data[i])
-                        } catch(err) {
-                            console.log(err)
+            function getHomeLineup() { 
+                return axios.post('league/getLineup', {
+                    leagueId: that.leagueId,
+                    team_id: item.home_id,
+                    week: that.tempItem.week
+                }).then(response => {
+                    console.log('get lineup');
+                    console.log(response.data)
+                    that.matchup_home_bench = []
+                    
+                    that.matchup_home_qb_starters = []
+                    that.matchup_home_rb_starters = []
+                    that.matchup_home_wr_starters = []
+                    that.matchup_home_te_starters = []
+                    that.matchup_home_flex_starters = []
+                    that.matchup_home_superflex_starters = []
+                    that.matchup_home_k_starters = []
+                    that.matchup_home_def_starters = []
+                    for (var i = 0; i < response.data.length; i++) {
+                        if (response.data[i].position == "BENCH") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            response.data[i].position = that.getPlayerPositionFromId(response.data[i].player_id);
+                            try {
+                                if (response.data[i]) that.matchup_home_bench.push(response.data[i])
+                            } catch(err) {
+                                console.log(err)
+                            }
+                        } else if (response.data[i].position == "QB") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_qb_starters.push(response.data[i])
+                        } else if (response.data[i].position == "RB") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_rb_starters.push(response.data[i])
+                        } else if (response.data[i].position == "WR") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_wr_starters.push(response.data[i])
+                        } else if (response.data[i].position == "TE") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_te_starters.push(response.data[i])
+                        } else if (response.data[i].position == "FLEX") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_flex_starters.push(response.data[i])
+                        } else if (response.data[i].position == "SUPERFLEX") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_superflex_starters.push(response.data[i])
+                        } else if (response.data[i].position == "K") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_k_starters.push(response.data[i])
+                        } else if (response.data[i].position == "DEF") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_home_def_starters.push(response.data[i])
                         }
-                    } else if (response.data[i].position == "QB") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_qb_starters.push(response.data[i])
-                    } else if (response.data[i].position == "RB") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_rb_starters.push(response.data[i])
-                    } else if (response.data[i].position == "WR") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_wr_starters.push(response.data[i])
-                    } else if (response.data[i].position == "TE") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_te_starters.push(response.data[i])
-                    } else if (response.data[i].position == "FLEX") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_flex_starters.push(response.data[i])
-                    } else if (response.data[i].position == "SUPERFLEX") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_superflex_starters.push(response.data[i])
-                    } else if (response.data[i].position == "K") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_k_starters.push(response.data[i])
-                    } else if (response.data[i].position == "DEF") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_home_def_starters.push(response.data[i])
                     }
-                }
-                this.getWeeklyStats(this.tempItem.week)
-            }).catch(error => {
-                console.log(error);
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors || {};
-                }
-            });
-            axios.post('league/getLineup', {
-                leagueId: this.leagueId,
-                team_id: item.away_id,
-                week: this.tempItem.week
-            }).then(response => {
-                console.log('get lineup');
-                console.log(response.data)
-                this.matchup_away_bench = []
-                
-                this.matchup_away_qb_starters = []
-                this.matchup_away_rb_starters = []
-                this.matchup_away_wr_starters = []
-                this.matchup_away_te_starters = []
-                this.matchup_away_flex_starters = []
-                this.matchup_away_superflex_starters = []
-                this.matchup_away_k_starters = []
-                this.matchup_away_def_starters = []
-                for (var i = 0; i < response.data.length; i++) {
-                    if (response.data[i].position == "BENCH") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        response.data[i].position = this.getPlayerPositionFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_bench.push(response.data[i])
-                    } else if (response.data[i].position == "QB") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_qb_starters.push(response.data[i])
-                    } else if (response.data[i].position == "RB") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_rb_starters.push(response.data[i])
-                    } else if (response.data[i].position == "WR") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_wr_starters.push(response.data[i])
-                    } else if (response.data[i].position == "TE") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_te_starters.push(response.data[i])
-                    } else if (response.data[i].position == "FLEX") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_flex_starters.push(response.data[i])
-                    } else if (response.data[i].position == "SUPERFLEX") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_superflex_starters.push(response.data[i])
-                    } else if (response.data[i].position == "K") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_k_starters.push(response.data[i])
-                    } else if (response.data[i].position == "DEF") {
-                        response.data[i].player_name = this.getPlayerNameFromId(response.data[i].player_id);
-                        if (response.data[i]) this.matchup_away_def_starters.push(response.data[i])
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        that.errors = error.response.data.errors || {};
                     }
-                }
-                this.getWeeklyStats(this.tempItem.week)
-            }).catch(error => {
-                console.log(error);
-                if (error.response.status === 422) {
-                    this.errors = error.response.data.errors || {};
-                }
+                })
+            };
+            function getAwayLineup() { 
+                return axios.post('league/getLineup', {
+                    leagueId: that.leagueId,
+                    team_id: item.away_id,
+                    week: that.tempItem.week
+                }).then(response => {
+                    console.log('get lineup');
+                    console.log(response.data)
+                    that.matchup_away_bench = []
+                    
+                    that.matchup_away_qb_starters = []
+                    that.matchup_away_rb_starters = []
+                    that.matchup_away_wr_starters = []
+                    that.matchup_away_te_starters = []
+                    that.matchup_away_flex_starters = []
+                    that.matchup_away_superflex_starters = []
+                    that.matchup_away_k_starters = []
+                    that.matchup_away_def_starters = []
+                    for (var i = 0; i < response.data.length; i++) {
+                        if (response.data[i].position == "BENCH") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            response.data[i].position = that.getPlayerPositionFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_bench.push(response.data[i])
+                        } else if (response.data[i].position == "QB") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_qb_starters.push(response.data[i])
+                        } else if (response.data[i].position == "RB") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_rb_starters.push(response.data[i])
+                        } else if (response.data[i].position == "WR") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_wr_starters.push(response.data[i])
+                        } else if (response.data[i].position == "TE") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_te_starters.push(response.data[i])
+                        } else if (response.data[i].position == "FLEX") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_flex_starters.push(response.data[i])
+                        } else if (response.data[i].position == "SUPERFLEX") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_superflex_starters.push(response.data[i])
+                        } else if (response.data[i].position == "K") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_k_starters.push(response.data[i])
+                        } else if (response.data[i].position == "DEF") {
+                            response.data[i].player_name = that.getPlayerNameFromId(response.data[i].player_id);
+                            if (response.data[i]) that.matchup_away_def_starters.push(response.data[i])
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        that.errors = error.response.data.errors || {};
+                    }
+                })
+            };
+            axios.all([getHomeLineup(), getAwayLineup()]).then(function() {
+                that.getWeeklyStats(that.tempItem.week);
             });
-            
 
             this.$bvModal.show("matchup-modal");
             this.matchup_home_name = item.home_name
