@@ -1076,6 +1076,7 @@ class LeagueController extends Controller
     public function getTeamInfo($id) {
         $leagueUsers = LeagueUser::where('league_id',$id)
             ->orderBy('wins','desc')
+            ->orderBy('losses','asc')
             ->orderBy('pf','desc')
             ->get();
         return response()->json($leagueUsers);
