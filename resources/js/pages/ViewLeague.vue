@@ -3583,7 +3583,7 @@ import moment from 'moment'
             });
         },
         getCommishWaivers() {
-            if (this.commishTools) {
+            if (this.isCommish) {
                 axios.post('league/getWaivers', {
                     leagueId: this.$data.leagueId,
                 }).then(response => {
