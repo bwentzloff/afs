@@ -33,6 +33,7 @@ class LeagueControllerTest extends TestCase
             factory(User::class, 'user')->create(),
         );
 
+        $commish = $users[0];
         $league = factory(League::class, 'league')->create();
 
         foreach ($users as $index => $user) {
@@ -46,9 +47,10 @@ class LeagueControllerTest extends TestCase
         //    called from LeagueController#setDraftOrder
         //    at then end of LeagueController#create
 
-        // this endpoint calls "createDraftPicks" as well
-        // and is currently NOT authenticated
-        $this->json('POST', '/api/v1/league/updateRoster',
+        // The "updateRoster" endpoint also calls
+        //     "createDraftPicks" so using that here.
+        $this->actingAs($commish)
+            ->json('POST', '/api/v1/league/updateRoster',
             [
                 'leagueId' => $league->id,
                 'qbs' => 1,
