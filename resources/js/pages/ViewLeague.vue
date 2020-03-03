@@ -3525,7 +3525,7 @@ import moment from 'moment'
             });
         },
         grantWaiver(event, waiver) {
-            if (this.commishTools) {
+            if (this.isCommish) {
                 axios.post('league/processWaiver', {
                     leagueId: this.$data.leagueId,
                     waiver_id: waiver.id
@@ -3540,7 +3540,7 @@ import moment from 'moment'
             }
         },
         denyWaiver(event, waiver) {
-            if (this.commishTools) {
+            if (this.isCommish) {
                 axios.post('league/denyWaiver', {
                     leagueId: this.$data.leagueId,
                     waiver_id: waiver.id
@@ -3555,7 +3555,7 @@ import moment from 'moment'
             }
         },
         updateWaiverStatus() {
-            if (this.commishTools) {
+            if (this.isCommish) {
                 axios.post('league/updateWaiverStatus', {
                     leagueId: this.$data.leagueId,
                     status: this.leagueInfo.waiver_status
