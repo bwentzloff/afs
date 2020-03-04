@@ -2223,30 +2223,25 @@ import moment from 'moment'
             var week = 1
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[1] = response.data;
-                this.items.forEach((item) => {
-                    item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1)
-                })
             });
             week = 2
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[2] = response.data;
-                this.items.forEach((item) => {
-                    item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2)
-                })
             });
             week = 3
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[3] = response.data;
-                this.items.forEach((item) => {
-                    item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3)
-                })
             });
             week = 4
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[4] = response.data;
+               
+            });
                 this.items.forEach((item) => {
-                    item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4)
-                })
+                item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
+                item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
+                item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
+                item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
             });
         },
         
