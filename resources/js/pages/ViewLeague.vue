@@ -2223,30 +2223,25 @@ import moment from 'moment'
             var week = 1
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[1] = response.data;
-                this.items.forEach((item) => {
-                    item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1)
-                })
             });
             week = 2
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[2] = response.data;
-                this.items.forEach((item) => {
-                    item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2)
-                })
             });
             week = 3
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[3] = response.data;
-                this.items.forEach((item) => {
-                    item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3)
-                })
             });
             week = 4
             axios.get('players/getWeeklyStats/'+week).then(response => {
                 this.previousStats[4] = response.data;
+               
+            });
                 this.items.forEach((item) => {
-                    item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4)
-                })
+                item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
+                item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
+                item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
+                item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
             });
         },
         
@@ -3141,6 +3136,9 @@ import moment from 'moment'
             });
         },
         updateDraftBoard() {
+            if(this.postDraft) { 
+                return;
+            }
             // get draftOrder info
             axios.get('league/draftOrder/'+this.leagueId).then(response => {
                 this.draftPicks = response.data;
@@ -3374,6 +3372,9 @@ import moment from 'moment'
         });
         },
         updateTimer() {
+            if(this.postDraft){
+                return;
+            }
             if (this.preDraft) {
                 var diff = moment.utc(this.leagueInfo.draft_datetime).diff(moment());
                 const diffDuration = moment.duration(diff);
@@ -3689,8 +3690,10 @@ import moment from 'moment'
                 // get queue items
                 this.assignEligibilities();
                 this.assignTeams();
-                this.updateDraftBoard()
-                this.refreshQueueItems();
+                if(!this.postDraft) {
+                    this.updateDraftBoard()
+                    this.refreshQueueItems();
+                }
                 this.refreshWaivers();
                 this.getCommishWaivers();
                 this.getTransactions();
@@ -3706,91 +3709,93 @@ import moment from 'moment'
             });
 
             
+            if(this.postDraft) {
 
             // get rosters
-            axios.post('league/getrosters', {
-                leagueId: this.$data.leagueId,
-            }).then(response => {
-                this.$data.rosters = response.data;
-                this.assignTeams();
-                this.updateDraftBoard()
+                axios.post('league/getrosters', {
+                    leagueId: this.$data.leagueId,
+                }).then(response => {
+                    this.$data.rosters = response.data;
+                    this.assignTeams();
+                    this.updateDraftBoard()
 
-                this.$data.draftedQBs = 0;
-                this.$data.draftedWRs = 0;
-                this.$data.draftedRBs = 0;
-                this.$data.draftedTEs = 0;
-                this.$data.draftedFlex = 0;
-                this.$data.draftedKs = 0;
-                this.$data.draftedDef = 0;
-                this.$data.draftedBench = 0;
+                    this.$data.draftedQBs = 0;
+                    this.$data.draftedWRs = 0;
+                    this.$data.draftedRBs = 0;
+                    this.$data.draftedTEs = 0;
+                    this.$data.draftedFlex = 0;
+                    this.$data.draftedKs = 0;
+                    this.$data.draftedDef = 0;
+                    this.$data.draftedBench = 0;
 
-                var maxTeamSize = this.leagueInfo.qbs + this.leagueInfo.rbs + this.leagueInfo.wrs + this.leagueInfo.tes + this.leagueInfo.flex + this.leagueInfo.superflex + this.leagueInfo.ks + this.leagueInfo.def + this.leagueInfo.bench;
+                    var maxTeamSize = this.leagueInfo.qbs + this.leagueInfo.rbs + this.leagueInfo.wrs + this.leagueInfo.tes + this.leagueInfo.flex + this.leagueInfo.superflex + this.leagueInfo.ks + this.leagueInfo.def + this.leagueInfo.bench;
 
-                var myTeamSize = this.rosters[this.myteam.id].length
+                    var myTeamSize = this.rosters[this.myteam.id].length
 
-                if (myTeamSize > maxTeamSize) {
-                    this.$bvModal.show("toomany-modal");
-                }
-                
-                // calculate drafted player totals
-                for (var i = 0; i < this.$data.rosters[this.$data.myteam.id].length; i++) {
-                    var tempPos = this.getPlayerPositionFromId(this.$data.rosters[this.$data.myteam.id][i].player_id);
-                    if (tempPos == "QB") {
-                        if (this.$data.draftedQBs >= this.$data.qbs) {
-                            this.$data.draftedBench = this.$data.draftedBench + 1;
-                        } else {
-                            this.$data.draftedQBs = this.$data.draftedQBs + 1;
-                        }
-                    } else if (tempPos == "RB") {
-                        if (this.$data.draftedRBs >= this.$data.rbs) {
-                            if (this.$data.draftedFlex >= this.$data.flex) {
+                    if (myTeamSize > maxTeamSize) {
+                        this.$bvModal.show("toomany-modal");
+                    }
+                    
+                    // calculate drafted player totals
+                    for (var i = 0; i < this.$data.rosters[this.$data.myteam.id].length; i++) {
+                        var tempPos = this.getPlayerPositionFromId(this.$data.rosters[this.$data.myteam.id][i].player_id);
+                        if (tempPos == "QB") {
+                            if (this.$data.draftedQBs >= this.$data.qbs) {
                                 this.$data.draftedBench = this.$data.draftedBench + 1;
                             } else {
-                                this.$data.draftedFlex = this.$data.draftedFlex + 1;
+                                this.$data.draftedQBs = this.$data.draftedQBs + 1;
                             }
-                        } else {
-                            this.$data.draftedRBs = this.$data.draftedRBs + 1;
-                        }
-                    } else if (tempPos == "WR") {
-                        if (this.$data.draftedWRs >= this.$data.wrs) {
-                            if (this.$data.draftedFlex >= this.$data.flex) {
+                        } else if (tempPos == "RB") {
+                            if (this.$data.draftedRBs >= this.$data.rbs) {
+                                if (this.$data.draftedFlex >= this.$data.flex) {
+                                    this.$data.draftedBench = this.$data.draftedBench + 1;
+                                } else {
+                                    this.$data.draftedFlex = this.$data.draftedFlex + 1;
+                                }
+                            } else {
+                                this.$data.draftedRBs = this.$data.draftedRBs + 1;
+                            }
+                        } else if (tempPos == "WR") {
+                            if (this.$data.draftedWRs >= this.$data.wrs) {
+                                if (this.$data.draftedFlex >= this.$data.flex) {
+                                    this.$data.draftedBench = this.$data.draftedBench + 1;
+                                } else {
+                                    this.$data.draftedFlex = this.$data.draftedFlex + 1;
+                                }
+                            } else {
+                                this.$data.draftedWRs = this.$data.draftedWRs + 1;
+                            }
+                        } else if (tempPos == "TE") {
+                            if (this.$data.draftedTEs >= this.$data.tes) {
+                                if (this.$data.draftedFlex >= this.$data.flex) {
+                                    this.$data.draftedBench = this.$data.draftedBench + 1;
+                                } else {
+                                    this.$data.draftedFlex = this.$data.draftedFlex + 1;
+                                }
+                            } else {
+                                this.$data.draftedTEs = this.$data.draftedTEs + 1;
+                            }
+                        } else if (tempPos == "K") {
+                            if (this.$data.draftedKs >= this.$data.ks) {
                                 this.$data.draftedBench = this.$data.draftedBench + 1;
                             } else {
-                                this.$data.draftedFlex = this.$data.draftedFlex + 1;
+                                this.$data.draftedKs = this.$data.draftedKs + 1;
                             }
-                        } else {
-                            this.$data.draftedWRs = this.$data.draftedWRs + 1;
-                        }
-                    } else if (tempPos == "TE") {
-                        if (this.$data.draftedTEs >= this.$data.tes) {
-                            if (this.$data.draftedFlex >= this.$data.flex) {
+                        } else if (tempPos == "DEF") {
+                            if (this.$data.draftedDef >= this.$data.def) {
                                 this.$data.draftedBench = this.$data.draftedBench + 1;
                             } else {
-                                this.$data.draftedFlex = this.$data.draftedFlex + 1;
+                                this.$data.draftedDef = this.$data.draftedDef + 1;
                             }
-                        } else {
-                            this.$data.draftedTEs = this.$data.draftedTEs + 1;
-                        }
-                    } else if (tempPos == "K") {
-                        if (this.$data.draftedKs >= this.$data.ks) {
-                            this.$data.draftedBench = this.$data.draftedBench + 1;
-                        } else {
-                            this.$data.draftedKs = this.$data.draftedKs + 1;
-                        }
-                    } else if (tempPos == "DEF") {
-                        if (this.$data.draftedDef >= this.$data.def) {
-                            this.$data.draftedBench = this.$data.draftedBench + 1;
-                        } else {
-                            this.$data.draftedDef = this.$data.draftedDef + 1;
                         }
                     }
-                }
-            }).catch(error => {
-                console.log(error);
-                if (error.response.status === 422) {
-                    this.$data.errors = error.response.data.errors || {};
-                }
-            });
+                }).catch(error => {
+                    console.log(error);
+                    if (error.response.status === 422) {
+                        this.$data.errors = error.response.data.errors || {};
+                    }
+                });
+            }
 
 
         },
