@@ -1964,8 +1964,7 @@ import moment from 'moment'
     },
     mounted() {
         this.leagueId = this.$route.params.id;
-
-        this.getLeagueInfo();
+        // getLastUpdate will by default call getLeagueInfo as this.lastUpdate will be undefined here.
         this.getLastUpdate();
         
 
@@ -2222,14 +2221,14 @@ import moment from 'moment'
         getPreviousStats() {
             var statsFn = week => axios.get('players/getWeeklyStats/'+week).then(response => {
                     this.previousStats[week] = response.data;
-            });
+                });
             axios.all([statsFn(1), statsFn(2), statsFn(3), statsFn(4)]).then(() => {
-                this.playerList.forEach((item) => {
-                    item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
-                    item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
-                    item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
-                    item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
-            });
+                    this.playerList.forEach((item) => {
+                        item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
+                        item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
+                        item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
+                        item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
+                    });
                     this.$forceUpdate(); // setting the week scores like this doesn't notify Vue that there are updates, so we'll force it.
                 }                                
             )
@@ -3374,9 +3373,14 @@ import moment from 'moment'
             setTimeout(() => { this.updateTimer(); }, 1000);
         },
         getLastUpdate() {
+            if(this.lastUpdate === 0) { // on first call just call getLeagueInfo to populate the page quickly
+                this.getLeagueInfo();
+            }
             axios.get('league/getLastUpdate/'+this.$data.leagueId).then(response => {
                 if (this.$data.lastUpdate != response.data) {
-                    this.getLeagueInfo();
+                    if(this.lastUpdate !== 0) { // if it's the first call skip getLeageInfo - we just did it.
+                        this.getLeagueInfo();
+                    }
                     this.$data.lastUpdate = response.data;
                 }
                 if (this.leagueInfo.draft_status < 2) {
