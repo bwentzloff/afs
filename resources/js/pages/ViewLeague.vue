@@ -3612,13 +3612,9 @@ import moment from 'moment'
                     this.$data.waivers[j].player_name = this.getPlayerNameFromId(this.$data.waivers[j].player_id);
                     this.$data.waivers[j].drop_player_name = this.getPlayerNameFromId(this.$data.waivers[j].drop_player_id);
                 }
-                this.$data.items.forEach((player_item) => {
-                    for (var i = 0; i < response.data.length; i++) {
-                        if (response.data[i].player_id == player_item.id) {
-                            player_item.waiverMade = true;
-                        }
-                    }
-                })
+                for (var i = 0; i < response.data.length; i++) {
+                    this.playerList[response.data[i].player_id].waiverMade = true;
+                }
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
