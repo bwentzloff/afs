@@ -1973,7 +1973,7 @@ import moment from 'moment'
     },
     computed: {
       rows() {
-        return this.items.length
+        return this.playerList.length
       },
       lineups() {
 
