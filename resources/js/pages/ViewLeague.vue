@@ -3801,14 +3801,10 @@ import moment from 'moment'
             console.log(this.$data.teams)
             for (var teamRoster = 0; teamRoster < keys.length; teamRoster++) {
                 for (var rosterPlayer = 0; rosterPlayer < this.$data.rosters[keys[teamRoster]].length; rosterPlayer++) {
-                    for (var players = 0; players < this.$data.items.length; players++) {
-                        if (this.$data.items[players].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id) {
                             for (var teamNames = 0; teamNames < this.$data.teams.length; teamNames++) {
                                 if (this.$data.teams[teamNames].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].team_id) {
-                                    this.$data.items[players].fantasyTeam = this.$data.teams[teamNames].name;
-                                    this.$data.items[players].fantasyTeamId = this.$data.teams[teamNames].id;
-                                }
-                            }
+                            this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeam = this.$data.teams[teamNames].name;
+                            this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeamId = this.$data.teams[teamNames].id;
                         }
                     }
                 }
