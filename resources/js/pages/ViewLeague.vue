@@ -1980,7 +1980,7 @@ import moment from 'moment'
           return this.teams
       },
       playersFiltered() {
-          var filtered = this.items.filter((el) => {
+          var filtered = this.playerList.filter((el) => {
             if (this.teamFilter != -1) { // we've got a filter set
                 if (el.fantasyTeam != '' && this.teamFilter == 0) { // the filter is "no team", but this player has a team.
                     return false;
@@ -2056,7 +2056,7 @@ import moment from 'moment'
                 }
             }
 
-            var filtered = this.items.filter((el) => {
+            var filtered = this.playerList.filter((el) => {
                 return (teamName == el.fantasyTeam) 
             });
             return filtered;
@@ -2237,11 +2237,11 @@ import moment from 'moment'
                 this.previousStats[4] = response.data;
                
             });
-                this.items.forEach((item) => {
-                item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
-                item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
-                item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
-                item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
+                this.playerList.forEach((item) => {
+                    item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
+                    item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
+                    item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
+                    item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
             });
         },
         
@@ -3175,18 +3175,10 @@ import moment from 'moment'
             }
         },
         getPlayerPositionFromId(player_id) {
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].id == player_id) {
-                    return this.items[i].position
-                }
-            }
+            return this.playerList[player_id].position;
         },
         getPlayerNameFromId(player_id) {
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].id == player_id) {
-                    return this.items[i].name + " (" + this.items[i].position + " - " +this.items[i].team+ ")"
-                }
-            }
+            return this.playerList[player_id].name + " (" + this.getPlayerPositionFromId(player_id) + " - " +this.playerList[player_id].team+ ")"
         },
         getPreviousPlayerScoreFromId(player_id, week) {
             for (var i = 0; i < this.items.length; i++) {
