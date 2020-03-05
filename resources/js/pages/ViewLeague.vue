@@ -3665,11 +3665,7 @@ import moment from 'moment'
                 leagueId: this.$data.leagueId,
             }).then(response => {
                 response.data.forEach((elig) => {
-                    for (var players = 0; players < this.$data.items.length; players++) {
-                        if (elig.player_id == this.$data.items[players].id) {
-                            this.$data.items[players].position = elig.position;
-                        }
-                    }
+                    this.playerList[elig.id] = elig.position;
                 });
             }).catch(error => {
                 console.log(error);
