@@ -3677,27 +3677,14 @@ import moment from 'moment'
         },
         refreshPlayerList() {
             // get player list
-            axios.get('players/xfl').then(response => {
+            var getPlayers = () => axios.get('players/xfl').then(response => {
                 var items = []
                 response.data.forEach((item) => {
                     if (!item.draftQueue) item.draftQueue = false
                     item.fantasyTeam = ''
                     items[item.id] = item;
+                    this.playerList = items;
                 })
-                this.playerList = items;
-                // get queue items
-                this.assignEligibilities();
-                if(!this.postDraft) {
-                    this.updateDraftBoard()
-                    this.refreshQueueItems();
-                }
-                this.refreshWaivers();
-                this.getCommishWaivers();
-                this.getTransactions();
-                this.refreshTrades();
-                this.getPreviousStats();
-                
-                //this.items = response.data;
             }).catch(error => {
                 console.log(error);
                 /*if (error.response.status === 422) {
@@ -3705,17 +3692,28 @@ import moment from 'moment'
                 }*/
             });
 
-            
-            if(this.postDraft) {
+            var getRosters = () => axios.post('league/getrosters', {
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                this.$data.rosters = response.data;
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.$data.errors = error.response.data.errors || {};
+                }
+            });
 
-            // get rosters
-                axios.post('league/getrosters', {
-                    leagueId: this.$data.leagueId,
-                }).then(response => {
-                    this.$data.rosters = response.data;
-                    this.assignTeams();
+            axios.all([getPlayers(), getRosters()]).then(() => {
+                this.assignTeams();
+                this.assignEligibilities();
+                this.refreshWaivers();
+                this.getCommishWaivers();
+                this.getTransactions();
+                this.refreshTrades();
+                this.getPreviousStats();
+                if(!this.postDraft) {
                     this.updateDraftBoard()
-
+                    this.refreshQueueItems();
                     this.$data.draftedQBs = 0;
                     this.$data.draftedWRs = 0;
                     this.$data.draftedRBs = 0;
@@ -3786,23 +3784,16 @@ import moment from 'moment'
                             }
                         }
                     }
-                }).catch(error => {
-                    console.log(error);
-                    if (error.response.status === 422) {
-                        this.$data.errors = error.response.data.errors || {};
-                    }
-                });
-            }
-
-
+                }
+            });
         },
         assignTeams() {
             let keys = Object.keys(this.$data.rosters)
             console.log(this.$data.teams)
             for (var teamRoster = 0; teamRoster < keys.length; teamRoster++) {
                 for (var rosterPlayer = 0; rosterPlayer < this.$data.rosters[keys[teamRoster]].length; rosterPlayer++) {
-                            for (var teamNames = 0; teamNames < this.$data.teams.length; teamNames++) {
-                                if (this.$data.teams[teamNames].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].team_id) {
+                    for (var teamNames = 0; teamNames < this.$data.teams.length; teamNames++) {
+                        if (this.$data.teams[teamNames].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].team_id) {
                             this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeam = this.$data.teams[teamNames].name;
                             this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeamId = this.$data.teams[teamNames].id;
                         }
