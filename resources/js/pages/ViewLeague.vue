@@ -3642,7 +3642,7 @@ import moment from 'moment'
                 leagueId: this.$data.leagueId,
             }).then(response => {
                 response.data.forEach((elig) => {
-                    this.playerList[elig.id] = elig.position;
+                    this.playerList[elig.player_id].position = elig.position;
                 });
             }).catch(error => {
                 console.log(error);
