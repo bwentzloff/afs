@@ -3181,19 +3181,12 @@ import moment from 'moment'
             return this.playerList[player_id].name + " (" + this.getPlayerPositionFromId(player_id) + " - " +this.playerList[player_id].team+ ")"
         },
         getPreviousPlayerScoreFromId(player_id, week) {
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].id == player_id) {
-                    if (typeof this.previousStats[1] === 'undefined') {
-                        return ""
-                    } else {
-                        for (var prevStat = 0; prevStat < this.previousStats[week].length; prevStat++) {
-                            
-                            if (this.previousStats[week][prevStat].player_id == player_id) {
-                                
-                                return this.calculatePlayerScore(this.previousStats[week][prevStat])
-                            }
-                        }
-                    }
+            if(this.previousStats[week] === undefined) {
+                return "";
+            }
+            for (var prevStat = 0; prevStat < this.previousStats[week].length; prevStat++) {
+                if (this.previousStats[week][prevStat].player_id == player_id) {
+                    return this.calculatePlayerScore(this.previousStats[week][prevStat])
                 }
             }
         },
