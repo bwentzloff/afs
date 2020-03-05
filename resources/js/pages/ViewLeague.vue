@@ -1657,7 +1657,7 @@ import moment from 'moment'
         teamFilter: -1,
         perPage: 10,
         currentPage: 1,
-        items: [],
+        playerList: [],
         queueItems: [],
         processing: false,
         queueSort: 'queueOrder',
@@ -1964,8 +1964,7 @@ import moment from 'moment'
     },
     mounted() {
         this.leagueId = this.$route.params.id;
-
-        this.getLeagueInfo();
+        // getLastUpdate will by default call getLeagueInfo as this.lastUpdate will be undefined here.
         this.getLastUpdate();
         
 
@@ -1973,14 +1972,14 @@ import moment from 'moment'
     },
     computed: {
       rows() {
-        return this.items.length
+        return this.playerList.length
       },
       lineups() {
 
           return this.teams
       },
       playersFiltered() {
-          var filtered = this.items.filter((el) => {
+          var filtered = this.playerList.filter((el) => {
             if (this.teamFilter != -1) { // we've got a filter set
                 if (el.fantasyTeam != '' && this.teamFilter == 0) { // the filter is "no team", but this player has a team.
                     return false;
@@ -2056,7 +2055,7 @@ import moment from 'moment'
                 }
             }
 
-            var filtered = this.items.filter((el) => {
+            var filtered = this.playerList.filter((el) => {
                 return (teamName == el.fantasyTeam) 
             });
             return filtered;
@@ -2220,29 +2219,19 @@ import moment from 'moment'
             });
         },
         getPreviousStats() {
-            var week = 1
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[1] = response.data;
-            });
-            week = 2
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[2] = response.data;
-            });
-            week = 3
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[3] = response.data;
-            });
-            week = 4
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[4] = response.data;
-               
-            });
-                this.items.forEach((item) => {
-                item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
-                item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
-                item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
-                item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
-            });
+            var statsFn = week => axios.get('players/getWeeklyStats/'+week).then(response => {
+                    this.previousStats[week] = response.data;
+                });
+            axios.all([statsFn(1), statsFn(2), statsFn(3), statsFn(4)]).then(() => {
+                    this.playerList.forEach((item) => {
+                        item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
+                        item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
+                        item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
+                        item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
+                    });
+                    this.$forceUpdate(); // setting the week scores like this doesn't notify Vue that there are updates, so we'll force it.
+                }                                
+            )
         },
         
         updatePlayerEligibility(event, item) {
@@ -3175,33 +3164,18 @@ import moment from 'moment'
             }
         },
         getPlayerPositionFromId(player_id) {
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].id == player_id) {
-                    return this.items[i].position
-                }
-            }
+            return this.playerList[player_id].position;
         },
         getPlayerNameFromId(player_id) {
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].id == player_id) {
-                    return this.items[i].name + " (" + this.items[i].position + " - " +this.items[i].team+ ")"
-                }
-            }
+            return this.playerList[player_id].name + " (" + this.getPlayerPositionFromId(player_id) + " - " +this.playerList[player_id].team+ ")"
         },
         getPreviousPlayerScoreFromId(player_id, week) {
-            for (var i = 0; i < this.items.length; i++) {
-                if (this.items[i].id == player_id) {
-                    if (typeof this.previousStats[1] === 'undefined') {
-                        return ""
-                    } else {
-                        for (var prevStat = 0; prevStat < this.previousStats[week].length; prevStat++) {
-                            
-                            if (this.previousStats[week][prevStat].player_id == player_id) {
-                                
-                                return this.calculatePlayerScore(this.previousStats[week][prevStat])
-                            }
-                        }
-                    }
+            if(this.previousStats[week] === undefined) {
+                return "";
+            }
+            for (var prevStat = 0; prevStat < this.previousStats[week].length; prevStat++) {
+                if (this.previousStats[week][prevStat].player_id == player_id) {
+                    return this.calculatePlayerScore(this.previousStats[week][prevStat])
                 }
             }
         },
@@ -3220,20 +3194,21 @@ import moment from 'moment'
                         this.errors = error.response.data.errors || {};
                     }
                 });
+                if (this.leagueInfo.draft_status == 0) {
+                    this.preDraft = true;
+                    this.postDraft = false;
+                } else if (this.leagueInfo.draft_status == 1) {
+                    this.preDraft = false;
+                    this.postDraft = false;
+                } else {
+                    this.postDraft = true;
+                    this.preDraft = false;
+                }
                 this.refreshPlayerList();
                 
                 this.getMatchups();
 
-            if (this.leagueInfo.draft_status == 0) {
-                this.preDraft = true;
-                this.postDraft = false;
-            } else if (this.leagueInfo.draft_status == 1) {
-                this.preDraft = false;
-                this.postDraft = false;
-            } else {
-                this.postDraft = true;
-                this.preDraft = false;
-            }
+        
             /*moment.relativeTimeThreshold('h', 24*26);
             var timeToGo = moment(this.leagueInfo.draft_datetime).fromNow();
             console.log(timeToGo);
@@ -3398,9 +3373,14 @@ import moment from 'moment'
             setTimeout(() => { this.updateTimer(); }, 1000);
         },
         getLastUpdate() {
+            if(this.lastUpdate === 0) { // on first call just call getLeagueInfo to populate the page quickly
+                this.getLeagueInfo();
+            }
             axios.get('league/getLastUpdate/'+this.$data.leagueId).then(response => {
                 if (this.$data.lastUpdate != response.data) {
-                    this.getLeagueInfo();
+                    if(this.lastUpdate !== 0) { // if it's the first call skip getLeageInfo - we just did it.
+                        this.getLeagueInfo();
+                    }
                     this.$data.lastUpdate = response.data;
                 }
                 if (this.leagueInfo.draft_status < 2) {
@@ -3611,13 +3591,9 @@ import moment from 'moment'
                     this.$data.waivers[j].player_name = this.getPlayerNameFromId(this.$data.waivers[j].player_id);
                     this.$data.waivers[j].drop_player_name = this.getPlayerNameFromId(this.$data.waivers[j].drop_player_id);
                 }
-                this.$data.items.forEach((player_item) => {
-                    for (var i = 0; i < response.data.length; i++) {
-                        if (response.data[i].player_id == player_item.id) {
-                            player_item.waiverMade = true;
-                        }
-                    }
-                })
+                for (var i = 0; i < response.data.length; i++) {
+                    this.playerList[response.data[i].player_id].waiverMade = true;
+                }
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
@@ -3643,16 +3619,11 @@ import moment from 'moment'
                 userAuth: this.$auth.token()
             }).then(response => {
                 this.$data.queueItems = []
-                this.$data.items.forEach((player_item) => {
-                    for (var i = 0; i < response.data.length; i++) {
-                        if (response.data[i].player_id == player_item.id) {
-                            player_item.draftQueue = true;
-                            player_item.queueOrder = response.data[i].queue_order;
-                            this.$data.queueItems.push(player_item);
-                        }
-                    }
-                })
-                
+                for(var i = 0; i < response.data.length; i++) {
+                    this.playerList[response.data[i].player_id].draftQueue = true;
+                    this.playerList[response.data[i].player_id].queueOrder = response.data[i].queue_order;
+                    this.queueItems.push(this.playerList[response.data[i]]);
+                }
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
@@ -3665,11 +3636,7 @@ import moment from 'moment'
                 leagueId: this.$data.leagueId,
             }).then(response => {
                 response.data.forEach((elig) => {
-                    for (var players = 0; players < this.$data.items.length; players++) {
-                        if (elig.player_id == this.$data.items[players].id) {
-                            this.$data.items[players].position = elig.position;
-                        }
-                    }
+                    this.playerList[elig.player_id].position = elig.position;
                 });
             }).catch(error => {
                 console.log(error);
@@ -3680,27 +3647,14 @@ import moment from 'moment'
         },
         refreshPlayerList() {
             // get player list
-            axios.get('players/xfl').then(response => {
-                this.$data.items = []
+            var getPlayers = () => axios.get('players/xfl').then(response => {
+                var items = []
                 response.data.forEach((item) => {
                     if (!item.draftQueue) item.draftQueue = false
                     item.fantasyTeam = ''
-                    this.$data.items.push(item)
+                    items[item.id] = item;
+                    this.playerList = items;
                 })
-                // get queue items
-                this.assignEligibilities();
-                this.assignTeams();
-                if(!this.postDraft) {
-                    this.updateDraftBoard()
-                    this.refreshQueueItems();
-                }
-                this.refreshWaivers();
-                this.getCommishWaivers();
-                this.getTransactions();
-                this.refreshTrades();
-                this.getPreviousStats();
-                
-                //this.items = response.data;
             }).catch(error => {
                 console.log(error);
                 /*if (error.response.status === 422) {
@@ -3708,17 +3662,28 @@ import moment from 'moment'
                 }*/
             });
 
-            
-            if(this.postDraft) {
+            var getRosters = () => axios.post('league/getrosters', {
+                leagueId: this.$data.leagueId,
+            }).then(response => {
+                this.$data.rosters = response.data;
+            }).catch(error => {
+                console.log(error);
+                if (error.response.status === 422) {
+                    this.$data.errors = error.response.data.errors || {};
+                }
+            });
 
-            // get rosters
-                axios.post('league/getrosters', {
-                    leagueId: this.$data.leagueId,
-                }).then(response => {
-                    this.$data.rosters = response.data;
-                    this.assignTeams();
+            axios.all([getPlayers(), getRosters()]).then(() => {
+                this.assignTeams();
+                this.assignEligibilities();
+                this.refreshWaivers();
+                this.getCommishWaivers();
+                this.getTransactions();
+                this.refreshTrades();
+                this.getPreviousStats();
+                if(!this.postDraft) {
                     this.updateDraftBoard()
-
+                    this.refreshQueueItems();
                     this.$data.draftedQBs = 0;
                     this.$data.draftedWRs = 0;
                     this.$data.draftedRBs = 0;
@@ -3789,29 +3754,18 @@ import moment from 'moment'
                             }
                         }
                     }
-                }).catch(error => {
-                    console.log(error);
-                    if (error.response.status === 422) {
-                        this.$data.errors = error.response.data.errors || {};
-                    }
-                });
-            }
-
-
+                }
+            });
         },
         assignTeams() {
             let keys = Object.keys(this.$data.rosters)
             console.log(this.$data.teams)
             for (var teamRoster = 0; teamRoster < keys.length; teamRoster++) {
                 for (var rosterPlayer = 0; rosterPlayer < this.$data.rosters[keys[teamRoster]].length; rosterPlayer++) {
-                    for (var players = 0; players < this.$data.items.length; players++) {
-                        if (this.$data.items[players].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id) {
-                            for (var teamNames = 0; teamNames < this.$data.teams.length; teamNames++) {
-                                if (this.$data.teams[teamNames].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].team_id) {
-                                    this.$data.items[players].fantasyTeam = this.$data.teams[teamNames].name;
-                                    this.$data.items[players].fantasyTeamId = this.$data.teams[teamNames].id;
-                                }
-                            }
+                    for (var teamNames = 0; teamNames < this.$data.teams.length; teamNames++) {
+                        if (this.$data.teams[teamNames].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].team_id) {
+                            this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeam = this.$data.teams[teamNames].name;
+                            this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeamId = this.$data.teams[teamNames].id;
                         }
                     }
                 }
