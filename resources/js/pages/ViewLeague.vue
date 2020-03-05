@@ -1657,7 +1657,7 @@ import moment from 'moment'
         teamFilter: -1,
         perPage: 10,
         currentPage: 1,
-        items: [],
+        playerList: [],
         queueItems: [],
         processing: false,
         queueSort: 'queueOrder',
@@ -3681,12 +3681,13 @@ import moment from 'moment'
         refreshPlayerList() {
             // get player list
             axios.get('players/xfl').then(response => {
-                this.$data.items = []
+                var items = []
                 response.data.forEach((item) => {
                     if (!item.draftQueue) item.draftQueue = false
                     item.fantasyTeam = ''
-                    this.$data.items.push(item)
+                    items[item.id] = item;
                 })
+                this.playerList = items;
                 // get queue items
                 this.assignEligibilities();
                 this.assignTeams();
