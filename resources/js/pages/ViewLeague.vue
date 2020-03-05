@@ -3220,20 +3220,21 @@ import moment from 'moment'
                         this.errors = error.response.data.errors || {};
                     }
                 });
+                if (this.leagueInfo.draft_status == 0) {
+                    this.preDraft = true;
+                    this.postDraft = false;
+                } else if (this.leagueInfo.draft_status == 1) {
+                    this.preDraft = false;
+                    this.postDraft = false;
+                } else {
+                    this.postDraft = true;
+                    this.preDraft = false;
+                }
                 this.refreshPlayerList();
                 
                 this.getMatchups();
 
-            if (this.leagueInfo.draft_status == 0) {
-                this.preDraft = true;
-                this.postDraft = false;
-            } else if (this.leagueInfo.draft_status == 1) {
-                this.preDraft = false;
-                this.postDraft = false;
-            } else {
-                this.postDraft = true;
-                this.preDraft = false;
-            }
+        
             /*moment.relativeTimeThreshold('h', 24*26);
             var timeToGo = moment(this.leagueInfo.draft_datetime).fromNow();
             console.log(timeToGo);
