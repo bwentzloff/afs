@@ -3686,7 +3686,6 @@ import moment from 'moment'
                 this.playerList = items;
                 // get queue items
                 this.assignEligibilities();
-                this.assignTeams();
                 if(!this.postDraft) {
                     this.updateDraftBoard()
                     this.refreshQueueItems();
