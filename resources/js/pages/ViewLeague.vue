@@ -2220,29 +2220,19 @@ import moment from 'moment'
             });
         },
         getPreviousStats() {
-            var week = 1
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[1] = response.data;
+            var statsFn = week => axios.get('players/getWeeklyStats/'+week).then(response => {
+                    this.previousStats[week] = response.data;
             });
-            week = 2
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[2] = response.data;
-            });
-            week = 3
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[3] = response.data;
-            });
-            week = 4
-            axios.get('players/getWeeklyStats/'+week).then(response => {
-                this.previousStats[4] = response.data;
-               
-            });
+            axios.all([statsFn(1), statsFn(2), statsFn(3), statsFn(4)]).then(() => {
                 this.playerList.forEach((item) => {
                     item.week1_points = this.getPreviousPlayerScoreFromId(item.id, 1);
                     item.week2_points = this.getPreviousPlayerScoreFromId(item.id, 2);
                     item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
                     item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
             });
+                    this.$forceUpdate(); // setting the week scores like this doesn't notify Vue that there are updates, so we'll force it.
+                }                                
+            )
         },
         
         updatePlayerEligibility(event, item) {
