@@ -3644,16 +3644,11 @@ import moment from 'moment'
                 userAuth: this.$auth.token()
             }).then(response => {
                 this.$data.queueItems = []
-                this.$data.items.forEach((player_item) => {
-                    for (var i = 0; i < response.data.length; i++) {
-                        if (response.data[i].player_id == player_item.id) {
-                            player_item.draftQueue = true;
-                            player_item.queueOrder = response.data[i].queue_order;
-                            this.$data.queueItems.push(player_item);
-                        }
-                    }
-                })
-                
+                for(var i = 0; i < response.data.length; i++) {
+                    this.playerList[response.data[i].player_id].draftQueue = true;
+                    this.playerList[response.data[i].player_id].queueOrder = response.data[i].queue_order;
+                    this.queueItems.push(this.playerList[response.data[i]]);
+                }
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 422) {
