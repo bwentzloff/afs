@@ -30,6 +30,7 @@
                             <option>12</option>
                             <option>14</option>
                             <option>16</option>
+                            <option>26</option>
                         </select>
                     </div>
                     <div class="form-group">
