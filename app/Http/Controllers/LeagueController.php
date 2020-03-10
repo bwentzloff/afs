@@ -316,6 +316,9 @@ class LeagueController extends Controller
         for ($i = 0; $i < $players->count(); $i++) {
             $players[$i]->week4_score = $this->calculatePlayerScore($request->leagueId, $players[$i]->player_id, 4);
         }
+        for ($i = 0; $i < $players->count(); $i++) {
+            $players[$i]->week5_score = $this->calculatePlayerScore($request->leagueId, $players[$i]->player_id, 5);
+        }
         return $players;
     }
     
