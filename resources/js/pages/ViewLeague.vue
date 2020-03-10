@@ -443,15 +443,7 @@
                                         </select>
                                     </div>
                                 </template>
-                                <template v-slot:cell(total_points)="data">
-                                    {{ (Number(data.item.week1_points) || 0) + (Number(data.item.week2_points) || 0) + (Number(data.item.week3_points) || 0) + (Number(data.item.week4_points) || 0) + (Number(data.item.week5_points) || 0)}}
-                                </template>
-                                <template v-slot:cell(last_3)="data">
-                                    {{ (Number(data.item.week3_points) || 0) + (Number(data.item.week4_points) || 0) + (Number(data.item.week5_points) || 0)}}
-                                </template>
-                                <template v-slot:cell(last_week)="data">
-                                    {{ Number(data.item.week5_points) || 0}}
-                                </template>
+                                
                                 <template v-slot:cell(actions)="data">
                                     <div>
                                         {{ data.item.fantasyTeam }}
@@ -2258,6 +2250,9 @@ import moment from 'moment'
                         item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
                         item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
                         item.week5_points = this.getPreviousPlayerScoreFromId(item.id, 5);
+                        item.total_points = (item.week1_points || 0) + (item.week2_points || 0) + (item.week3_points || 0) + (item.week4_points || 0) + (item.week5_points || 0);
+                        item.last_3 = (item.week3_points || 0) + (item.week4_points || 0) + (item.week5_points || 0);
+                        item.last_week = (item.week5_points || 0);
                     });
                     this.$forceUpdate(); // setting the week scores like this doesn't notify Vue that there are updates, so we'll force it.
                 }                                
