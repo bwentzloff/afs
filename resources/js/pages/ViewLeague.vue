@@ -2250,9 +2250,9 @@ import moment from 'moment'
                         item.week3_points = this.getPreviousPlayerScoreFromId(item.id, 3);
                         item.week4_points = this.getPreviousPlayerScoreFromId(item.id, 4);
                         item.week5_points = this.getPreviousPlayerScoreFromId(item.id, 5);
-                        item.total_points = (item.week1_points || 0) + (item.week2_points || 0) + (item.week3_points || 0) + (item.week4_points || 0) + (item.week5_points || 0);
-                        item.last_3 = (item.week3_points || 0) + (item.week4_points || 0) + (item.week5_points || 0);
-                        item.last_week = (item.week5_points || 0);
+                        item.total_points = ((item.week1_points || 0) + (item.week2_points || 0) + (item.week3_points || 0) + (item.week4_points || 0) + (item.week5_points || 0)).toFixed(2);
+                        item.last_3 = ((item.week3_points || 0) + (item.week4_points || 0) + (item.week5_points || 0)).toFixed(2);
+                        item.last_week = ((item.week5_points || 0)).toFixed(2);
                     });
                     this.$forceUpdate(); // setting the week scores like this doesn't notify Vue that there are updates, so we'll force it.
                 }                                
