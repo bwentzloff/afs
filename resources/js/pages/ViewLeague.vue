@@ -444,10 +444,10 @@
                                     </div>
                                 </template>
                                 <template v-slot:cell(total_points)="data">
-                                    {{ Number(data.item.week1_points) || 0 + Number(data.item.week2_points) || 0 + Number(data.item.week3_points) || 0 + Number(data.item.week4_points) || 0 + Number(data.item.week5_points) || 0}}
+                                    {{ (Number(data.item.week1_points) || 0) + (Number(data.item.week2_points) || 0) + (Number(data.item.week3_points) || 0) + (Number(data.item.week4_points) || 0) + (Number(data.item.week5_points) || 0)}}
                                 </template>
                                 <template v-slot:cell(last_3)="data">
-                                    {{ Number(data.item.week3_points) || 0 + Number(data.item.week4_points) || 0 + Number(data.item.week5_points) || 0}}
+                                    {{ (Number(data.item.week3_points) || 0) + (Number(data.item.week4_points) || 0) + (Number(data.item.week5_points) || 0)}}
                                 </template>
                                 <template v-slot:cell(last_week)="data">
                                     {{ Number(data.item.week5_points) || 0}}
