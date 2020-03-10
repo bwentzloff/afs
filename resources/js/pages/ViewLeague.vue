@@ -3789,8 +3789,10 @@ import moment from 'moment'
                 for (var rosterPlayer = 0; rosterPlayer < this.$data.rosters[keys[teamRoster]].length; rosterPlayer++) {
                     for (var teamNames = 0; teamNames < this.$data.teams.length; teamNames++) {
                         if (this.$data.teams[teamNames].id == this.$data.rosters[keys[teamRoster]][rosterPlayer].team_id) {
-                            this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeam = this.$data.teams[teamNames].name;
-                            this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeamId = this.$data.teams[teamNames].id;
+                            if (this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id]) {
+                                this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeam = this.$data.teams[teamNames].name;
+                                this.playerList[this.$data.rosters[keys[teamRoster]][rosterPlayer].player_id].fantasyTeamId = this.$data.teams[teamNames].id;
+                            }
                         }
                     }
                 }
