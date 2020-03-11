@@ -3598,7 +3598,9 @@ import moment from 'moment'
                     this.leagueWaivers = response.data;
                     for (var j = 0; j < this.leagueWaivers.length; j++) {
                         this.leagueWaivers[j].player_name = this.getPlayerNameFromId(this.leagueWaivers[j].player_id);
-                        this.leagueWaivers[j].drop_player_name = this.getPlayerNameFromId(this.leagueWaivers[j].drop_player_id);
+                        if (this.leagueWaivers[j].drop_player_id) {
+                            this.leagueWaivers[j].drop_player_name = this.getPlayerNameFromId(this.leagueWaivers[j].drop_player_id);
+                        }
                         if (this.leagueWaivers[j].team_id) {
                             this.leagueWaivers[j].team_name = this.getTeamNameFromId(this.leagueWaivers[j].team_id);
                         }
