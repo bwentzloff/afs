@@ -3688,6 +3688,7 @@ import moment from 'moment'
                     items[item.id] = item;
                     this.playerList = items;
                 })
+                this.assignEligibilities();
             }).catch(error => {
                 console.log(error);
                 /*if (error.response.status === 422) {
@@ -3708,7 +3709,6 @@ import moment from 'moment'
 
             axios.all([getPlayers(), getRosters()]).then(() => {
                 this.assignTeams();
-                this.assignEligibilities();
                 this.refreshWaivers();
                 this.getCommishWaivers();
                 this.getTransactions();
