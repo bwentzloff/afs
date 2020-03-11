@@ -3174,7 +3174,9 @@ import moment from 'moment'
         getTeamNameFromId(teamId) {
             for (var i=0; i < this.teams.length; i++) {
                 if (this.teams[i].id == teamId) {
-                    return this.teams[i].name;
+                    if (this.teams[i]) {
+                        return this.teams[i].name;
+                    }
                 }
             }
         },
@@ -3661,7 +3663,9 @@ import moment from 'moment'
                 leagueId: this.$data.leagueId,
             }).then(response => {
                 response.data.forEach((elig) => {
-                    this.playerList[elig.player_id].position = elig.position;
+                    if (this.playerList[elig.player_id]) {
+                        this.playerList[elig.player_id].position = elig.position;
+                    }
                 });
             }).catch(error => {
                 console.log(error);
